@@ -8,7 +8,7 @@
 <meta name="description" content="أذكار الصباح والمساء وقبل النوم، ورد القرآن، وتذكيرات يومية">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="أذكاري"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== الألوان: ليل الصحراء والذهب / ورق المخطوطات ===== */
@@ -106,6 +106,15 @@ input[type=time]{font:inherit;background:var(--card);color:var(--tx);border:1px 
 .mc{background:var(--bg2);border:1px solid var(--line);border-radius:24px 24px 0 0;max-height:90vh;overflow:auto;width:100%;max-width:560px;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));line-height:1.9}
 .mc b{color:var(--gold)}.mc .row{margin:8px 0}.mc ol{padding-inline-start:20px;margin:8px 0}
 footer{text-align:center;color:var(--mut);font-size:.8rem;padding:18px 0 6px}footer b{color:var(--gold)}
+html{touch-action:manipulation}button,.item,.tap,nav button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.mc{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.md{overscroll-behavior:contain}
+.mx{position:sticky;top:0;float:left;z-index:3;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:1rem;cursor:pointer}
+.pp{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:30;display:flex;align-items:center;justify-content:center;padding:24px}.pp[hidden]{display:none}
+.pc{background:var(--bg2);border:1px solid var(--gold);border-radius:24px;padding:24px 20px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .25s}
+@keyframes pop{from{transform:scale(.9);opacity:0}}#ppT{font-family:Amiri,serif;font-size:1.35rem;line-height:2;margin-bottom:16px}
+.garden svg{display:block;border-radius:16px;margin-top:10px}.pl{animation:sw 4.5s ease-in-out infinite}@keyframes sw{0%,100%{transform:rotate(-1.8deg)}50%{transform:rotate(1.8deg)}}
+.st{animation:tw 3s ease-in-out infinite}@keyframes tw{50%{opacity:.2}}.rv{animation:rv 2s linear infinite}@keyframes rv{to{stroke-dashoffset:-44}}
+.seg button{font-size:.72rem}
 /* nav */
 nav{position:fixed;inset:auto 0 0 0;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;justify-content:center;gap:4px;z-index:5}
 nav button{flex:1;max-width:120px;border:0;background:none;color:var(--mut);font:inherit;font-size:.78rem;padding:6px 2px;border-radius:14px;cursor:pointer}
@@ -140,6 +149,15 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
       <button class="btn" id="bCopy">نسخ</button><button class="btn" id="bShare">مشاركة</button>
     </div>
   </div>
+  <div class="card" id="qy"><h2>قيام الليل</h2><div class="src" style="margin-bottom:8px">ولو ركعتين في الثلث الأخير من الليل</div><button class="btn main" id="qyB" style="width:100%"></button>
+    <details><summary>فضل قيام الليل (أحاديث صحيحة)</summary>
+    <p class="fh">«أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ»<small>رواه مسلم</small></p>
+    <p class="fh">«يَنْزِلُ رَبُّنَا تَبَارَكَ وَتَعَالَى كُلَّ لَيْلَةٍ إِلَى السَّمَاءِ الدُّنْيَا حِينَ يَبْقَى ثُلُثُ اللَّيْلِ الْآخِرُ، فَيَقُولُ: مَنْ يَدْعُونِي فَأَسْتَجِيبَ لَهُ، مَنْ يَسْأَلُنِي فَأُعْطِيَهُ، مَنْ يَسْتَغْفِرُنِي فَأَغْفِرَ لَهُ»<small>متفق عليه</small></p>
+    <p class="fh">«إِنَّ فِي اللَّيْلِ لَسَاعَةً لَا يُوَافِقُهَا رَجُلٌ مُسْلِمٌ يَسْأَلُ اللَّهَ خَيْرًا مِنْ أَمْرِ الدُّنْيَا وَالْآخِرَةِ إِلَّا أَعْطَاهُ إِيَّاهُ، وَذَلِكَ كُلَّ لَيْلَةٍ»<small>رواه مسلم</small></p>
+    <p class="fh">«مَنْ قَامَ بِعَشْرِ آيَاتٍ لَمْ يُكْتَبْ مِنَ الْغَافِلِينَ، وَمَنْ قَامَ بِمِائَةِ آيَةٍ كُتِبَ مِنَ الْقَانِتِينَ، وَمَنْ قَامَ بِأَلْفِ آيَةٍ كُتِبَ مِنَ الْمُقَنْطَرِينَ»<small>رواه أبو داود وصححه الألباني</small></p>
+    <p class="fh">«صَلَاةُ اللَّيْلِ مَثْنَى مَثْنَى»<small>متفق عليه</small></p>
+    <p class="fh">﴿تَتَجَافَىٰ جُنُوبُهُمْ عَنِ الْمَضَاجِعِ يَدْعُونَ رَبَّهُمْ خَوْفًا وَطَمَعًا﴾<small>سورة السجدة، الآية ١٦</small></p>
+    <p class="src" style="text-align:right">فعّل تنبيه قيام الليل من الإعدادات (⚙). ويمكن حساب الثلث الأخير تلقائياً حسب موقعك.</p></details></div>
   <div class="card"><h2>تذكرة الصيام</h2><div id="fl"></div>
     <details><summary>أحاديث وفضل الصيام</summary>
     <p class="fh">«تُعْرَضُ الْأَعْمَالُ يَوْمَ الِاثْنَيْنِ وَالْخَمِيسِ، فَأُحِبُّ أَنْ يُعْرَضَ عَمَلِي وَأَنَا صَائِمٌ»<small>رواه الترمذي وصححه الألباني</small></p>
@@ -156,7 +174,7 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
       <div class="pills" id="pills"></div></div>
     </div>
     <div class="prog"><b id="dayBar"></b></div><div class="src" id="dayInfo"></div><button class="btn main" id="nudge" style="width:100%;margin-top:10px"></button>
-    <div class="heat" id="heat" aria-label="تقويم آخر 35 يوما"></div>
+    <div class="garden" id="gd" role="img" aria-label="حديقتك"></div><div class="src" id="gdT" style="margin-top:8px"></div>
     <div class="badges" id="badges"></div>
     <div style="font-size:.8rem;color:var(--mut);margin-top:10px">أطول التزام: <b id="best">0</b> يوم</div>
   </div>
@@ -164,7 +182,7 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
 </section>
 <!-- الأذكار -->
 <section class="view" id="v-adh">
-  <div class="seg" id="segA"><button data-k="m">أذكار الصباح</button><button data-k="e">أذكار المساء</button><button data-k="s">قبل النوم</button><button data-k="x">متنوعة</button></div>
+  <div class="seg" id="segA"><button data-k="m">أذكار الصباح</button><button data-k="e">أذكار المساء</button><button data-k="s">قبل النوم</button><button data-k="x">متنوعة</button><button data-k="u">أذكاري</button></div>
   <div id="adhList"></div>
 </section>
 
@@ -179,7 +197,7 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
     <div class="prog"><b id="pgBar"></b></div>
     <div class="src" id="pgInfo"></div>
   </div>
-  <div class="card"><button class="btn main" id="rdBtn" style="width:100%">اقرأ الصفحة</button><div id="rd" style="margin-top:14px"></div></div>
+  <div class="card"><button class="btn main" id="rdBtn" style="width:100%">اقرأ الصفحة</button><button class="btn" id="pk" style="width:100%;margin-top:8px">تحميل المصحف كاملاً للقراءة بدون إنترنت</button><div id="rd" style="margin-top:14px"></div></div>
   <div class="card"><h2>ورد الصباح</h2><div class="quote" style="font-size:1.2rem" id="qmT"></div>
     <div class="row" style="justify-content:center"><button class="btn main" id="qm">تمت القراءة ✅</button></div></div>
   <div class="card"><h2>ورد المساء</h2><div class="quote" style="font-size:1.2rem" id="qeT"></div>
@@ -205,7 +223,7 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.2.0</footer>
 </div>
 
 <nav>
@@ -215,6 +233,7 @@ nav button b{height:26px;display:flex;align-items:center;justify-content:center}
   <button data-v="free"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/></svg></b>العداد</button>
 </nav>
 <div class="md" id="md" hidden role="dialog" aria-modal="true"><div class="mc" id="mc"></div></div>
+<div class="pp" id="pp" hidden role="alertdialog" aria-modal="true"><div class="pc"><div id="ppT"></div><button class="btn main" id="ppOk" style="width:100%">حاضر إن شاء الله</button></div></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -282,7 +301,7 @@ const INS=[
 /* ===== التخزين (آمن) ===== */
 const KEY='athkary.v1';let S={};
 try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
-S=Object.assign({days:{},page:1,khatmat:0,free:{total:0,cur:0,goal:33,type:'أستغفر الله'},sound:true,vib:true,theme:'auto',fs:1,profile:{name:'',g:'m'},rem:{m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:1,t:'09:00'},qe:{on:1,t:'21:00'},fast:1},loc:null,nd:{}},S);
+S=Object.assign({days:{},page:1,khatmat:0,free:{total:0,cur:0,goal:33,type:'أستغفر الله'},sound:true,vib:true,theme:'auto',fs:1,profile:{name:'',g:'m'},rem:{m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:1,t:'09:00'},qe:{on:1,t:'21:00'},fast:1},loc:null,nd:{}},S);S.rem.ql=S.rem.ql||{on:0,t:'03:30',sun:0};S.custom=S.custom||[];syncU();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -306,19 +325,20 @@ function streaks(){
   let best=0,run=0;const x=new Date();x.setDate(x.getDate()-800);
   for(let i=0;i<=800;i++){if(st(dk(x)).full){run++;best=Math.max(best,run)}else run=0;x.setDate(x.getDate()+1)}
   return{cur,best:Math.max(best,cur)}}
-function renderHome(){renderGreet();renderFast();
+function renderHome(){renderGreet();renderFast();renderQy();
   const s=streaks(),t=st(today());
   $('#stk').textContent=ar(s.cur);const dd=S.days[today()]||{},tot=['m','e','s','x'].reduce((a,k)=>a+(dd[k]||[]).reduce((x,y)=>x+y,0),0),dn=[t.mD,t.eD,t.q].filter(Boolean).length;$('#dayBar').style.width=(dn/3*100)+'%';$('#dayInfo').textContent='أنجزت '+ar(dn)+' من ٣ اليوم، وعدد الأذكار التي عددتها: '+ar(tot);const nx=!t.mD&&hh<15?['adh','m','ابدأ أذكار الصباح']:!t.eD&&hh>=15?['adh','e','ابدأ أذكار المساء']:!t.q?['q','','ابدأ ورد القرآن']:null;const nb=$('#nudge');nb.style.display=nx?'':'none';if(nx){nb.textContent=nx[2];nb.dataset.v=nx[0];nb.dataset.k=nx[1]}$('#best').textContent=ar(s.best);
   $('#pills').innerHTML=[['الصباح',t.mD],['المساء',t.eD],['القرآن',t.q]].map(([n,o])=>`<span class="pill ${o?'ok':''}">${o?'✓ ':''}${n}</span>`).join('');
-  let h='';const d=new Date();d.setDate(d.getDate()-34);
-  for(let i=0;i<35;i++){const k=dk(d),x=st(k);h+=`<i class="${x.full?'f':x.any?'p':''} ${k===today()?'t':''}" title="${k}"></i>`;d.setDate(d.getDate()+1)}
-  $('#heat').innerHTML=h;
+  renderGarden(s);
   $('#badges').innerHTML=[7,30,100].map(n=>`<div class="badge ${s.best>=n?'on':''}">${s.best>=n?'🏅':'🔒'}<br>${ar(n)} يوم</div>`).join('')}
 
 /* ===== آية/حديث اليوم (ثابتة حسب التاريخ) ===== */
+INS.push(['آية','﴿وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ﴾','سورة البقرة، الآية ١٨٦'],['آية','﴿وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ﴾','سورة الضحى، الآية ٥'],['آية','﴿وَاصْبِرْ فَإِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ﴾','سورة هود، الآية ١١٥'],['آية','﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا﴾','سورة الطلاق، الآية ٢'],['آية','﴿لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ﴾','سورة الزمر، الآية ٥٣'],['آية','﴿وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ﴾','سورة الحديد، الآية ٤'],['آية','﴿فَاصْبِرْ صَبْرًا جَمِيلًا﴾','سورة المعارج، الآية ٥'],['آية','﴿ادْعُونِي أَسْتَجِبْ لَكُمْ﴾','سورة غافر، الآية ٦٠'],
+['حديث','«الدُّعَاءُ هُوَ الْعِبَادَةُ»','رواه الترمذي وصححه الألباني'],['حديث','«مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ»','رواه مسلم'],['حديث','«الطُّهُورُ شَطْرُ الْإِيمَانِ»','رواه مسلم'],['حديث','«كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ، ثَقِيلَتَانِ فِي الْمِيزَانِ، حَبِيبَتَانِ إِلَى الرَّحْمَنِ: سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ»','متفق عليه'],['حديث','«مَنْ لَا يَرْحَمْ لَا يُرْحَمْ»','متفق عليه'],['حديث','«لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ»','متفق عليه'],['حديث','«الدِّينُ النَّصِيحَةُ»','رواه مسلم'],['حديث','«أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ»','متفق عليه']);
 const n0=new Date();const di=Math.floor(new Date(n0.getFullYear(),n0.getMonth(),n0.getDate())/864e5)%INS.length;
 const I=INS[di];
-const EXPL=['بذكر الله تسكن القلوب وتهدأ من القلق والخوف، فمن أراد السكينة فليكثر من ذكر ربه.','وعد من الله أن مع كل ضيق وشدة فرجاً ويسراً، فلا تيأس مهما اشتد الكرب.','من ذكر الله بالطاعة والثناء ذكره الله بالرحمة والتوفيق والثواب.','من فوّض أمره إلى الله واعتمد عليه كفاه الله ما أهمه.','أمرنا الله أن نسأله الزيادة في العلم، فالعلم لا ينتهي عند حد.','الصابرون معهم عون الله وتأييده وحفظه.','رحمة الله واسعة تشمل كل شيء، فلا يقنط من رحمته أحد.','الله لا يحمّل أحداً فوق طاقته، فما يمر بك فأنت قادر على تحمله بإذن الله.','قبول الأعمال وثوابها مرتبط بالنية، فأخلص قصدك لله في كل عمل.','كل كلمة لطيفة تُدخل بها السرور على غيرك لك بها أجر الصدقة.','أفضل الناس من اشتغل بتعلم القرآن وتعليمه لغيره.','لا تحقر من المعروف شيئاً، فابتسامتك في وجه أخيك لها أجر.','التسبيح مع الحمد مائة مرة في اليوم سبب لمغفرة الذنوب مهما كثرت.'];$('#insT').textContent=I[0]+' اليوم';$('#insQ').textContent=I[1];$('#insS').textContent=I[2];$('#insE').textContent='المعنى: '+EXPL[di];
+const EXPL=['بذكر الله تسكن القلوب وتهدأ من القلق والخوف، فمن أراد السكينة فليكثر من ذكر ربه.','وعد من الله أن مع كل ضيق وشدة فرجاً ويسراً، فلا تيأس مهما اشتد الكرب.','من ذكر الله بالطاعة والثناء ذكره الله بالرحمة والتوفيق والثواب.','من فوّض أمره إلى الله واعتمد عليه كفاه الله ما أهمه.','أمرنا الله أن نسأله الزيادة في العلم، فالعلم لا ينتهي عند حد.','الصابرون معهم عون الله وتأييده وحفظه.','رحمة الله واسعة تشمل كل شيء، فلا يقنط من رحمته أحد.','الله لا يحمّل أحداً فوق طاقته، فما يمر بك فأنت قادر على تحمله بإذن الله.','قبول الأعمال وثوابها مرتبط بالنية، فأخلص قصدك لله في كل عمل.','كل كلمة لطيفة تُدخل بها السرور على غيرك لك بها أجر الصدقة.','أفضل الناس من اشتغل بتعلم القرآن وتعليمه لغيره.','لا تحقر من المعروف شيئاً، فابتسامتك في وجه أخيك لها أجر.','التسبيح مع الحمد مائة مرة في اليوم سبب لمغفرة الذنوب مهما كثرت.'];$('#insT').textContent=I[0]+' اليوم';$('#insQ').textContent=I[1];EXPL.push('الله قريب من عبده يسمع دعاءه ويجيبه، فلا تحتاج واسطة بينك وبينه.','وعد من الله لنبيه بعطاء يرضيه، وفيه بشرى لكل صابر بأن العاقبة خير.','اصبر على الطاعة وعلى البلاء، فالله لا يضيع أجر من أحسن عملاً.','من خاف الله وأطاعه جعل له فرجاً من كل ضيق ومخرجاً من كل كرب.','نداء رحمة لكل مذنب: لا تيأس، فباب التوبة والمغفرة مفتوح.','الله مطلع عليك ومعك بعلمه في كل مكان، فاستحضر مراقبته.','الصبر الجميل هو الصبر بلا شكوى لغير الله ولا تسخط.','أمر بالدعاء ووعد بالإجابة، فأكثر من الدعاء ولا تستعجل.','الدعاء من أعظم العبادات لأنه إظهار للافتقار إلى الله.','طلب العلم الشرعي طريق ميسّر إلى الجنة بإذن الله.','النظافة والوضوء والطهارة من أسس الإيمان وكماله.','كلمتان يسيرتان في النطق، عظيمتان في الأجر يوم القيامة.','من لا يرحم الناس لا يرحمه الله، فالرحمة صفة المؤمن.','كمال الإيمان أن تتمنى للناس من الخير ما تتمناه لنفسك.','الدين قائم على النصح لله ولكتابه ولرسوله وللمسلمين.','القليل المستمر من العبادة أحب إلى الله من الكثير المنقطع.');
+$('#insS').textContent=I[2];$('#insE').textContent='المعنى: '+EXPL[di];
 $('#bCopy').onclick=async()=>{try{await navigator.clipboard.writeText(I[1]+'\n'+I[2]);toast('تم النسخ')}catch(e){toast('تعذر النسخ')}};
 $('#bShare').onclick=async()=>{const x=I[1]+'\n'+I[2];try{navigator.share?await navigator.share({text:x}):(await navigator.clipboard.writeText(x),toast('تم النسخ'))}catch(e){}};
 let hj='';try{hj=' - '+new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura',{dateStyle:'long'}).format(n0)}catch(e){}
@@ -330,9 +350,9 @@ function twice(k){if(twice.k===k){twice.k=null;return true}twice.k=k;toast('اض
 function renderAdh(){
   $$('#segA button').forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
   const d=day(today());
-  $('#adhList').innerHTML=(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ADH[cur].map((a,i)=>{const c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100);
+  $('#adhList').innerHTML=(cur==='u'?'<button class="btn main" id="addU" style="width:100%;margin-bottom:12px">＋ إضافة ذكر جديد</button>'+(ADH.u.length?'':'<div class="src" style="margin-bottom:12px">أضف أذكارك المفضلة هنا مع فضلها ودرجة الحديث</div>'):'')+(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ADH[cur].map((a,i)=>{const c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100);
     return`<button class="item ${c>=a.n?'done':''}" data-i="${i}" aria-label="${a.t}"><div class="t">${a.t}</div>${a.f?`<div class="f">${clean(a.f)}</div>`:''}<div class="c"><span>${ar(c)} / ${ar(a.n)}</span><span>${c>=a.n?'تم ✓':'اضغط للعد'}</span></div><div class="bar"><b style="width:${p}%"></b></div></button>`}).join('')+'<button class="btn" id="rstS" style="width:100%">↺ إعادة عدّ هذا القسم لليوم</button>'}
-$('#adhList').onclick=e=>{if(e.target.id==='rstS'){if(twice('s')){day(today())[cur]=[];save();renderAdh();renderHome()}return}
+$('#adhList').onclick=e=>{if(e.target.id==='addU')return openU();if(e.target.id==='rstS'){if(twice('s')){day(today())[cur]=[];save();renderAdh();renderHome()}return}
   const b=e.target.closest('.item');if(!b)return;
   const i=+b.dataset.i,a=ADH[cur][i],d=day(today());d[cur]=d[cur]||[];const c=d[cur][i]||0;if(c>=a.n)return;
   d[cur][i]=c+1;save();beep(c+1>=a.n?880:620);vib(c+1>=a.n?[30,40,30]:12);renderAdh();renderHome();
@@ -356,15 +376,25 @@ $('#pg').onchange=e=>{S.page=Math.min(604,Math.max(1,parseInt(e.target.value)||1
 const FAT=[[{n:1,t:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',s:'سورة الفاتحة'},{n:2,t:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ'},{n:3,t:'الرَّحْمَٰنِ الرَّحِيمِ'},{n:4,t:'مَالِكِ يَوْمِ الدِّينِ'},{n:5,t:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ'},{n:6,t:'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ'},{n:7,t:'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ'}],
 [{n:1,t:'نبدأ قراءتنا مستعينين باسم الله، الرحمن الذي وسعت رحمته كل شيء، الرحيم بعباده المؤمنين.'},{n:2,t:'الثناء الكامل لله وحده، فهو خالق جميع المخلوقات ومربيها بنعمه.'},{n:3,t:'هو سبحانه ذو الرحمة الواسعة، ورحمته وصلت إلى كل خلقه.'},{n:4,t:'هو وحده المالك والحاكم يوم الحساب والجزاء.'},{n:5,t:'نخصك وحدك بالعبادة، ونطلب منك وحدك العون في كل أمورنا.'},{n:6,t:'دلنا ووفقنا إلى طريق الحق والإسلام، وثبتنا عليه.'},{n:7,t:'طريق الذين أنعمت عليهم من النبيين والصديقين، لا طريق من غضبت عليهم لعلمهم بالحق وتركهم العمل به، ولا طريق التائهين الذين ضلوا عن الحق.'}]];
 let vp=1;
-async function loadPage(n){vp=n;const box=$('#rd');box.textContent='جارٍ التحميل…';let d=null;
- const url='https://api.alquran.cloud/v1/page/'+n+'/editions/quran-uthmani,ar.muyassar';
- try{const c=window.caches?await caches.open('athkar-quran'):null;let r=c&&await c.match(url);if(!r){r=await fetch(url);if(!r.ok)throw 0;c&&c.put(url,r.clone())}
-  const j=await r.json();d=j.data.map(e=>e.ayahs.map(a=>({n:a.numberInSurah,t:a.text,s:a.surah.name})))}catch(e){}
+const QC=n=>['quran-uthmani','ar.muyassar'].map(e=>'https://api.alquran.cloud/v1/page/'+n+'/'+e);
+const AY=j=>{const d=j.data;return d.ayahs||d[0].ayahs};
+async function getJ(url){const c=window.caches?await caches.open('athkar-quran'):null;let r=c&&await c.match(url);
+ if(!r){r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.clone().json();if(!j||!j.data||!AY(j))throw new Error('bad data');if(c)await c.put(url,r.clone())}return r.json()}
+async function pageData(n){const[u,t]=QC(n),a=AY(await getJ(u));let f=null;try{f=AY(await getJ(t))}catch(e){}
+ return[a.map(x=>({n:x.numberInSurah,t:x.text,s:x.surah&&x.surah.name})),f&&f.map(x=>({n:x.numberInSurah,t:x.text}))]}
+async function pageAlt(n){const r=await fetch('https://api.quran.com/api/v4/verses/by_page/'+n+'?fields=text_uthmani&per_page=300');if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();return[j.verses.map(v=>({n:v.verse_number,t:v.text_uthmani})),null]}
+async function loadPage(n){vp=n;const box=$('#rd');box.textContent='جارٍ التحميل…';let d=null,err='';
+ try{d=await pageData(n)}catch(e){err=e.message||String(e);try{d=await pageAlt(n)}catch(e2){err+=' / '+(e2.message||e2)}}
  if(!d&&n===1)d=FAT;
  const nav='<div class="row" style="justify-content:space-between;margin-top:12px"><button class="btn" data-p="-1">› السابقة</button><span>صفحة '+ar(n)+'</span><button class="btn" data-p="1">التالية ‹</button></div>';
- if(!d){box.innerHTML='<div class="src" style="line-height:2">تعذر تحميل الصفحة، تأكد من اتصالك بالإنترنت ثم أعد المحاولة. الصفحات التي فتحتها من قبل تُحفظ للقراءة بدون إنترنت.</div><div class="row" style="justify-content:center"><button class="btn main" data-p="0">إعادة المحاولة</button><a class="btn" href="https://quran.com/page/'+n+'" target="_blank" rel="noopener" style="text-decoration:none">quran.com</a></div>'+nav;return}
- box.innerHTML='<div class="rd">'+d[0].map(a=>(a.n===1&&a.s?'<div class="src">'+a.s+'</div>':'')+a.t+' \ufd3f'+ar(a.n)+'\ufd3e').join(' ')+'</div><details open><summary>التفسير الميسر</summary>'+d[1].map(a=>'<p><b>\ufd3f'+ar(a.n)+'\ufd3e</b> '+a.t+'</p>').join('')+'</details>'+nav}
+ if(!d){box.innerHTML='<div class="src" style="line-height:2">تعذر تحميل الصفحة. تأكد من الإنترنت ثم أعد المحاولة.<br><small>('+err+')</small></div><div class="row" style="justify-content:center"><button class="btn main" data-p="0">إعادة المحاولة</button><a class="btn" href="https://quran.com/page/'+n+'" target="_blank" rel="noopener" style="text-decoration:none">quran.com</a></div>'+nav;return}
+ box.innerHTML='<div class="rd">'+d[0].map(a=>(a.n===1&&a.s?'<div class="src">'+a.s+'</div>':'')+a.t+' \ufd3f'+ar(a.n)+'\ufd3e').join(' ')+'</div>'+(d[1]?'<details open><summary>التفسير الميسر</summary>'+d[1].map(a=>'<p><b>\ufd3f'+ar(a.n)+'\ufd3e</b> '+a.t+'</p>').join('')+'</details>':'<div class="src">التفسير غير متاح الآن</div>')+nav}
 $('#rd').onclick=e=>{const p=e.target.dataset.p;if(p!==undefined)loadPage(Math.min(604,Math.max(1,vp+ +p)))};
+let packing=0;
+async function packAll(){if(!window.caches)return toast('المتصفح لا يدعم الحفظ');if(packing)return;packing=1;const b=$('#pk'),q=[...Array(604).keys()].map(x=>x+1);let ok=0;
+ const w=async()=>{while(q.length){const n=q.shift();try{const[u,t]=QC(n);await getJ(u);await getJ(t);ok++}catch(e){}b.textContent='جارٍ الحفظ '+ar(604-q.length)+' / ٦٠٤'}};
+ await Promise.all([w(),w(),w(),w()]);packing=0;b.textContent=ok>=604?'✓ المصحف محفوظ للقراءة بدون إنترنت':'تم حفظ '+ar(ok)+' صفحة، اضغط لإكمال الباقي'}
+$('#pk').onclick=packAll;
 $('#rdBtn').onclick=()=>loadPage(S.page);
 /* ===== العداد الحر ===== */
 const F=S.free,C=578;
@@ -372,10 +402,11 @@ function renderF(){
   $('#ftype').value=F.type;$('#fgoal').value=F.goal;$('#fc').textContent=ar(F.cur);$('#ft').textContent=F.type;
   $('#fg').style.strokeDashoffset=C-C*Math.min(1,F.cur/F.goal);$('#ftot').textContent=ar(F.total);
   $('#bSnd').textContent=S.sound?'🔊 الصوت':'🔇 الصوت';$('#bVib').textContent=S.vib?'📳 الاهتزاز':'📴 الاهتزاز'}
-$('#tap').onclick=()=>{F.cur++;F.total++;
+function tapF(){F.cur++;F.total++;
   if(F.cur>=F.goal){beep(880,.2);vib([40,50,40]);const r=$('#rb');r.classList.remove('glow');void r.offsetWidth;r.classList.add('glow');renderF();F.cur=0;setTimeout(renderF,700)}
   else{beep(560,.04);vib(8)}
-  save();renderF()};
+  save();renderF()}
+$('#tap').addEventListener('pointerdown',e=>{e.preventDefault();tapF()});$('#tap').addEventListener('click',e=>{if(e.detail===0)tapF()});
 $('#ftype').onchange=e=>{F.type=e.target.value;save();renderF()};
 $('#fgoal').onchange=e=>{F.goal=+e.target.value;F.cur=0;save();renderF()};
 $('#bRst').onclick=()=>{if(twice('r')){F.cur=0;save();renderF()}};
@@ -392,14 +423,14 @@ const g=(m,f)=>S.profile.g==='f'?f:m;
 const nm=()=>S.profile.name||g('أخي','أختي');
 const MOT=['«أَحَبُّ الأعمال إلى الله أدومها وإن قلّ»','خطوة صغيرة كل يوم تصنع فرقاً كبيراً','بذكر الله تطمئن القلوب','صفحة واحدة من القرآن كل يوم تكفي لتبدأ','استمرارك اليوم يبني التزام الغد'];
 function renderGreet(){const h=new Date().getHours();$('#gr').textContent=(h<12?'صباح الخير':h<18?'طاب يومك':'مساء الخير')+' يا '+nm();$('#gm').textContent=MOT[di%MOT.length]}
-const RT=k=>({m:`صباح الخير يا ${nm()} 🌅 حان وقت أذكار الصباح، ${g('ابدأ','ابدئي')} يومك بذكر الله`,e:`مساء الخير يا ${nm()} 🌙 حان وقت أذكار المساء، ${g('احفظ','احفظي')} مساءك بذكر الله`,qm:`${nm()}، ${g('لم تقرأ','لم تقرئي')} ورد الصباح بعد 📖 صفحة واحدة تكفي`,qe:`${nm()}، ${g('لا تنم','لا تنامي')} قبل ورد الليل 📖 صفحتك بانتظارك`}[k]);
+const RT=k=>({m:`صباح الخير يا ${nm()} 🌅 حان وقت أذكار الصباح، ${g('ابدأ','ابدئي')} يومك بذكر الله`,e:`مساء الخير يا ${nm()} 🌙 حان وقت أذكار المساء، ${g('احفظ','احفظي')} مساءك بذكر الله`,qm:`${nm()}، ${g('لم تقرأ','لم تقرئي')} ورد الصباح بعد 📖 صفحة واحدة تكفي`,qe:`${nm()}، ${g('لا تنم','لا تنامي')} قبل ورد الليل 📖 صفحتك بانتظارك`,ql:`${nm()}، ${g('قم','قومي')} لقيام الليل 🌙 الثلث الأخير وقت الدعاء، ولو ركعتين`}[k]);
 /* ===== الشروق والغروب ===== */
 function sun(t,lat,lon){const R=Math.PI/180,n=Math.ceil(t/864e5+2440587.5-2451545+8e-4),Js=n-lon/360,M=(357.5291+0.98560028*Js)%360,Mr=M*R,C=1.9148*Math.sin(Mr)+0.02*Math.sin(2*Mr)+0.0003*Math.sin(3*Mr),Lr=((M+C+180+102.9372)%360)*R,Jt=2451545+Js+0.0053*Math.sin(Mr)-0.0069*Math.sin(2*Lr),sd=Math.sin(Lr)*Math.sin(23.4397*R),cd=Math.cos(Math.asin(sd)),cw=(Math.sin(-0.833*R)-Math.sin(lat*R)*sd)/(Math.cos(lat*R)*cd);if(Math.abs(cw)>1)return null;const w=Math.acos(cw)/R;return{rise:(Jt-w/360-2440587.5)*864e5,set:(Jt+w/360-2440587.5)*864e5}}
 /* ===== التذكيرات داخل التطبيق ===== */
-function dueTime(k){const r=S.rem[k];if(!r||!r.on)return null;if(r.sun&&S.loc&&(k==='m'||k==='e')){const t=sun(Date.now(),S.loc.lat,S.loc.lon);if(t)return new Date(k==='m'?t.rise-18e5:t.set-36e5)}const[h,mi]=r.t.split(':'),d=new Date();d.setHours(+h,+mi,0,0);return d}
+function dueTime(k){const r=S.rem[k];if(!r||!r.on)return null;if(k==='ql'&&r.sun&&S.loc){const q=lt(-1);if(q)return q}if(r.sun&&S.loc&&(k==='m'||k==='e')){const t=sun(Date.now(),S.loc.lat,S.loc.lon);if(t)return new Date(k==='m'?t.rise-18e5:t.set-36e5)}const[h,mi]=r.t.split(':'),d=new Date();d.setHours(+h,+mi,0,0);return d}
 function isDone(k){const t=st(today());return k==='m'?t.mD:k==='e'?t.eD:!!(S.days[today()]||{})['q'+k[1]]}
-function notify(t,k){toast(t);try{if(window.Notification&&Notification.permission==='granted')navigator.serviceWorker.ready.then(r=>r.showNotification('أذكاري',{body:t,icon:'icon-192.png',tag:k,lang:'ar',dir:'rtl'}))}catch(e){}}
-function check(){if(S.ndDay!==today()){S.nd={};S.ndDay=today()}['m','e','qm','qe'].forEach(k=>{const d=dueTime(k);if(!d||Date.now()<d||Date.now()-d>6*36e5||isDone(k)||S.nd[k])return;S.nd[k]=1;save();notify(RT(k),k)})}
+function notify(t,k){pop(t,k);try{if(window.Notification&&Notification.permission==='granted')navigator.serviceWorker.ready.then(r=>r.showNotification('أذكاري',{body:t,icon:'icon-192.png',tag:k,lang:'ar',dir:'rtl'}))}catch(e){}}
+function check(){if(S.ndDay!==today()){S.nd={};S.ndDay=today()}['m','e','qm','qe','ql'].forEach(k=>{const d=dueTime(k);if(!d||Date.now()<d||Date.now()-d>6*36e5||isDone(k)||S.nd[k])return;S.nd[k]=1;save();notify(RT(k),k)})}
 /* ===== التاريخ الهجري والصيام ===== */
 const HJ=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'});const HOK=HJ.resolvedOptions().calendar==='islamic-umalqura';
 function hij(d){const o={};HJ.formatToParts(d).forEach(p=>o[p.type]=+p.value);return o}
@@ -411,9 +442,9 @@ function renderFast(){const out=[],b=new Date();b.setHours(12,0,0,0);
  const w=[10,11,0,1].includes(new Date().getMonth());$('#fw span').textContent=(w?'❄️ نحن في الشتاء. ':'')+'الغنيمة الباردة هي ما يُنال بلا تعب. وفي الشتاء يقصر النهار ويبرد الجو، فيسهل الصيام ويُنال أجره بمشقة أقل.'}
 /* ===== تقويم الموبايل (ICS) ===== */
 function ics(){const pd=n=>String(n).padStart(2,'0'),f=d=>d.getFullYear()+pd(d.getMonth()+1)+pd(d.getDate())+'T'+pd(d.getHours())+pd(d.getMinutes())+'00',R=S.rem,L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Athkari//AR//','CALSCALE:GREGORIAN'],stamp=new Date().toISOString().replace(/[-:]|\.\d+/g,'');let u=0;
- const add=(d,t,rr)=>L.push('BEGIN:VEVENT','UID:athkari'+(++u)+'@magdymoo.github.io','DTSTAMP:'+stamp,'DTSTART:'+f(d),'DURATION:PT15M',...(rr?['RRULE:'+rr]:[]),'SUMMARY:'+t,'DESCRIPTION:'+t,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+t,'TRIGGER:PT0M','END:VALARM','END:VEVENT');
- ['m','e','qm','qe'].forEach(k=>{const r=R[k];if(!r.on)return;
-  if(r.sun&&S.loc&&(k==='m'||k==='e')){for(let i=0;i<30;i++){const x=new Date();x.setDate(x.getDate()+i);x.setHours(12,0,0,0);const t=sun(x.getTime(),S.loc.lat,S.loc.lon);if(t)add(new Date(k==='m'?t.rise-18e5:t.set-36e5),RT(k))}}
+ const add=(d,t0,rr)=>{const t=t0.replace(/[\r\n]+/g,' ').replace(/([,;\\])/g,'\\$1');L.push('BEGIN:VEVENT','UID:athkari'+(++u)+'@magdymoo.github.io','DTSTAMP:'+stamp,'DTSTART:'+f(d),'DURATION:PT15M',...(rr?['RRULE:'+rr]:[]),'SUMMARY:'+t,'DESCRIPTION:'+t,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+t,'TRIGGER:PT0M','END:VALARM','END:VEVENT')};
+ ['m','e','qm','qe','ql'].forEach(k=>{const r=R[k];if(!r.on)return;
+  if(r.sun&&S.loc&&(k==='m'||k==='e'||k==='ql')){for(let i=0;i<30;i++){if(k==='ql'){const q=lt(i-1);if(q)add(q,RT(k));continue}const x=new Date();x.setDate(x.getDate()+i);x.setHours(12,0,0,0);const t=sun(x.getTime(),S.loc.lat,S.loc.lon);if(t)add(new Date(k==='m'?t.rise-18e5:t.set-36e5),RT(k))}}
   else{const[h,mi]=r.t.split(':'),x=new Date();x.setHours(+h,+mi,0,0);add(x,RT(k),'FREQ=DAILY')}});
  if(R.fast){[[0,'الاثنين'],[3,'الخميس']].forEach(([w,n])=>{const x=new Date();x.setHours(20,0,0,0);x.setDate(x.getDate()+(w-x.getDay()+7)%7);add(x,'🌙 '+nm()+'، غداً '+n+': '+g('انوِ','انوي')+' صيام السنة','FREQ=WEEKLY')});
   if(HOK)for(let i=0;i<400;i++){const x=new Date();x.setHours(20,0,0,0);x.setDate(x.getDate()+i);const y=new Date(x);y.setDate(y.getDate()+1);if(white(hij(y)))add(x,'🌙 '+nm()+'، غداً من الأيام البيض: '+g('انوِ','انوي')+' الصيام')}}
@@ -422,29 +453,34 @@ const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==
 const isApp=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 function dl(txt,name,mime){if(isIOS){location.href='data:'+mime+';charset=utf-8,'+encodeURIComponent(txt);return}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();toast('تم التحميل، افتح الملف لإضافته للتقويم')}
 /* ===== النوافذ ===== */
-function modal(h){$('#mc').innerHTML=h;$('#md').hidden=false}
-function closeM(){$('#md').hidden=true}
+let sy=0;function lock(on){const b=document.body;if(on){if(b.style.position!=='fixed'){sy=scrollY;b.style.cssText='position:fixed;top:-'+sy+'px;left:0;right:0'}}else if(b.style.position==='fixed'){b.style.cssText='';scrollTo(0,sy)}}
+function modal(h,nox){$('#mc').innerHTML=(nox?'':'<button class="mx" id="mx" aria-label="إغلاق">✕</button>')+h;$('#mc').scrollTop=0;$('#md').hidden=false;lock(1)}
+function closeM(){$('#md').hidden=true;lock(0)}
 const BACK='<div class="row"><button class="btn" id="bkS">رجوع</button></div>';
 function helpIOS(){if(isApp())return toast('التطبيق مضاف بالفعل ✅');modal('<h2 style="color:var(--gold);margin:0">إضافة للشاشة الرئيسية (iPhone)</h2><ol><li>افتح هذه الصفحة في <b>Safari</b>.</li><li>اضغط زر المشاركة (المربع والسهم لأعلى).</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اضغط <b>إضافة</b>.</li></ol>'+BACK)}
 function helpAnd(){if(isApp())return toast('التطبيق مضاف بالفعل ✅');if(window.dip){window.dip.prompt();return}modal('<h2 style="color:var(--gold);margin:0">إضافة للشاشة الرئيسية (Android)</h2><ol><li>افتح هذه الصفحة في <b>Chrome</b>.</li><li>اضغط ⋮ (القائمة).</li><li>اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>'+BACK)}
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.dip=e});
-function onboard(){modal('<h2 style="color:var(--gold);margin:0">السلام عليكم ورحمة الله 🌙</h2><div class="src" style="text-align:right">ما اسمك؟ سنخاطبك به ونذكّرك بأذكارك وورد قرآنك.</div><input type="text" id="on" placeholder="اسمك" style="width:100%;margin:10px 0" aria-label="اسمك"><div class="seg" id="og"><button class="on" data-g="m">ذكر</button><button data-g="f">أنثى</button></div><button class="btn main" id="obOk" style="width:100%">ابدأ</button>')}
-function askInstall(){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}if(isApp())return closeM();modal(`<h2 style="color:var(--gold);margin:0">أهلاً يا ${nm()} 🌟</h2><p>أضف التطبيق إلى الشاشة الرئيسية في موبايلك حتى تبقى بياناتك وتقدمك محفوظة ولا تضيع إذا أُغلقت الصفحة، ويسهل الوصول إليه.</p><div class="row"><button class="btn main" id="iosB">iPhone</button><button class="btn main" id="andB">Android</button><button class="btn" id="lat">لاحقاً</button></div>`)}
+function onboard(){modal('<h2 style="color:var(--gold);margin:0">السلام عليكم ورحمة الله 🌙</h2><div class="src" style="text-align:right">ما اسمك؟ سنخاطبك به ونذكّرك بأذكارك وورد قرآنك.</div><input type="text" id="on" placeholder="اسمك" style="width:100%;margin:10px 0" aria-label="اسمك"><div class="seg" id="og"><button class="on" data-g="m">ذكر</button><button data-g="f">أنثى</button></div><button class="btn main" id="obOk" style="width:100%">ابدأ</button>',1)}
+function askInstall(){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}if(isApp())return closeM();modal(`<h2 style="color:var(--gold);margin:0">أهلاً يا ${esc(nm())} 🌟</h2><p>أضف التطبيق إلى الشاشة الرئيسية في موبايلك حتى تبقى بياناتك وتقدمك محفوظة ولا تضيع إذا أُغلقت الصفحة، ويسهل الوصول إليه.</p><div class="row"><button class="btn main" id="iosB">iPhone</button><button class="btn main" id="andB">Android</button><button class="btn" id="lat">لاحقاً</button></div>`)}
 function getLoc(ok,no){if(!navigator.geolocation){toast('الموقع غير مدعوم');return no()}navigator.geolocation.getCurrentPosition(p=>{S.loc={lat:p.coords.latitude,lon:p.coords.longitude};save();ok()},()=>{toast('تعذر تحديد الموقع');no()})}
 function openSet(){const r=S.rem,p=S.profile,R=(k,l)=>`<div class="row" style="justify-content:space-between"><label><input type="checkbox" data-c="${k}" ${r[k].on?'checked':''}> ${l}</label><input type="time" data-t="${k}" value="${r[k].t}" aria-label="وقت ${l}"></div>`;
- modal(`<h2 style="color:var(--gold);margin:0 0 8px">الإعدادات</h2><b>الاسم</b><div class="row"><input type="text" id="sn" value="${p.name.replace(/"/g,'')}" placeholder="اسمك" style="flex:1" aria-label="الاسم"><select id="sg" aria-label="النوع"><option value="m" ${p.g==='m'?'selected':''}>ذكر</option><option value="f" ${p.g==='f'?'selected':''}>أنثى</option></select></div>
- <b>التذكيرات</b>${R('m','أذكار الصباح')}${R('e','أذكار المساء')}${R('qm','ورد الصباح')}${R('qe','ورد الليل')}
- <label style="display:block"><input type="checkbox" id="sunC" ${r.m.sun&&S.loc?'checked':''}> أذكار الصباح قبل الشروق والمساء قبل الغروب حسب موقعي</label>
+ modal(`<h2 style="color:var(--gold);margin:0 0 8px">الإعدادات</h2><b>الاسم</b><div class="row"><input type="text" id="sn" value="${esc(p.name)}" placeholder="اسمك" style="flex:1" aria-label="الاسم"><select id="sg" aria-label="النوع"><option value="m" ${p.g==='m'?'selected':''}>ذكر</option><option value="f" ${p.g==='f'?'selected':''}>أنثى</option></select></div>
+ <b>التذكيرات</b>${R('m','أذكار الصباح')}${R('e','أذكار المساء')}${R('qm','ورد الصباح')}${R('qe','ورد الليل')}${R('ql','قيام الليل')}
+ <label style="display:block"><input type="checkbox" id="sunC" ${r.m.sun&&S.loc?'checked':''}> الصباح قبل الشروق والمساء قبل الغروب وقيام الليل (الثلث الأخير) حسب موقعي</label>
  <label style="display:block"><input type="checkbox" id="fastC" ${r.fast?'checked':''}> تذكير بصيام الاثنين والخميس والأيام البيض</label>
  <div class="row"><button class="btn main" id="icsB">إضافة إلى تقويم الموبايل</button><button class="btn" id="ntfB">تفعيل إشعارات التطبيق</button></div>
  <div class="src" style="text-align:right">التقويم (Apple وGoogle) يذكّرك حتى لو التطبيق مغلق، ويُفضّل تجديد الملف شهرياً إذا فعّلت الشروق والغروب. إشعارات التطبيق تعمل عند فتحه، وعلى iPhone بعد إضافته للشاشة الرئيسية.</div>
  <b>إضافة للشاشة الرئيسية</b><div class="row"><button class="btn" id="iosB">iPhone</button><button class="btn" id="andB">Android</button></div>
  <b>النسخة الاحتياطية</b><textarea id="bk" rows="2" style="width:100%;font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:8px" aria-label="النسخة الاحتياطية"></textarea><div class="row"><button class="btn" id="bkE">نسخ بياناتي</button><button class="btn" id="bkI">استعادة</button></div>
+ <b>اقتراحات وأفكار</b><div class="src" style="text-align:right">ما الذي تحب أن نضيفه أو نحسّنه؟ اكتب فكرتك بالتفصيل وستصل إلى بريد المطوّر (Magdymoo@hotmail.com). وأي فكرة تنفع الناس قد تكون صدقة جارية لك، تقبّل الله منا ومنكم.</div><textarea id="fb" rows="3" style="width:100%;font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:8px" aria-label="اقتراحك"></textarea><button class="btn" id="fbB" style="width:100%">إرسال عبر البريد</button>
  <button class="btn main" id="svB" style="width:100%;margin-top:10px">حفظ وإغلاق</button><footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026</footer>`)}
 $('#mc').onclick=async e=>{const t=e.target,id=t.id;
  if(t.dataset.g){S.profile.g=t.dataset.g;$$('#og button').forEach(b=>b.classList.toggle('on',b===t))}
  else if(id==='obOk'){const v=$('#on').value.trim();if(!v)return toast('اكتب اسمك أولاً');S.profile.name=v;save();renderHome();askInstall()}
- else if(id==='lat')closeM();
+ else if(id==='lat'||id==='mx')closeM();
+ else if(id==='uSave'){const v=$('#ut').value.trim();if(!v)return toast('اكتب نص الذكر');S.custom.push({t:v,n:Math.max(1,parseInt($('#un').value)||1),f:$('#uf').value.trim(),gr:$('#ug').value});save();syncU();closeM();renderAdh();toast('تمت إضافة الذكر')}
+ else if(t.dataset.u!==undefined){S.custom.splice(+t.dataset.u,1);day(today()).u=[];save();syncU();openU();renderAdh()}
+ else if(id==='fbB'){const v=$('#fb').value.trim();if(!v)return toast('اكتب فكرتك أولاً');location.href='mailto:Magdymoo@hotmail.com?subject='+encodeURIComponent('اقتراح لتطبيق أذكاري')+'&body='+encodeURIComponent(v+'\n\n— '+nm()+' | الإصدار '+VER);toast('Magdymoo@hotmail.com')}
  else if(id==='svB'){S.profile.name=$('#sn').value.trim();S.profile.g=$('#sg').value;save();closeM();renderHome();toast('تم الحفظ')}
  else if(id==='icsB')dl(ics(),'athkar-reminders.ics','text/calendar');
  else if(id==='ntfB'){if(!window.Notification)return toast('الإشعارات غير مدعومة هنا');const p=await Notification.requestPermission();toast(p==='granted'?'تم تفعيل الإشعارات':'لم يتم السماح بالإشعارات')}
@@ -453,13 +489,42 @@ $('#mc').onclick=async e=>{const t=e.target,id=t.id;
  else if(id==='bkI'){try{const o=JSON.parse($('#bk').value);if(!o||typeof o.days!=='object')throw 0;if(!twice('i'))return;S=Object.assign(S,o);save();location.reload()}catch(e){toast('نص غير صالح')}}};
 $('#mc').onchange=e=>{const t=e.target;if(t.dataset.c)S.rem[t.dataset.c].on=t.checked?1:0;else if(t.dataset.t)S.rem[t.dataset.t].t=t.value||S.rem[t.dataset.t].t;
  else if(t.id==='fastC')S.rem.fast=t.checked?1:0;
- else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.m.sun=S.rem.e.sun=1;save()},()=>{t.checked=false});else S.rem.m.sun=S.rem.e.sun=0}save()};
+ else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=1;save()},()=>{t.checked=false});else S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=0}save()};
 $('#md').onclick=e=>{if(e.target.id==='md'&&S.profile.name)closeM()};
 $('#bSet').onclick=openSet;
+const VER='1.2.0',NEWS=['أيقونة التطبيق الجديدة على الشاشة الرئيسية','إصلاح العدّ السريع في العداد وإيقاف التكبير','تنبيهات في منتصف الشاشة بزر «حاضر إن شاء الله»','قيام الليل: تنبيه وأحاديث في فضله','حديقة الجنة التفاعلية بدلاً من المربعات','إضافة أذكارك الخاصة مع الفضل والدرجة','إصلاح التمرير في الإعدادات وزر إغلاق ✕','اقتراحات المستخدمين عبر البريد'];
 function boot(){try{Object.keys(localStorage).filter(k=>/^qp\d+$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
- if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
- if(!S.profile.name)onboard();check();setInterval(check,6e4);
+ if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){toast('تم تحديث التطبيق ✨');setTimeout(()=>location.reload(),1500)}})}
+ if(!S.profile.name){S.ver=VER;save();onboard()}else if(S.ver!==VER){S.ver=VER;save();modal('<h2 style="color:var(--gold);margin:0">ما الجديد في الإصدار '+VER+' ✨</h2><ul>'+NEWS.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn main" id="lat" style="width:100%">حسناً</button>')}check();setInterval(check,6e4);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderAdh();renderQ();check()}})}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+const go=v=>$('nav button[data-v="'+v+'"]').click();
+/* ===== تنبيه منتصف الشاشة ===== */
+const PQ=[];
+function pop(m,k){PQ.push([m,k]);if($('#pp').hidden)nextPop()}
+function nextPop(){const q=PQ.shift();if(!q){$('#pp').hidden=true;return}$('#ppT').textContent=q[0];$('#ppOk').dataset.k=q[1];$('#pp').hidden=false}
+$('#ppOk').onclick=e=>{const k=e.currentTarget.dataset.k;$('#pp').hidden=true;if(k==='m'||k==='e'){cur=k;renderAdh();go('adh')}else if(k==='qm'||k==='qe')go('q');else go('home');setTimeout(nextPop,300)};
+/* ===== الثلث الأخير وقيام الليل ===== */
+function lt(o){const x=new Date();x.setDate(x.getDate()+o);x.setHours(12,0,0,0);const y=new Date(x);y.setDate(y.getDate()+1);const a=sun(x.getTime(),S.loc.lat,S.loc.lon),b=sun(y.getTime(),S.loc.lat,S.loc.lon);return a&&b?new Date(a.set+(b.rise-a.set)*2/3):null}
+function renderQy(){const d=S.days[today()]||{};$('#qyB').textContent=d.ql?'✓ قمتُ لقيام الليل، تقبّل الله':'قمتُ لقيام الليل ✅'}
+$('#qyB').onclick=()=>{const d=day(today());d.ql=d.ql?0:1;save();renderQy();if(d.ql)toast('تقبّل الله منك')};
+/* ===== أذكاري الخاصة ===== */
+function syncU(){const GR={'ضعيف':' — تنبيه: هذا الذكر ضعيف السند، تأكد منه قبل الاعتماد عليه','لا أعلم':' — درجته غير معروفة، تأكد منها من أهل العلم'};ADH.u=S.custom.map(c=>({t:esc(c.t),n:c.n,f:(c.f?esc(c.f)+' ':'')+'(الدرجة: '+esc(c.gr)+')'+(GR[c.gr]||'')}))}
+function openU(){const I='style="width:100%;font:inherit;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:8px;margin:6px 0"';
+ modal(`<h2 style="color:var(--gold);margin:0 0 8px">إضافة ذكر</h2><textarea id="ut" rows="3" placeholder="نص الذكر" ${I}></textarea><div class="row"><label>العدد <input type="number" id="un" min="1" value="1" style="width:80px"></label><label>الدرجة <select id="ug"><option>صحيح</option><option>حسن</option><option>ضعيف</option><option>لا أعلم</option></select></label></div><textarea id="uf" rows="2" placeholder="فضل الذكر (اختياري)" ${I}></textarea><button class="btn main" id="uSave" style="width:100%">حفظ الذكر</button>`+(S.custom.length?'<b>أذكاري المضافة</b>'+S.custom.map((c,i)=>`<div class="row" style="justify-content:space-between"><span style="flex:1">${esc(c.t).slice(0,60)}</span><button class="btn" data-u="${i}">حذف</button></div>`).join(''):''))}
+/* ===== حديقة الجنة ===== */
+function palm(x,h,i){const y=150,tx=x+3,ty=y-h;return `<g class="pl" style="transform-origin:${x}px ${y}px;animation-delay:${-i*.7}s"><path d="M${x} ${y}Q${x+5} ${y-h/2} ${tx} ${ty}" stroke="#7a5a35" stroke-width="4" fill="none" stroke-linecap="round"/><g stroke="#3f8a4a" stroke-width="3" fill="none" stroke-linecap="round"><path d="M${tx} ${ty}q-14 -10 -26 4"/><path d="M${tx} ${ty}q14 -10 26 4"/><path d="M${tx} ${ty}q-8 -16 -20 -10"/><path d="M${tx} ${ty}q8 -16 20 -10"/><path d="M${tx} ${ty}v-18"/></g><circle cx="${tx-3}" cy="${ty+4}" r="2.4" fill="#c9a13b"/><circle cx="${tx+3}" cy="${ty+5}" r="2.4" fill="#c9a13b"/></g>`}
+function renderGarden(s){let full=0;for(const k in S.days)if(st(k).full)full++;
+ const hr=new Date().getHours(),nt=hr>=18||hr<5,n=Math.min(full,12),X=[40,92,145,198,250,290,66,170,225,118,274,15],tp=st(today());
+ let o=`<svg viewBox="0 0 320 170" width="100%" aria-hidden="true"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${nt?'#0b1530':'#9fd3f0'}"/><stop offset="1" stop-color="${nt?'#24407a':'#fbe9b8'}"/></linearGradient></defs><rect width="320" height="170" rx="16" fill="url(#sk)"/>`;
+ if(nt){for(let i=0;i<14;i++)o+=`<circle class="st" cx="${(i*47+13)%300+5}" cy="${(i*29+9)%70+8}" r="1.3" fill="#fff" style="animation-delay:${-i*.4}s"/>`;o+='<path d="M268 22a13 13 0 1 0 12 18a10 10 0 1 1-12-18z" fill="#f4d98a"/>'}else o+='<circle cx="270" cy="34" r="14" fill="#ffd45e"/>';
+ o+='<path d="M0 148Q80 136 160 146T320 142V170H0z" fill="#7fa04a"/><path d="M0 156Q90 148 170 156T320 152V170H0z" fill="#5f8a3c"/>';
+ if(s.cur>=7)o+='<path class="rv" d="M0 162Q60 156 120 162T240 162T320 160" stroke="#7cc6e8" stroke-width="5" fill="none" stroke-dasharray="14 8"/>';
+ if(s.cur>=30)o+='<rect x="132" y="112" width="34" height="26" fill="#f3e6c4" stroke="#c9a13b"/><path d="M128 112q21-24 42 0z" fill="#c9a13b"/>';
+ for(let i=0;i<n;i++)o+=palm(X[i],38+(i%4)*7,i);
+ if(!tp.full){const sx=X[n]||300;o+=`<path d="M${sx} 150v-10M${sx} 140q-6-6-10-2M${sx} 140q6-6 10-2" stroke="#4f7d34" stroke-width="2.5" fill="none" stroke-linecap="round"/>`}
+ $('#gd').innerHTML=o+'</svg>';
+ $('#gdT').innerHTML=(full?'غُرست في حديقتك <b>'+ar(full)+'</b> نخلة':'أتمم أذكارك اليوم لتُغرس أول نخلة')+(s.cur>=7?' · ظهر لك نهر':'')+(s.cur>=30?' · وبُني لك بيت':'')+'<small style="display:block;margin-top:4px;line-height:1.8">رمز تحفيزي مستوحى من حديث «مَنْ قَالَ سُبْحَانَ اللَّهِ الْعَظِيمِ وَبِحَمْدِهِ غُرِسَتْ لَهُ نَخْلَةٌ فِي الْجَنَّةِ» رواه الترمذي وصححه الألباني، وليس حساباً لثواب الأعمال.</small>'}
 $('#nudge').onclick=e=>{const b=e.currentTarget;if(b.dataset.k){cur=b.dataset.k;renderAdh()}$('nav button[data-v="'+b.dataset.v+'"]').click()};
 $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();renderF()}};
 applyTheme();renderHome();renderAdh();renderQ();renderF();boot();
