@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أذكاري</title>
-<meta name="theme-color" content="#0b1530">
+<meta name="theme-color" content="#f4f1ea">
 <meta name="description" content="أذكار الصباح والمساء وقبل النوم، ورد القرآن، وتذكيرات يومية">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="أذكاري"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -170,6 +170,18 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
 .tic{width:104px;height:104px;border-radius:28px;display:grid;place-items:center;color:#1b1405;background:linear-gradient(160deg,var(--gold2),var(--gold));box-shadow:0 12px 30px color-mix(in srgb,var(--gold) 35%,transparent)}.tic svg{width:54px;height:54px}
 .tdots{display:flex;gap:6px;justify-content:center;margin:12px}.tdots i{width:7px;height:7px;border-radius:50%;background:var(--ring);transition:.3s var(--sp)}.tdots i.on{background:var(--gold);width:22px;border-radius:4px}
 .rw input[type=time]{max-width:none;width:104px}input[type=time]::-webkit-calendar-picker-indicator{display:none}
+
+/* ===== v1.4 ===== */
+.pp{z-index:60}.toast{z-index:70}
+.tmchip{border:0;border-radius:99px;padding:0 14px;min-height:46px;background:var(--ring);color:var(--mut);font:inherit;font-size:.8rem;font-variant-numeric:tabular-nums}
+.fm{position:fixed;inset:0;z-index:50;background:var(--bg1);display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 14px calc(10px + env(safe-area-inset-bottom,0px));-webkit-user-select:none;user-select:none}.fm[hidden]{display:none}
+.fm.rot{inset:auto;top:0;left:0;transform-origin:top left}
+.fbar{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0}.fbar span{color:var(--mut);font-size:.9rem;font-variant-numeric:tabular-nums;flex:1;text-align:center}
+.fb{border:0;background:color-mix(in srgb,var(--tx) 10%,transparent);color:var(--tx);border-radius:22px;min-width:44px;height:44px;font:inherit;font-size:1.1rem;padding:0 14px;cursor:pointer}
+.fbody{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:hidden;gap:12px;cursor:pointer}
+.ft{font-family:Amiri,serif;line-height:1.9;font-weight:700;width:100%}.ff{font-size:1rem;color:var(--mut);line-height:1.9;max-width:900px}.fbody.done .ft{color:var(--acc)}
+.fpr{height:6px;border-radius:3px;background:var(--ring);overflow:hidden;margin-top:8px}.fpr b{display:block;height:100%;background:var(--gold);transition:width .25s}
+.fctl{display:flex;align-items:center;gap:12px;padding-top:8px}.fcnt{flex:1;text-align:center;font-size:1.6rem;color:var(--gold);font-variant-numeric:tabular-nums}.fcnt b{font-size:2.4rem}
 </style>
 </head>
 <body>
@@ -183,6 +195,7 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
 <!-- اليوم -->
 <section class="view on" id="v-home">
   <div class="card"><h2 id="gr"></h2><div class="src" id="gm"></div></div>
+  <div class="card" id="sm"><div id="smT" style="font-weight:600;line-height:2"></div><div class="src" id="smW" style="text-align:right"></div><div class="row" id="smB" style="margin-top:8px"></div></div>
   <div class="card">
     <h2 id="insT">آية اليوم</h2>
     <div class="quote" id="insQ"></div>
@@ -192,7 +205,9 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
     </div>
   </div>
   <div class="card"><h2>أسبوعك</h2><div class="wkb" id="wk"></div></div>
-  <div class="card" id="qy"><h2>قيام الليل</h2><div class="src" style="margin-bottom:8px">ولو ركعتين في الثلث الأخير من الليل</div><button class="btn main" id="qyB" style="width:100%"></button>
+  <div class="card"><h2>هدف الأسبوع</h2><div id="glT" style="line-height:2"></div><div class="prog"><b id="glB"></b></div><button class="btn" id="glC" style="margin-top:10px;width:100%">تغيير الهدف</button></div>
+  <div class="card"><h2>تقرير الشهر</h2><div class="src" style="text-align:right;margin-bottom:8px">صورة جميلة بإنجازك هذا الشهر تشاركها مع أحبابك</div><button class="btn main" id="repB" style="width:100%">شارك تقرير الشهر</button></div>
+  <div class="card" id="qy"><h2>قيام الليل</h2><div class="src" id="qyS" style="margin-bottom:8px">ولو ركعتين في الثلث الأخير من الليل</div><button class="btn main" id="qyB" style="width:100%"></button>
     <details><summary>فضل قيام الليل (أحاديث صحيحة)</summary>
     <p class="fh">«أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ»<small>رواه مسلم</small></p>
     <p class="fh">«يَنْزِلُ رَبُّنَا تَبَارَكَ وَتَعَالَى كُلَّ لَيْلَةٍ إِلَى السَّمَاءِ الدُّنْيَا حِينَ يَبْقَى ثُلُثُ اللَّيْلِ الْآخِرُ، فَيَقُولُ: مَنْ يَدْعُونِي فَأَسْتَجِيبَ لَهُ، مَنْ يَسْأَلُنِي فَأُعْطِيَهُ، مَنْ يَسْتَغْفِرُنِي فَأَغْفِرَ لَهُ»<small>متفق عليه</small></p>
@@ -216,7 +231,7 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
       <div><div style="font-size:.9rem;color:var(--mut)">اليوم يكتمل بأذكار الصباح والمساء وورد قرآن واحد على الأقل.</div>
       <div class="pills" id="pills"></div></div>
     </div>
-    <div class="prog"><b id="dayBar"></b></div><div class="src" id="dayInfo"></div><button class="btn main" id="nudge" style="width:100%;margin-top:10px"></button>
+    <div class="prog"><b id="dayBar"></b></div><div class="src" id="dayInfo"></div>
     <div class="garden" id="gd" role="img" aria-label="حديقتك"></div><div class="src" id="gdT" style="margin-top:8px"></div>
     <div class="badges" id="badges"></div>
     <div style="font-size:.8rem;color:var(--mut);margin-top:10px">أطول التزام: <b id="best">0</b> يوم</div>
@@ -266,7 +281,7 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.3.0</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.4.0</footer>
 </div>
 
 <nav>
@@ -276,6 +291,8 @@ input.ios:checked{background:#34c759}input.ios:checked::after{transform:translat
   <button data-v="free"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/></svg></b>العداد</button>
 </nav>
 <div class="md" id="md" hidden role="dialog" aria-modal="true"><div class="mc" id="mc"></div></div>
+<div class="fm" id="fm" hidden role="dialog" aria-modal="true" aria-label="وضع التركيز"><div class="fbar"><button class="fb" id="fX" aria-label="خروج">✕</button><span id="fN"></span><button class="fb" id="fT" style="font-size:.8rem"></button><button class="fb" id="fF" aria-label="إظهار أو إخفاء الفضل">الفضل</button><button class="fb" id="fR" aria-label="تدوير الشاشة">⟳</button></div><div class="fbody" id="fB"><div class="ft" id="fTxt"></div><div class="ff" id="fFad"></div></div><div class="fpr"><b id="fPr"></b></div><div class="fctl"><button class="fb" id="fP" aria-label="السابق">›</button><div class="fcnt" id="fC"></div><button class="fb" id="fNx" aria-label="التالي">‹</button></div></div>
+<input type="file" id="fi2" accept=".json,application/json" hidden>
 <div class="tu" id="tu" hidden role="dialog" aria-modal="true" aria-label="شرح التطبيق"><div class="tp" id="tp"></div><div class="tdots" id="td"></div><div style="padding:0 20px calc(18px + env(safe-area-inset-bottom,0px))"><button class="btn main" id="tuOk" style="width:100%">تمام فهمت</button></div></div>
 <div class="pp" id="pp" hidden role="alertdialog" aria-modal="true"><div class="pc"><div id="ppT"></div><button class="btn main" id="ppOk" style="width:100%">حاضر إن شاء الله</button></div></div>
 <div class="toast" id="toast" role="status"></div>
@@ -345,7 +362,7 @@ const INS=[
 /* ===== التخزين (آمن) ===== */
 const KEY='athkary.v1';let S={};
 try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
-S=Object.assign({days:{},page:1,khatmat:0,free:{total:0,cur:0,goal:33,type:'أستغفر الله'},sound:true,vib:true,theme:'auto',fs:1,profile:{name:'',g:'m'},rem:{m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:1,t:'09:00'},qe:{on:1,t:'21:00'},fast:1},loc:null,nd:{}},S);S.rem.ql=S.rem.ql||{on:0,t:'03:30',sun:0};S.custom=S.custom||[];syncU();
+S=Object.assign({days:{},page:1,khatmat:0,free:{total:0,cur:0,goal:33,type:'أستغفر الله'},sound:true,vib:true,theme:'auto',fs:1,profile:{name:'',g:'m'},rem:{m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:1,t:'09:00'},qe:{on:1,t:'21:00'},fast:1},loc:null,nd:{}},S);S.rem.ql=S.rem.ql||{on:0,t:'03:30',sun:0};S.custom=S.custom||[];syncU();S.ord=S.ord||{};S.goal=S.goal||'d5';S.iconInst=S.iconInst||1;if(S.theme==='auto')S.theme='light';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!save.w){save.w=1;toast('تعذر حفظ بياناتك: التخزين ممتلئ أو التصفح خاص')}}};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const dk=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -370,11 +387,11 @@ function streaks(){
   let best=0,run=0;const x=new Date();x.setDate(x.getDate()-800);
   for(let i=0;i<=800;i++){if(st(dk(x)).full){run++;best=Math.max(best,run)}else run=0;x.setDate(x.getDate()+1)}
   return{cur,best:Math.max(best,cur)}}
-function renderHome(){renderGreet();renderFast();renderQy();
+function renderHome(){renderGreet();renderSmart();renderFast();renderQy();renderGoal();
   const s=streaks(),t=st(today());
-  $('#stk').textContent=ar(s.cur);const dd=S.days[today()]||{},tot=['m','e','s','x'].reduce((a,k)=>a+(dd[k]||[]).reduce((x,y)=>x+y,0),0),dn=[t.mD,t.eD,t.q].filter(Boolean).length;$('#dayBar').style.width=(dn/3*100)+'%';$('#dayInfo').textContent='أنجزت '+ar(dn)+' من ٣ اليوم، وعدد الأذكار التي عددتها: '+ar(tot);const nx=!t.mD&&hh<15?['adh','m','ابدأ أذكار الصباح']:!t.eD&&hh>=15?['adh','e','ابدأ أذكار المساء']:!t.q?['q','','ابدأ ورد القرآن']:null;const nb=$('#nudge');nb.style.display=nx?'':'none';if(nx){nb.textContent=nx[2];nb.dataset.v=nx[0];nb.dataset.k=nx[1]}$('#best').textContent=ar(s.best);
+  $('#stk').textContent=ar(s.cur);const dd=S.days[today()]||{},tot=['m','e','s','x'].reduce((a,k)=>a+(dd[k]||[]).reduce((x,y)=>x+y,0),0),dn=[t.mD,t.eD,t.q].filter(Boolean).length;$('#dayBar').style.width=(dn/3*100)+'%';$('#dayInfo').textContent='أنجزت '+ar(dn)+' من ٣ اليوم، وعدد الأذكار التي عددتها: '+ar(tot);$('#best').textContent=ar(s.best);
   $('#pills').innerHTML=[['الصباح',t.mD],['المساء',t.eD],['القرآن',t.q]].map(([n,o])=>`<span class="pill ${o?'ok':''}">${o?'✓ ':''}${n}</span>`).join('');
-  renderGarden(s);renderWeek();celeb(t);
+  renderGarden(s);renderWeek();celeb(t);badge();
   $('#badges').innerHTML=[7,30,100].map(n=>`<div class="badge ${s.best>=n?'on':''}">${s.best>=n?'🏅':'🔒'}<br>${ar(n)} يوم</div>`).join('')}
 
 /* ===== آية/حديث اليوم (ثابتة حسب التاريخ) ===== */
@@ -395,13 +412,11 @@ function twice(k){if(twice.k===k){twice.k=null;return true}twice.k=k;toast('اض
 function renderAdh(){
   $$('#segA button').forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
   const d=day(today());
-  $('#adhList').innerHTML=(cur==='u'?'<button class="btn main" id="addU" style="width:100%;margin-bottom:12px">＋ إضافة ذكر جديد</button>'+(ADH.u.length?'':'<div class="src" style="margin-bottom:12px">أضف أذكارك المفضلة هنا مع فضلها ودرجة الحديث</div>'):'')+(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ADH[cur].map((a,i)=>{const c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100);
-    return`<button class="item ${c>=a.n?'done':''}" data-i="${i}" aria-label="${a.t}"><div class="t">${a.t}</div>${a.f?`<div class="f">${clean(a.f)}</div>`:''}<div class="c"><span>${ar(c)} / ${ar(a.n)}</span><span>${c>=a.n?'تم ✓':'اضغط للعد'}</span></div><div class="bar"><b style="width:${p}%"></b></div></button>`}).join('')+'<button class="btn" id="rstS" style="width:100%">↺ إعادة عدّ هذا القسم لليوم</button>'}
-$('#adhList').onclick=e=>{if(e.target.id==='addU')return openU();if(e.target.id==='rstS'){if(twice('s')){day(today())[cur]=[];save();renderAdh();renderHome()}return}
-  const b=e.target.closest('.item');if(!b)return;
-  const i=+b.dataset.i,a=ADH[cur][i],d=day(today());d[cur]=d[cur]||[];const c=d[cur][i]||0;if(c>=a.n)return;
-  d[cur][i]=c+1;save();beep(c+1>=a.n?880:620);vib(c+1>=a.n?[30,40,30]:12);renderAdh();renderHome();
-  if(c+1>=a.n&&st(today()).full)toast('أتممت يومك ✨ بارك الله فيك')};
+  $('#adhList').innerHTML=focRow()+(cur==='u'?'<button class="btn main" id="addU" style="width:100%;margin-bottom:12px">＋ إضافة ذكر جديد</button>'+(ADH.u.length?'':'<div class="src" style="margin-bottom:12px">أضف أذكارك المفضلة هنا مع فضلها ودرجة الحديث</div>'):'')+(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ORD(cur).map(i=>{const a=ADH[cur][i],c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100);
+    return`<button class="item ${c>=a.n?'done':''}" data-i="${i}" aria-label="${a.t}"><div class="t">${a.t}</div>${a.f?`<div class="f">${clean(a.f)}</div>`:''}<div class="c"><span>${ar(c)} / ${ar(a.n)}</span><span>${c>=a.n?'تم ✓':'اضغط للعد'}</span></div><div class="bar"><b style="width:${p}%"></b></div></button>`}).join('')+'<div class="gf" style="text-align:center">اضغط مطوّلاً على أي ذكر لتغيير ترتيبه</div><button class="btn" id="rstS" style="width:100%">↺ إعادة عدّ هذا القسم لليوم</button>'}
+$('#adhList').onclick=e=>{if(e.target.id==='addU')return openU();if(e.target.id==='focB')return openFocus();if(e.target.id==='tmc')return tmToggle(cur);
+  if(e.target.id==='rstS'){if(twice('s')){day(today())[cur]=[];delete TM[cur];save();renderAdh();renderHome()}return}
+  const b=e.target.closest('.item');if(!b)return;count(cur,+b.dataset.i)};
 $('#segA').onclick=e=>{if(e.target.dataset.k){cur=e.target.dataset.k;renderAdh()}};
 
 /* ===== ورد القرآن ===== */
@@ -460,7 +475,7 @@ $('#bVib').onclick=()=>{S.vib=!S.vib;save();renderF()};
 
 /* ===== التبويبات والمظهر ===== */
 $$('nav button').forEach(b=>b.onclick=()=>{$$('nav button').forEach(x=>x.classList.toggle('on',x===b));$$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));scrollTo(0,0)});
-function applyTheme(){if(S.theme!=='auto')document.documentElement.dataset.theme=S.theme;document.documentElement.style.setProperty('--fs',S.fs)}
+function applyTheme(){document.documentElement.dataset.theme=S.theme==='dark'?'dark':'light';document.documentElement.style.setProperty('--fs',S.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=S.theme==='dark'?'#000000':'#f4f1ea'}
 $('#bTheme').onclick=()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;S.theme=dark?'light':'dark';save();applyTheme()};
 $('#bFont').onclick=()=>{S.fs=S.fs>=1.3?.9:+(S.fs+.1).toFixed(1);save();applyTheme()};
 /* ===== الملف الشخصي والرسائل ===== */
@@ -502,12 +517,12 @@ let sy=0;function lock(on){const b=document.body;if(on){if(b.style.position!=='f
 let hp=0;
 function modal(h,nox){$('#mc').innerHTML=(nox?'':'<button class="mx" id="mx" aria-label="إغلاق">✕</button>')+h;$('#md').hidden=false;$('#mc').scrollTop=0;lock(1);if(!hp){hp=1;try{history.pushState({m:1},'')}catch(e){hp=0}}}
 function closeM(pop){$('#md').hidden=true;lock(0);if(hp){hp=0;if(!pop)try{history.back()}catch(e){}}}
-addEventListener('popstate',()=>{if($('#md').hidden)return;if(S.profile.name)closeM(true);else try{history.pushState({m:1},'');hp=1}catch(e){}});
+addEventListener('popstate',()=>{if(!$('#fm').hidden){closeFocus(1);return}if($('#md').hidden)return;if(S.profile.name)closeM(true);else try{history.pushState({m:1},'');hp=1}catch(e){}});
 const BACK='<div class="row"><button class="btn" id="bkS">رجوع</button></div>';
 function helpIOS(){if(isApp())return toast('التطبيق مضاف بالفعل ✅');modal('<h2 style="color:var(--gold);margin:0">إضافة للشاشة الرئيسية (iPhone)</h2><ol><li>افتح هذه الصفحة في <b>Safari</b>.</li><li>اضغط زر المشاركة (المربع والسهم لأعلى).</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اضغط <b>إضافة</b>.</li></ol>'+BACK)}
 function helpAnd(){if(isApp())return toast('التطبيق مضاف بالفعل ✅');if(window.dip){window.dip.prompt();return}modal('<h2 style="color:var(--gold);margin:0">إضافة للشاشة الرئيسية (Android)</h2><ol><li>افتح هذه الصفحة في <b>Chrome</b>.</li><li>اضغط ⋮ (القائمة).</li><li>اختر <b>تثبيت التطبيق</b> أو <b>إضافة إلى الشاشة الرئيسية</b>.</li></ol>'+BACK)}
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.dip=e});
-function onboard(){modal('<h2 style="color:var(--gold);margin:0">السلام عليكم ورحمة الله 🌙</h2><div class="src" style="text-align:right">ما اسمك؟ سنخاطبك به ونذكّرك بأذكارك وورد قرآنك.</div><input type="text" id="on" placeholder="اسمك" style="width:100%;margin:10px 0" aria-label="اسمك"><div class="seg" id="og"><button class="on" data-g="m">ذكر</button><button data-g="f">أنثى</button></div><button class="btn main" id="obOk" style="width:100%">ابدأ</button>',1)}
+function onboard(){modal('<h2 style="color:var(--gold);margin:0">السلام عليكم ورحمة الله 🌙</h2><div class="src" style="text-align:right">ما اسمك؟ سنخاطبك به ونذكّرك بأذكارك وورد قرآنك.</div><input type="text" id="on" placeholder="اسمك" style="width:100%;margin:10px 0" aria-label="اسمك"><div class="seg" id="og"><button class="on" data-g="m">ذكر</button><button data-g="f">أنثى</button></div><button class="btn main" id="obOk" style="width:100%">ابدأ</button><button class="btn" id="obRes" style="width:100%;margin-top:8px">لدي نسخة احتياطية، استعدها</button>'+(hasBak()?'<button class="btn" id="obBak" style="width:100%;margin-top:8px">استعادة النسخة التلقائية المحفوظة</button>':''),1)}
 function askInstall(){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}if(isApp())return closeM();modal(`<h2 style="color:var(--gold);margin:0">أهلاً يا ${esc(nm())} 🌟</h2><p>أضف التطبيق إلى الشاشة الرئيسية في موبايلك حتى تبقى بياناتك وتقدمك محفوظة ولا تضيع إذا أُغلقت الصفحة، ويسهل الوصول إليه.</p><div class="row"><button class="btn main" id="iosB">iPhone</button><button class="btn main" id="andB">Android</button><button class="btn" id="lat">لاحقاً</button></div>`)}
 function getLoc(ok,no){if(!navigator.geolocation){toast('الموقع غير مدعوم');return no()}navigator.geolocation.getCurrentPosition(p=>{S.loc={lat:p.coords.latitude,lon:p.coords.longitude};save();ok()},()=>{toast('تعذر تحديد الموقع');no()})}
 const MAIL=()=>'mailto:Magdymoo@hotmail.com?subject='+encodeURIComponent('Azkar App features suggestions')+'&body='+encodeURIComponent('السلام عليكم،\r\nاقتراحي لتطبيق أذكاري:\r\n\r\n\r\n\r\n— '+nm()+' | الإصدار '+VER);
@@ -516,10 +531,11 @@ function openSet(){const r=S.rem,p=S.profile,
  SW=(id,l,on)=>`<div class="rw"><span>${l}</span><input type="checkbox" class="ios" id="${id}" ${on?'checked':''} aria-label="${l}"></div>`;
  modal(`<h2 class="lt2">الإعدادات</h2>
  <div class="gl">الملف الشخصي</div><div class="grp"><div class="rw"><span>الاسم</span><input type="text" id="sn" value="${esc(p.name)}" placeholder="اسمك" aria-label="الاسم"></div><div class="rw"><span>النوع</span><select id="sg" aria-label="النوع"><option value="m" ${p.g==='m'?'selected':''}>ذكر</option><option value="f" ${p.g==='f'?'selected':''}>أنثى</option></select></div></div>
+ <div class="gl">التفضيلات</div><div class="grp">${SW('darkC','الوضع الليلي',S.theme==='dark')}${SW('tmC','مؤقّت الأذكار (للتشجيع فقط)',S.timer!==0)}</div>
  <div class="gl">التذكيرات</div><div class="grp">${R('m','أذكار الصباح')}${R('e','أذكار المساء')}${R('qm','ورد الصباح')}${R('qe','ورد الليل')}${R('ql','قيام الليل')}${SW('sunC','حسب الشروق والغروب والثلث الأخير (موقعي)',r.m.sun&&S.loc)}${SW('fastC','صيام الاثنين والخميس والأيام البيض',r.fast)}</div>
  <div class="gf">التقويم يذكّرك حتى لو كان التطبيق مغلقاً. إشعارات التطبيق تعمل عند فتحه، وعلى iPhone بعد إضافته للشاشة الرئيسية.</div>
  <div class="grp"><button class="rw lnk" id="icsB">إضافة التذكيرات إلى تقويم الموبايل</button><button class="rw lnk" id="ntfB">تفعيل إشعارات التطبيق</button></div>
- <div class="gl">المساعدة والتثبيت</div><div class="grp"><button class="rw lnk" id="tutB">شرح التطبيق (Tutorial)</button><button class="rw lnk" id="iosB">إضافة للشاشة الرئيسية: iPhone</button><button class="rw lnk" id="andB">إضافة للشاشة الرئيسية: Android</button><button class="rw lnk" id="shareB">شارك التطبيق مع أحبابك</button></div>
+ <div class="gl">المساعدة والتثبيت</div><div class="grp"><button class="rw lnk" id="tutB">شرح التطبيق (Tutorial)</button><button class="rw lnk" id="logB">سجل الإصدارات (ما الجديد في كل نسخة)</button><button class="rw lnk" id="updB">التحقق من التحديثات</button><button class="rw lnk" id="iosB">إضافة للشاشة الرئيسية: iPhone</button><button class="rw lnk" id="andB">إضافة للشاشة الرئيسية: Android</button><button class="rw lnk" id="shareB">شارك التطبيق مع أحبابك</button></div>
  <div class="gl">النسخة الاحتياطية</div><div class="grp"><button class="rw lnk" id="fileE">حفظ نسخة كملف</button><button class="rw lnk" id="fileI">استعادة من ملف</button><button class="rw lnk" id="bkE">نسخ البيانات كنص</button><div class="rw"><textarea id="bk" rows="2" placeholder="الصق هنا النص للاستعادة" aria-label="النسخة الاحتياطية"></textarea></div><button class="rw lnk" id="bkI">استعادة من النص</button></div><input type="file" id="fi" accept=".json,application/json" hidden>
  <div class="gl">اقتراحات وأفكار</div><div class="grp"><a class="rw lnk" id="mailA" href="${MAIL()}">إرسال اقتراح عبر البريد</a><button class="rw lnk" id="mailC">نسخ عنوان البريد</button></div>
  <div class="gf">يفتح تطبيق البريد في هاتفك (Outlook أو Mail أو Gmail) والعنوان Magdymoo@hotmail.com والموضوع جاهزان، فاكتب فكرتك هناك. وأي فكرة تنفع الناس قد تكون صدقة جارية لك، تقبّل الله منا ومنكم.</div>
@@ -530,6 +546,12 @@ $('#mc').onclick=async e=>{const t=e.target,id=t.id;
  else if(id==='obOk'){const v=$('#on').value.trim();if(!v)return toast('اكتب اسمك أولاً');S.profile.name=v;S.ndDay=today();S.nd={};['m','e','qm','qe','ql'].forEach(k=>{const d=dueTime(k);if(d&&Date.now()>=d)S.nd[k]=1});save();renderHome();closeM();openTut(1)}
  else if(id==='lat'||id==='mx')closeM();
  else if(id==='tutB'){closeM();openTut(0)}
+ else if(t.dataset.mv)moveItem(t.dataset.mv);else if(id==='mvOk')closeM();
+ else if(id==='logB')openLog();else if(id==='updB'){closeM();checkUpd(1)}
+ else if(id==='updGo')doUpdate();else if(id==='iconDone'){S.iconInst=(window.RV&&window.RV.iconVer)||S.iconInst;save();closeM();toast('تم')}
+ else if(t.dataset.gl){S.goal=t.dataset.gl;save();closeM();renderHome()}
+ else if(id==='obRes')$('#fi2').click();
+ else if(id==='obBak'){try{const b=JSON.parse(localStorage.getItem('athkary.bak'));S=Object.assign(S,b.d);save();location.reload()}catch(e){toast('تعذرت الاستعادة')}}
  else if(id==='shareB')shareApp();
  else if(id==='fileE')exportFile();
  else if(id==='fileI')$('#fi').click();
@@ -538,31 +560,33 @@ $('#mc').onclick=async e=>{const t=e.target,id=t.id;
  else if(id==='uSave'){const v=$('#ut').value.trim();if(!v)return toast('اكتب نص الذكر');S.custom.push({t:v,n:Math.max(1,parseInt($('#un').value)||1),f:$('#uf').value.trim(),gr:$('#ug').value});save();syncU();closeM();renderAdh();toast('تمت إضافة الذكر')}
  else if(t.dataset.u!==undefined){S.custom.splice(+t.dataset.u,1);day(today()).u=[];save();syncU();openU();renderAdh()}
  else if(id==='svB'){S.profile.name=$('#sn').value.trim();S.profile.g=$('#sg').value;save();closeM();renderHome();toast('تم الحفظ')}
- else if(id==='icsB')dl(ics(),'athkar-reminders.ics','text/calendar');
+ else if(id==='icsB')openCal();else if(id==='icsS')shareIcs();else if(id==='icsD')dlIcs();
  else if(id==='ntfB'){if(!window.Notification)return toast('الإشعارات غير مدعومة هنا');const p=await Notification.requestPermission();toast(p==='granted'?'تم تفعيل الإشعارات':'لم يتم السماح بالإشعارات')}
  else if(id==='iosB')helpIOS();else if(id==='andB')helpAnd();else if(id==='bkS')openSet();
  else if(id==='bkE'){const x=JSON.stringify(S);$('#bk').value=x;try{await navigator.clipboard.writeText(x);toast('تم النسخ')}catch(e){toast('انسخ النص يدوياً')}}
  else if(id==='bkI'){try{const o=JSON.parse($('#bk').value);if(!o||typeof o.days!=='object')throw 0;if(!twice('i'))return;S=Object.assign(S,o);save();location.reload()}catch(e){toast('نص غير صالح')}}};
 $('#mc').onchange=e=>{const t=e.target;if(t.id==='fi'){impFile(t.files[0]);return}if(t.dataset.c)S.rem[t.dataset.c].on=t.checked?1:0;else if(t.dataset.t)S.rem[t.dataset.t].t=t.value||S.rem[t.dataset.t].t;
- else if(t.id==='fastC')S.rem.fast=t.checked?1:0;
+ else if(t.id==='fastC')S.rem.fast=t.checked?1:0;else if(t.id==='darkC'){S.theme=t.checked?'dark':'light';applyTheme()}else if(t.id==='tmC')S.timer=t.checked?1:0;
  else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=1;save()},()=>{t.checked=false});else S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=0}save()};
 $('#md').onclick=e=>{if(e.target.id==='md'&&S.profile.name)closeM()};
 $('#bSet').onclick=openSet;
-const VER='1.3.0',NEWS=['تصميم جديد بروح iPhone: عناوين كبيرة وشريط زجاجي ونوافذ نابضة ووضع ليلي أسود','شرح تفاعلي للتطبيق (Tutorial) يمكن فتحه من الإعدادات','إرسال الاقتراحات يفتح تطبيق البريد وفيه العنوان والموضوع جاهزان','بطاقة «أسبوعك» ورسالة احتفال عند إتمام اليوم','زر الرجوع يغلق النوافذ بدل الخروج من التطبيق','نسخ احتياطي كملف، ومشاركة التطبيق، وإبقاء الشاشة مضيئة أثناء العدّ','إصلاح أيقونة الشاشة الرئيسية على iPhone'];
+const ICONVER=1,VER='1.4.0',NEWS=['وضع التركيز: ذكر بملء الشاشة مع تدوير للعرض','مؤقّت اختياري برسائل تشجيعية متجددة','ترتيب الأذكار بالضغط المطوّل','سجل الإصدارات وتحقق تلقائي من التحديثات مع نسخة احتياطية','الصفحة الرئيسية تعرف الوقت وتتجدد وحدها','هدف أسبوعي وتقرير شهري كصورة','إصلاح إضافة التذكيرات للتقويم','الوضع الفاتح هو الافتراضي'];
 function boot(){try{Object.keys(localStorage).filter(k=>/^qp\d+$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
  if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){toast('تم تحديث التطبيق ✨');setTimeout(()=>location.reload(),1500)}})}
  if(!S.profile.name){S.ver=VER;save();onboard()}else if(S.ver!==VER){S.ver=VER;save();modal('<h2 style="color:var(--gold);margin:0">ما الجديد في الإصدار '+VER+' ✨</h2><ul>'+NEWS.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn main" id="lat" style="width:100%">حسناً</button><button class=\"btn\" id=\"tutB\" style=\"width:100%;margin-top:8px\">شاهد شرح التطبيق</button>')}check();setInterval(check,6e4);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderAdh();renderQ();check();if(S.wl)wake(1)}})}
+ setInterval(tmChip,1000);setInterval(()=>{if(!document.hidden)renderHome()},6e4);setTimeout(()=>checkUpd(0),2500);setInterval(()=>{if(!document.hidden)checkUpd(0)},18e5);
+ if(S.profile.name&&Date.now()-(S.bakT||0)>864e5){S.bakT=Date.now();save();autoBak()}
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){HID=Date.now();return}if(HID&&Date.now()-HID>3e5){go('home');scrollTo(0,0)}HID=0;if(!document.hidden){renderHome();renderAdh();renderQ();check();if(S.wl)wake(1)}})}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 const go=v=>$('nav button[data-v="'+v+'"]').click();
 /* ===== تنبيه منتصف الشاشة ===== */
 const PQ=[];
 function pop(m,k,l){PQ.push([m,k,l]);if($('#pp').hidden)nextPop()}
 function nextPop(){const q=PQ.shift();if(!q){$('#pp').hidden=true;return}$('#ppT').textContent=q[0];$('#ppOk').dataset.k=q[1];$('#ppOk').textContent=q[2]||'حاضر إن شاء الله';$('#pp').hidden=false}
-$('#ppOk').onclick=e=>{const k=e.currentTarget.dataset.k;$('#pp').hidden=true;if(k==='m'||k==='e'){cur=k;renderAdh();go('adh')}else if(k==='qm'||k==='qe')go('q');else if(k==='tut'){const f=afterTut;afterTut=null;if(f)f()}else go('home');setTimeout(nextPop,300)};
+$('#ppOk').onclick=e=>{const k=e.currentTarget.dataset.k;$('#pp').hidden=true;if(k==='m'||k==='e'){cur=k;renderAdh();go('adh')}else if(k==='qm'||k==='qe')go('q');else if(k==='tut'){const f=afterTut;afterTut=null;if(f)f()}else if(k!=='tm')go('home');setTimeout(nextPop,300)};
 /* ===== الثلث الأخير وقيام الليل ===== */
 function lt(o){const x=new Date();x.setDate(x.getDate()+o);x.setHours(12,0,0,0);const y=new Date(x);y.setDate(y.getDate()+1);const a=sun(x.getTime(),S.loc.lat,S.loc.lon),b=sun(y.getTime(),S.loc.lat,S.loc.lon);return a&&b?new Date(a.set+(b.rise-a.set)*2/3):null}
-function renderQy(){const d=S.days[today()]||{};$('#qyB').textContent=d.ql?'✓ قمتُ لقيام الليل، تقبّل الله':'قمتُ لقيام الليل ✅'}
+function renderQy(){const h=new Date().getHours(),d=S.days[today()]||{},sh=h>=21||h<9;$('#qyB').style.display=sh?'':'none';$('#qyS').textContent=sh?'ولو ركعتين في الثلث الأخير من الليل':'يظهر زر التسجيل بعد العشاء إن شاء الله';$('#qyB').textContent=d.ql?'✓ قمتُ لقيام الليل، تقبّل الله':'قمتُ لقيام الليل ✅'}
 $('#qyB').onclick=()=>{const d=day(today());d.ql=d.ql?0:1;save();renderQy();if(d.ql)toast('تقبّل الله منك')};
 /* ===== أذكاري الخاصة ===== */
 function syncU(){const GR={'ضعيف':' — تنبيه: هذا الذكر ضعيف السند، تأكد منه قبل الاعتماد عليه','لا أعلم':' — درجته غير معروفة، تأكد منها من أهل العلم'};ADH.u=S.custom.map(c=>({t:esc(c.t),n:c.n,f:(c.f?esc(c.f)+' ':'')+'(الدرجة: '+esc(c.gr)+')'+(GR[c.gr]||'')}))}
@@ -613,7 +637,110 @@ addEventListener('scroll',()=>$('#tb').classList.toggle('sc',scrollY>28),{passiv
 document.querySelectorAll('nav button,.seg button').forEach(b=>b.addEventListener('click',()=>vib(6)));
 const ATI='data:image/jpeg;base64,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';
 (()=>{const l=$('#ati'),im=new Image();im.onerror=()=>{l.href=ATI};im.src=l.href})();
-$('#nudge').onclick=e=>{const b=e.currentTarget;if(b.dataset.k){cur=b.dataset.k;renderAdh()}$('nav button[data-v="'+b.dataset.v+'"]').click()};
+/* ===== v1.4 ===== */
+let HID=0,MV=-1,FC={k:'m',i:0,fin:0,t:0},hpF=0;
+const hasBak=()=>{try{return !!localStorage.getItem('athkary.bak')}catch(e){return false}};
+const NMS={m:'أذكار الصباح',e:'أذكار المساء',s:'أذكار النوم',x:'الأذكار المتنوعة',u:'أذكارك'};
+const p2=n=>String(n).padStart(2,'0');
+$('#fi2').onchange=e=>impFile(e.target.files[0]);
+/* ----- ترتيب ----- */
+function ORD(k){const n=ADH[k].length,o=((S.ord&&S.ord[k])||[]).filter(i=>i<n),sn=new Set(o);for(let i=0;i<n;i++)if(!sn.has(i))o.push(i);return o}
+function secDone(k){const d=S.days[today()]||{};return ADH[k].length>0&&ADH[k].every((a,i)=>((d[k]||[])[i]||0)>=a.n)}
+function openMove(i){MV=i;const o=ORD(cur),p=o.indexOf(i),n=o.length,a=ADH[cur][i],B=(m,l,off)=>`<button class="rw lnk" data-mv="${m}" ${off?'disabled style="opacity:.4"':''}>${l}</button>`;
+ modal(`<h2 class="lt2" style="font-size:22px">ترتيب الذكر</h2><div class="gf" style="margin:6px 0 10px;line-height:1.9">${a.t.replace(/\n+/g,' ').slice(0,80)}…<br>الترتيب الحالي: ${ar(p+1)} من ${ar(n)}</div><div class="grp">${B('top','نقل إلى أول القائمة',p===0)}${B('up','رفع خطوة',p===0)}${B('down','خفض خطوة',p===n-1)}${B('bot','نقل إلى آخر القائمة',p===n-1)}</div><div class="grp" style="margin-top:12px"><button class="rw lnk" data-mv="reset" style="color:#d33">إعادة الترتيب الأصلي لهذا القسم</button></div><button class="btn main" id="mvOk" style="width:100%;margin-top:12px">تم</button>`)}
+function moveItem(a){const o=ORD(cur),p=o.indexOf(MV);if(a==='reset')delete S.ord[cur];else{o.splice(p,1);o.splice(a==='top'?0:a==='bot'?o.length:a==='up'?Math.max(0,p-1):Math.min(o.length,p+1),0,MV);S.ord[cur]=o}save();renderAdh();openMove(MV)}
+(()=>{const L=$('#adhList');let tm=0,sx=0,sy=0,fired=0;
+ L.addEventListener('pointerdown',e=>{const b=e.target.closest('.item');if(!b)return;fired=0;sx=e.clientX;sy=e.clientY;clearTimeout(tm);tm=setTimeout(()=>{fired=1;vib(25);openMove(+b.dataset.i)},550)});
+ const cx=()=>clearTimeout(tm);L.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)cx()});
+ ['pointerup','pointercancel','pointerleave'].forEach(t=>L.addEventListener(t,cx));
+ L.addEventListener('click',e=>{if(fired){fired=0;e.stopImmediatePropagation();e.preventDefault()}},true);
+ L.addEventListener('contextmenu',e=>e.preventDefault())})();
+/* ----- المؤقّت ----- */
+const TM={};let lastP='';
+const pick=a=>{let x;do{x=a[Math.floor(Math.random()*a.length)]}while(x===lastP&&a.length>1);return lastP=x};
+const FASTM=['ما شاء الله! أنهيت {s} في {t}، أسرع من المعتاد. بالمداومة تجري الأذكار على لسانك بيسر، فاجمع معها حضور القلب.','بارك الله فيك! {s} في {t} فقط، أسرع من عادتك. التعوّد على الأذكار نعمة، نسأل الله أن يثبّتك عليها.','ما أجمل هذا! أتممت {s} في {t}. هكذا تعين المداومة على التعوّد، فأكثر من الحمد والشكر.'];
+const SLOWM=['لا بأس بالتأني. الأذكار لم تكن يوماً سباقاً مع الوقت؛ كلما قرأتها بتمعّن وتدبّر كان أنفع لقلبك.','خذ وقتك، فالمقصود حضور القلب وفهم المعنى لا السرعة. تدبّر ما تقول يزدك خشوعاً.','لا تستعجل، فالعبرة بالتدبّر وحضور القلب لا بالوقت.'];
+const SLOWF=['{s} في {t}. لا بأس، فالأذكار لم تكن يوماً سباقاً مع الوقت؛ كلما قرأتها بتمعّن وتدبّر كان أنفع لقلبك وأرجى لأجرك.','أخذت وقتك مع {s} ({t}) وهذا حسن، فالمقصود حضور القلب وفهم المعنى لا السرعة.'];
+const MIDM=['أتممت {s} في {t}. داوم على ذلك، فأحب الأعمال إلى الله أدومها وإن قلّ.','جزاك الله خيراً، {s} في {t}. تقبّل الله منك وثبّتك على الطاعة.','ما شاء الله، {s} في {t}. استمرارك كل يوم أجمل من أي رقم.'];
+const fmt=s=>ar(p2(Math.floor(s/60))+':'+p2(Math.floor(s%60)));
+function tmTick(k){if(S.timer===0)return;const n=Date.now(),t=TM[k]||(TM[k]={act:0,last:0,off:0});if(t.off)return;if(t.last)t.act+=Math.min(n-t.last,3e4);t.last=n}
+function tmSec(k){const t=TM[k];return t?(t.act+(t.last?Math.min(Date.now()-t.last,3e4):0))/1000:0}
+function tmText(k){if(S.timer===0)return '';const t=TM[k];return t&&t.off?'المؤقت: متوقف':t&&t.last?'⏱ '+fmt(tmSec(k)):'المؤقت: جاهز'}
+function tmChip(){const c=$('#tmc');if(c){c.style.display=S.timer===0?'none':'';c.textContent=tmText(cur)}if(!$('#fm').hidden)$('#fT').textContent=tmText(FC.k);
+ const t=TM[cur],o=S.tm&&S.tm[cur];if(t&&!t.off&&!t.nudged&&o&&o.n>=2&&tmSec(cur)>o.sum/o.n*1.6){t.nudged=1;toast(pick(SLOWM))}}
+function tmToggle(k){if(S.timer===0)return;const t=TM[k]||(TM[k]={act:0,last:0,off:0});t.off=t.off?0:1;tmChip()}
+function tmFinish(k){const t=TM[k];delete TM[k];if(!t||t.off||S.timer===0)return;const sec=Math.round(t.act/1000);if(sec<5)return;
+ const r=(S.tm=S.tm||{}),o=r[k]||{n:0,sum:0,best:0},avg=o.n?o.sum/o.n:0;const msg=o.n>=2&&sec<avg*.85?pick(FASTM):o.n>=2&&sec>avg*1.3?pick(SLOWF):pick(MIDM);
+ r[k]={n:o.n+1,sum:o.sum+sec,best:o.best?Math.min(o.best,sec):sec,last:sec};save();
+ setTimeout(()=>pop(msg.replace('{t}',fmt(sec)).replace('{s}',NMS[k]),'tm','جزاك الله خيراً'),600)}
+function focRow(){return ADH[cur].length?'<div class="row" style="margin-bottom:12px;flex-wrap:nowrap"><button class="btn main" id="focB" style="flex:1">وضع التركيز: ذكر بملء الشاشة</button><button class="tmchip" id="tmc"></button></div>':''}
+/* ----- العدّ المشترك ----- */
+function count(k,i){const a=ADH[k][i],d=day(today());d[k]=d[k]||[];const c=d[k][i]||0;if(c>=a.n)return c;
+ d[k][i]=c+1;save();tmTick(k);const done=c+1>=a.n;beep(done?880:620);vib(done?[30,40,30]:12);renderAdh();renderHome();
+ if(done&&secDone(k))tmFinish(k);if(done&&st(today()).full)toast('أتممت يومك ✨ بارك الله فيك');return c+1}
+/* ----- وضع التركيز ----- */
+function rotApply(){const f=$('#fm'),r=S.fr||0,w=innerWidth,h=innerHeight;f.style.cssText='';f.classList.remove('rot');if(r){f.classList.add('rot');f.style.width=h+'px';f.style.height=w+'px';f.style.transform=r===90?'translateX('+w+'px) rotate(90deg)':'translateY('+h+'px) rotate(-90deg)'}}
+function fitF(){const B=$('#fB'),T=$('#fTxt');let lo=18,hi=130;while(lo<hi){const m=Math.ceil((lo+hi)/2);T.style.fontSize=m+'px';if(B.scrollHeight<=B.clientHeight+1)lo=m;else hi=m-1}T.style.fontSize=lo+'px'}
+function renderFocus(){const k=FC.k,a=ADH[k][FC.i],c=((day(today())[k]||[])[FC.i])||0,o=ORD(k);
+ if(FC.fin){$('#fN').textContent='';$('#fTxt').textContent='تقبّل الله منك 🤍';$('#fFad').textContent='أتممت '+NMS[k]+'. يمكنك الخروج الآن.';$('#fC').innerHTML='';$('#fPr').style.width='100%';$('#fB').classList.add('done');fitF();return}
+ $('#fN').textContent=ar(o.indexOf(FC.i)+1)+' / '+ar(o.length);$('#fTxt').innerHTML=a.t.replace(/\n+/g,'<br>');$('#fFad').innerHTML=(S.fhide||!a.f)?'':clean(a.f);
+ $('#fC').innerHTML='<b>'+ar(c)+'</b> / '+ar(a.n);$('#fPr').style.width=Math.min(100,c/a.n*100)+'%';$('#fB').classList.toggle('done',c>=a.n);$('#fT').textContent=tmText(k);fitF()}
+function openFocus(){const k=cur,o=ORD(k),d=day(today());if(!o.length)return;const i=o.find(j=>((d[k]||[])[j]||0)<ADH[k][j].n);FC={k,i:i===undefined?o[0]:i,fin:0,t:0};
+ $('#fm').hidden=false;lock(1);try{history.pushState({f:1},'');hpF=1}catch(e){hpF=0}wake(1);rotApply();renderFocus()}
+function closeFocus(pop){clearTimeout(FC.t);$('#fm').hidden=true;lock(0);if(hpF){hpF=0;if(!pop)try{history.back()}catch(e){}}if(!S.wl)wake(0);renderAdh();renderHome()}
+function focusMove(dir){const o=ORD(FC.k),p=o.indexOf(FC.i);FC.i=o[(p+dir+o.length)%o.length];FC.fin=0;renderFocus()}
+function focusAuto(){const k=FC.k,o=ORD(k),d=day(today()),p=o.indexOf(FC.i);for(let s=1;s<=o.length;s++){const j=o[(p+s)%o.length];if(((d[k]||[])[j]||0)<ADH[k][j].n){FC.i=j;FC.fin=0;return renderFocus()}}FC.fin=1;renderFocus()}
+$('#fB').onclick=()=>{if(FC.fin)return;const a=ADH[FC.k][FC.i];if((((day(today())[FC.k]||[])[FC.i])||0)>=a.n){focusAuto();return}const c=count(FC.k,FC.i);renderFocus();if(c>=a.n){clearTimeout(FC.t);FC.t=setTimeout(focusAuto,500)}};
+$('#fX').onclick=()=>closeFocus();$('#fP').onclick=()=>focusMove(-1);$('#fNx').onclick=()=>focusMove(1);
+$('#fR').onclick=()=>{S.fr=!S.fr?90:S.fr===90?-90:0;save();rotApply();renderFocus()};
+$('#fF').onclick=()=>{S.fhide=!S.fhide;save();renderFocus()};$('#fT').onclick=()=>{tmToggle(FC.k);$('#fT').textContent=tmText(FC.k)};
+addEventListener('resize',()=>{if(!$('#fm').hidden){rotApply();fitF()}});
+/* ----- سجل الإصدارات والتحديث ----- */
+const LOG=[['1.4.0',NEWS],['1.3.0',['تصميم جديد بروح iPhone','شرح تفاعلي للتطبيق','الاقتراحات تفتح تطبيق البريد','بطاقة أسبوعك ورسالة احتفال','نسخ احتياطي كملف ومشاركة التطبيق','إصلاح أيقونة iPhone وزر الرجوع']],['1.2.0',['أيقونة جديدة وحديقة الجنة','قيام الليل وأذكاري الخاصة','تنبيهات منتصف الشاشة «حاضر إن شاء الله»','إصلاح العدّ السريع والتمرير في الإعدادات']],['1.1.0',['إصلاح تحميل صفحات القرآن ومصدر بديل','تحميل المصحف كاملاً للقراءة بدون إنترنت','٢٩ آية وحديثاً يومياً بشرحها','«ما الجديد» وتحديث تلقائي']],['1.0.0',['الأذكار وورد القرآن والعداد الحر','الـ Streak والتذكيرات وتذكرة الصيام','الإعدادات والعمل بدون إنترنت (PWA)']]];
+function openLog(){modal('<h2 class="lt2">سجل الإصدارات</h2>'+LOG.map(([v,a])=>'<div class="gl">الإصدار '+v+(v===VER?' (الحالي)':'')+'</div><div class="grp"><div class="rw" style="display:block;line-height:2"><ul style="margin:0;padding-inline-start:18px">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div></div>').join('')+'<button class="btn" id="bkS" style="width:100%;margin-top:14px">رجوع</button>')}
+function autoBak(){try{localStorage.setItem('athkary.bak',JSON.stringify({t:Date.now(),v:VER,d:S}))}catch(e){}}
+function newer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<3;i++){const p=x[i]||0,q=y[i]||0;if(p!==q)return p>q}return false}
+async function checkUpd(manual){try{if(!manual&&(!S.profile.name||!$('#fm').hidden||!$('#tu').hidden))return;const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();window.RV=j;S.lastChk=Date.now();save();
+ const nv=newer(j.version,VER),ni=(j.iconVer||1)>(S.iconInst||1),key=j.version+':'+j.iconVer;
+ if(nv||ni){autoBak();if(!manual&&(window.UPDSHOWN===key||!$('#md').hidden))return;window.UPDSHOWN=key;showUpd(j,nv,ni)}else if(manual)toast('أنت على أحدث إصدار ✓ v'+VER)}catch(e){if(manual)toast('تعذر التحقق من التحديث، تأكد من الإنترنت')}}
+function showUpd(j,nv,ni){modal('<h2 class="lt2" style="font-size:24px">'+(nv?'تحديث جديد v'+esc(j.version):'أيقونة جديدة للتطبيق')+'</h2>'+(nv&&j.notes?'<ul style="line-height:2">'+j.notes.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><div class="gf">سنحفظ لك نسخة احتياطية تلقائياً قبل التحديث، وبياناتك لا تتأثر.</div>':'')
+ +(ni?'<div class="gl">الأيقونة</div><div class="gf" style="font-size:.85rem;line-height:1.9">'+(isIOS?'غُيّرت أيقونة التطبيق. الآيفون لا يسمح للتطبيق بتغيير أيقونته بنفسه. لتحديثها: احفظ نسخة احتياطية كملف، ثم احذف أيقونة التطبيق من الشاشة الرئيسية، وافتح الرابط في Safari وأضفه من جديد، ثم اختر «لدي نسخة احتياطية» لاستعادة بياناتك.':'غُيّرت أيقونة التطبيق. على أندرويد تتحدث الأيقونة تلقائياً بعد التحديث وقد يستغرق ذلك وقتاً.')+'</div><div class="grp"><button class="rw lnk" id="fileE">حفظ نسخة احتياطية كملف</button><button class="rw lnk" id="iconDone">'+(isIOS?'تمت إعادة الإضافة':'فهمت')+'</button></div>':'')
+ +(nv?'<button class="btn main" id="updGo" style="width:100%;margin-top:12px">حدّث الآن</button>':'')+'<button class="btn" id="lat" style="width:100%;margin-top:8px">لاحقاً</button>')}
+async function doUpdate(){autoBak();toast('جارٍ التحديث...');try{const reg=await navigator.serviceWorker.getRegistration();if(reg){await reg.update();if(reg.waiting)reg.waiting.postMessage('skip')}}catch(e){}setTimeout(()=>location.reload(),600)}
+/* ----- التقويم ----- */
+const RNM={m:'أذكار الصباح',e:'أذكار المساء',qm:'ورد الصباح',qe:'ورد الليل',ql:'قيام الليل'};
+function gcal(title,d,rr){const f=x=>x.getFullYear()+p2(x.getMonth()+1)+p2(x.getDate())+'T'+p2(x.getHours())+p2(x.getMinutes())+'00',e=new Date(d.getTime()+9e5);return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+f(d)+'/'+f(e)+'&details='+encodeURIComponent('تذكير من تطبيق أذكاري')+(rr?'&recur='+encodeURIComponent('RRULE:'+rr):'')+'&ctz='+encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}
+function openCal(){const L=['m','e','qm','qe','ql'].filter(k=>S.rem[k].on).map(k=>{const[h,mi]=S.rem[k].t.split(':'),d=new Date();d.setHours(+h,+mi,0,0);if(d<new Date())d.setDate(d.getDate()+1);return `<a class="rw lnk" target="_blank" rel="noopener" href="${gcal(RNM[k]+' - أذكاري',d,'FREQ=DAILY')}">${RNM[k]} (${S.rem[k].t})</a>`}).join('')||'<div class="rw"><span style="color:var(--mut)">فعّل تذكيراً واحداً على الأقل من الإعدادات</span></div>';
+ modal(`<h2 class="lt2" style="font-size:24px">إضافة التذكيرات للتقويم</h2><div class="gl">Apple Calendar وOutlook وأي تقويم (ملف .ics)</div><div class="grp"><button class="rw lnk" id="icsS">مشاركة / فتح ملف التقويم</button><button class="rw lnk" id="icsD">تحميل ملف التقويم</button></div><div class="gf">على iPhone اختر «التقويم» من قائمة المشاركة، أو احفظه في «الملفات» ثم افتحه واضغط «إضافة الكل».</div><div class="gl">Google Calendar (كل تذكير بضغطة)</div><div class="grp">${L}</div><div class="gf">يتكرر التذكير يومياً، ويمكنك تعديل التنبيه من تطبيق التقويم.</div><button class="btn" id="bkS" style="width:100%;margin-top:10px">رجوع</button>`)}
+async function shareIcs(){const f=new File([ics()],'athkar-reminders.ics',{type:'text/calendar'});try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'تذكيرات أذكاري'});return}}catch(e){if(e&&e.name==='AbortError')return}dlIcs()}
+function dlIcs(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics()],{type:'text/calendar'}));a.download='athkar-reminders.ics';document.body.appendChild(a);a.click();a.remove();toast('تم تجهيز الملف، افتحه لإضافة التذكيرات')}
+/* ----- بطاقة ذكية، أهداف، تقرير، شارة ----- */
+function renderSmart(){const h=new Date().getHours(),t=st(today()),B=[];let tx='',sub='';
+ if(h>=4&&h<11){if(t.mD)tx='بفضل الله أتممت أذكار الصباح 🤍 نسأل الله أن يحفظك ويحفظ يومك.';else{tx=g('ابدأ','ابدئي')+' يومك بأذكار الصباح، وقتها الآن.';B.push(['أذكار الصباح','m'])}}
+ else if(h<15&&h>=11){if(!t.mD){tx='ما زال بإمكانك قراءة أذكار الصباح، فلا تفوّتها.';B.push(['أذكار الصباح','m'])}else tx='أتممت أذكار الصباح، حفظك الله. وقت أذكار المساء بعد العصر بإذن الله.'}
+ else if(h>=15&&h<21){if(t.eD)tx='بفضل الله أتممت أذكار المساء 🤍 نسأل الله أن يحفظك حتى الصباح.';else{tx='حان وقت أذكار المساء.';B.push(['أذكار المساء','e']);if(!t.mD)sub='لم تقرأ أذكار الصباح بعد، ويمكنك قراءتها أيضاً.'}}
+ else{if(!t.eD){tx='لم تقرأ أذكار المساء بعد، '+g('اقرأها','اقرئيها')+' قبل أن '+g('تنام','تنامي')+'.';B.push(['أذكار المساء','e'])}else{tx='ختمت يومك بأذكار المساء، حفظك الله. لا '+g('تنسَ','تنسَيْ')+' أذكار النوم.';B.push(['أذكار قبل النوم','s'])}}
+ if(!t.q&&h<21){sub+=(sub?' ':'')+'ورد القرآن اليوم لم يُقرأ بعد.';B.push(['ورد القرآن','q'])}
+ $('#smT').textContent=tx;$('#smW').textContent=sub;$('#smB').innerHTML=B.map(([l,k],i)=>`<button class="btn ${i?'':'main'}" data-sm="${k}">${l}</button>`).join('')}
+$('#smB').onclick=e=>{const k=e.target.dataset.sm;if(!k)return;if(k==='q')go('q');else{cur=k;renderAdh();go('adh')}};
+const GL={d5:['٥ أيام مكتملة هذا الأسبوع',5,k=>st(k).full],d7:['أسبوع كامل: ٧ أيام مكتملة',7,k=>st(k).full],q3:['قيام الليل ٣ ليالٍ',3,k=>!!(S.days[k]||{}).ql],w6:['ورد القرآن ٦ أيام',6,k=>{const d=S.days[k]||{};return !!(d.qm||d.qe)}]};
+function renderGoal(){const G=GL[S.goal]||GL.d5,o=(new Date().getDay()+1)%7;let n=0;for(let i=0;i<=o;i++){const x=new Date();x.setDate(x.getDate()-o+i);if(G[2](dk(x)))n++}
+ $('#glT').innerHTML=G[0]+' <b>'+ar(Math.min(n,G[1]))+' / '+ar(G[1])+'</b>'+(n>=G[1]?' ✓ ما شاء الله، حققت هدفك':'');$('#glB').style.width=Math.min(100,n/G[1]*100)+'%'}
+$('#glC').onclick=()=>modal('<h2 class="lt2" style="font-size:24px">هدف الأسبوع</h2><div class="gf">يبدأ الأسبوع من يوم السبت. اختر هدفاً يناسبك:</div><div class="grp">'+Object.keys(GL).map(k=>`<button class="rw lnk" data-gl="${k}">${GL[k][0]}${S.goal===k?' ✓':''}</button>`).join('')+'</div>');
+function palmC(x,px,py,h){x.lineCap='round';x.strokeStyle='#7a5a35';x.lineWidth=12;x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+14,py-h/2,px+8,py-h);x.stroke();x.strokeStyle='#2f7a3b';x.lineWidth=9;const tx=px+8,ty=py-h;[[-60,18],[60,18],[-45,-30],[45,-30],[0,-50]].forEach(([dx,dy])=>{x.beginPath();x.moveTo(tx,ty);x.quadraticCurveTo(tx+dx*.6,ty+dy-30,tx+dx,ty+dy+10);x.stroke()});x.fillStyle='#c9a13b';[-8,8].forEach(o=>{x.beginPath();x.arc(tx+o,ty+14,8,0,7);x.fill()})}
+function makeReport(){const c=document.createElement('canvas');c.width=1080;c.height=1350;const x=c.getContext('2d'),now=new Date(),Y=now.getFullYear(),M=now.getMonth(),dn=new Date(Y,M+1,0).getDate();let full=0,cnt=0,qp=0,ql=0;
+ for(let i=1;i<=dn;i++){const k=dk(new Date(Y,M,i)),d=S.days[k]||{};if(st(k).full)full++;['m','e','s','x','u'].forEach(q=>{if(Array.isArray(d[q]))cnt+=d[q].reduce((a,b)=>a+b,0)});if(d.qm)qp++;if(d.qe)qp++;if(d.ql)ql++}
+ const gr=x.createLinearGradient(0,0,0,1350);gr.addColorStop(0,'#0b1530');gr.addColorStop(1,'#24407a');x.fillStyle=gr;x.fillRect(0,0,1080,1350);
+ for(let i=0;i<70;i++){x.fillStyle='rgba(255,255,255,'+(.25+((i*37)%7)/10)+')';x.fillRect(Math.floor((Math.sin(i*12.9898)*43758.5453%1+1)%1*1070),Math.floor((Math.sin(i*78.233)*12345.678%1+1)%1*560),3,3)}
+ x.direction='rtl';x.textAlign='center';x.fillStyle='#e9c46a';x.font='bold 96px Amiri,serif';x.fillText('أذكاري',540,150);
+ x.fillStyle='#f1ead6';x.font='44px sans-serif';x.fillText('تقرير '+new Intl.DateTimeFormat('ar-EG',{month:'long',year:'numeric'}).format(now),540,225);x.font='36px sans-serif';x.fillStyle='#a9b0c6';x.fillText(nm(),540,285);
+ x.fillStyle='#5f8a3c';x.beginPath();x.moveTo(0,760);x.quadraticCurveTo(540,700,1080,760);x.lineTo(1080,1350);x.lineTo(0,1350);x.fill();
+ const n=Math.min(full,14);for(let i=0;i<n;i++)palmC(x,90+(i%7)*150+(i>6?75:0),i>6?800:740,140+(i%3)*30);
+ x.font='bold 44px sans-serif';[['أيام مكتملة',full+' من '+dn],['أذكار عدّدتها',cnt],['صفحات قرآن',qp],['ليالي قيام',ql]].forEach(([l,v],i)=>{const y=930+i*80;x.fillStyle='#f1ead6';x.textAlign='right';x.fillText(l,980,y);x.fillStyle='#e9c46a';x.textAlign='left';x.fillText(ar(String(v)),100,y)});
+ x.textAlign='center';x.fillStyle='#a9b0c6';x.font='32px sans-serif';x.fillText('تقبّل الله منا ومنكم',540,1290);return c}
+function shareReport(){makeReport().toBlob(async b=>{const f=new File([b],'athkari-report.png',{type:'image/png'});try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:'تقريري الشهري في أذكاري'});return}}catch(e){if(e&&e.name==='AbortError')return}const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();toast('تم حفظ صورة التقرير')})}
+$('#repB').onclick=shareReport;
+function badge(){try{const t=st(today()),n=(t.mD?0:1)+(t.eD?0:1)+(t.q?0:1);if(navigator.setAppBadge){n?navigator.setAppBadge(n):navigator.clearAppBadge()}}catch(e){}}
 $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();renderF()}};
 applyTheme();renderHome();renderAdh();renderQ();renderF();boot();
 </script>
