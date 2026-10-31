@@ -1,15 +1,15 @@
-/* أذكاري — Service Worker v1.8
+/* أذكاري — Service Worker v1.8.1
    - يخزّن ملفات التطبيق للعمل بدون إنترنت
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.8';
+const VER = '1.8.1';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [
   './', 'index.html', 'manifest.webmanifest',
   'icon-192.png', 'apple-touch-icon.png',
-  'reassurance.js', 'sakina.js', 'sounds/tone1.mp3', 'sounds/tone2.mp3', 'sounds/tone3.mp3', 'sounds/tone4.mp3', 'sounds/tone5.mp3'
+  'reassurance.js', 'sakina.js', 'prayer.js', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav'
 ];
 
 self.addEventListener('install', e => {
@@ -30,7 +30,8 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;            // الواجهات الخارجية (المصحف، الطقس، الخطوط) يتولاها التطبيق
-  if (url.pathname.includes('/videos/')) { e.respondWith(videoResp(req)); return; } // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
+  if (url.pathname.includes('/videos/')) { e.respondWith(videoResp(req, VCACHE)); return; }
+  if (url.pathname.includes('/sounds/')) { e.respondWith(videoResp(req, CACHE)); return; } // صوت: دعم Range من الكاش (iOS) // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
   if (url.pathname.endsWith('/version.json')) return;     // دائماً من الشبكة لاكتشاف التحديثات
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
   if (isPage) {                                           // الصفحة: الشبكة أولاً ثم الكاش
@@ -88,8 +89,8 @@ self.addEventListener('notificationclick', e => {
 });
 
 // Serve cached videos with Range support (required by iOS Safari); fall back to network
-async function videoResp(req) {
-  const c = await caches.open(VCACHE), hit = await c.match(req.url), rng = req.headers.get('range');
+async function videoResp(req, name) {
+  const c = await caches.open(name), hit = await c.match(req.url), rng = req.headers.get('range');
   if (!hit) return fetch(req).catch(() => new Response('', { status: 504 }));
   if (!rng) return hit;
   const buf = await hit.arrayBuffer(), len = buf.byteLength, m = /bytes=(\d*)-(\d*)/.exec(rng);
@@ -97,5 +98,5 @@ async function videoResp(req) {
   let s, en;
   if (m[1] === '') { s = Math.max(0, len - (+m[2] || 0)); en = len - 1; } else { s = +m[1]; en = m[2] ? Math.min(+m[2], len - 1) : len - 1; }
   if (s >= len || s > en) return new Response('', { status: 416, headers: { 'Content-Range': 'bytes */' + len } });
-  return new Response(buf.slice(s, en + 1), { status: 206, headers: { 'Content-Type': hit.headers.get('Content-Type') || 'video/mp4', 'Content-Range': 'bytes ' + s + '-' + en + '/' + len, 'Content-Length': String(en - s + 1), 'Accept-Ranges': 'bytes' } });
+  return new Response(buf.slice(s, en + 1), { status: 206, headers: { 'Content-Type': hit.headers.get('Content-Type') || (name === VCACHE ? 'video/mp4' : 'audio/wav'), 'Content-Range': 'bytes ' + s + '-' + en + '/' + len, 'Content-Length': String(en - s + 1), 'Accept-Ranges': 'bytes' } });
 }

@@ -1,4 +1,6 @@
+## 1.8.1 — 2026-10-31
+Salah video button restored; clearer video buttons; tones paths fixed (Tone1–5.wav); prayer-times tab; post-prayer adhkar counter.
 ## 1.8 — 2026-10-31
-Fixes: Sakina back button TypeError; occasions buttons filter. Sakina: simpler distress screen, clearer home card, offline videos. See RELEASE_NOTES.md.
+Sakina back-button fix; occasions filter; offline videos.
 ## 1.7 — 2026-10-31
-Sakina emergency mode, night-wake dua, scroll progress, fasting-eve videos.
+Sakina, night-wake dua, scroll progress, fasting-eve videos.
