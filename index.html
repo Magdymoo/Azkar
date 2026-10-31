@@ -13,7 +13,7 @@
 <script>
 /* ===== حارس الأخطاء v1.6.1: سكربت مستقل ليعمل حتى لو تعطّل السكربت الرئيسي (SyntaxError) ===== */
 (function(){
-var errs=[],ver='1.8.1';
+var errs=[],ver='1.9.1';
 function env(){var o=[];try{o.push('Azkari v'+ver);o.push(navigator.userAgent);o.push(location.protocol+'//'+(location.host||'(none)')+location.pathname);
 o.push('iframe='+(window.top!==window));}catch(e){o.push('iframe=?(cross-origin)')}
 function t(n,f){try{o.push(n+'='+(f()?'ok':'no'))}catch(e){o.push(n+'=blocked')}}
@@ -369,7 +369,7 @@ body{background-color:var(--bg1);background-image:var(--bgi);background-attachme
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.8.1</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.9.1</footer>
 </div>
 
 <nav>
@@ -666,7 +666,7 @@ $('#mc').onchange=e=>{const t=e.target;if(t.id==='fi'){impFile(t.files[0]);retur
  else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=1;save()},()=>{t.checked=false});else S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=0}save()};
 $('#md').onclick=e=>{if(e.target.id==='md'&&S.profile.name)closeM()};
 $('#bSet').onclick=openSet;
-const ICONVER=2,VER='1.8.1',NEWS=['تاب «المواقيت»: الفجر والشروق والظهر والعصر والمغرب والعشاء والثلث الأخير والسحور في رمضان مع عدّ تنازلي، بدون إنترنت', 'أذكار بعد الصلاة بعدّاد يتقدّم تلقائيًا واهتزاز خفيف اختياري', 'عودة زر الفيديو في شاشة «كرب شديد»، وزر فيديو أوضح وأكبر في كل سكينة', 'إصلاح نغمات التنبيه: تظهر الـ٥ نغمات وتعمل مع حالة كل ملف'];
+const ICONVER=2,VER='1.9.1',NEWS=['إشعارات مواقيت الصلاة بحديث صحيح لكل صلاة (وإشعار قبل الأذان بـ ١٠ دقائق)', 'تذكير الصباح والمساء وقيام الليل بنبرة تصاعدية لطيفة، مع ساعات الهدوء', 'إعدادات الإشعارات وشاشة اختبار تعرض الأذونات والمواقيت والطقس وسجل الإشعارات', 'بطاقة دعاء المطر عند نزول المطر', 'قسم العمرة وبطاقة الجاهزية'];
 function boot(){try{Object.keys(localStorage).filter(k=>/^qp\d+$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
  try{if(navigator.serviceWorker&&navigator.serviceWorker.register){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){toast('تم تحديث التطبيق ✨');setTimeout(()=>location.reload(),1500)}});navigator.serviceWorker.addEventListener('message',e=>{const m=e.data;if(m&&m.type==='azkar-ack'){(window.__ack=window.__ack||[]).push(m.stage);if(m.stage==='failed')toast('تعذر إرسال الإشعار')}})}}catch(e){}
  if(!S.profile.name){S.ver=VER;save();onboard()}else if(S.ver!==VER){S.ver=VER;save();modal('<h2 style="color:var(--gold);margin:0">ما الجديد في الإصدار '+VER+' ✨</h2><ul>'+NEWS.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn main" id="lat" style="width:100%">حسناً</button><button class=\"btn\" id=\"tutB\" style=\"width:100%;margin-top:8px\">شاهد شرح التطبيق</button>')}check();setInterval(check,6e4);
@@ -799,7 +799,7 @@ addEventListener('resize',()=>{refit();setTimeout(refit,120);setTimeout(refit,40
 if(window.visualViewport)visualViewport.addEventListener('resize',refit);
 if(window.ResizeObserver){let rf=0;new ResizeObserver(()=>{cancelAnimationFrame(rf);rf=requestAnimationFrame(()=>{if(!$('#fm').hidden)fitF()})}).observe($('#fB'))}
 /* ----- سجل الإصدارات والتحديث ----- */
-const LOG=[['1.8.1',NEWS],['1.8',['إصلاح زر الرجوع في سكينة','أذكار السفر والطعام والمطر تعرض كل مجموعة على حدة','فيديوهات سكينة بدون إنترنت']],['1.7',['وضع «سَكِينة» للكرب الشديد','دعاء من تعارّ من الليل','مؤشر تقدّم الأذكار','فيديو تذكرة الصيام','سورة الملك وختمتك و٩ ثيمات وأيقونة جديدة']],['1.4.0',['وضع التركيز: ذكر بملء الشاشة مع تدوير للعرض','مؤقّت اختياري برسائل تشجيعية متجددة','ترتيب الأذكار بالضغط المطوّل','سجل الإصدارات وتحقق تلقائي من التحديثات مع نسخة احتياطية','الصفحة الرئيسية تعرف الوقت وتتجدد وحدها','هدف أسبوعي وتقرير شهري كصورة','إصلاح إضافة التذكيرات للتقويم','الوضع الفاتح هو الافتراضي']],['1.3.0',['تصميم جديد بروح iPhone','شرح تفاعلي للتطبيق','الاقتراحات تفتح تطبيق البريد','بطاقة أسبوعك ورسالة احتفال','نسخ احتياطي كملف ومشاركة التطبيق','إصلاح أيقونة iPhone وزر الرجوع']],['1.2.0',['أيقونة جديدة وحديقة الجنة','قيام الليل وأذكاري الخاصة','تنبيهات منتصف الشاشة «حاضر إن شاء الله»','إصلاح العدّ السريع والتمرير في الإعدادات']],['1.1.0',['إصلاح تحميل صفحات القرآن ومصدر بديل','تحميل المصحف كاملاً للقراءة بدون إنترنت','٢٩ آية وحديثاً يومياً بشرحها','«ما الجديد» وتحديث تلقائي']],['1.0.0',['الأذكار وورد القرآن والعداد الحر','الـ Streak والتذكيرات وتذكرة الصيام','الإعدادات والعمل بدون إنترنت (PWA)']]];
+const LOG=[['1.9.1',NEWS],['1.8.1',['تاب المواقيت وأذكار بعد الصلاة','إصلاح نغمات التنبيه وزر الفيديو في سكينة']],['1.8',['إصلاح زر الرجوع في سكينة','أذكار السفر والطعام والمطر تعرض كل مجموعة على حدة','فيديوهات سكينة بدون إنترنت']],['1.7',['وضع «سَكِينة» للكرب الشديد','دعاء من تعارّ من الليل','مؤشر تقدّم الأذكار','فيديو تذكرة الصيام','سورة الملك وختمتك و٩ ثيمات وأيقونة جديدة']],['1.4.0',['وضع التركيز: ذكر بملء الشاشة مع تدوير للعرض','مؤقّت اختياري برسائل تشجيعية متجددة','ترتيب الأذكار بالضغط المطوّل','سجل الإصدارات وتحقق تلقائي من التحديثات مع نسخة احتياطية','الصفحة الرئيسية تعرف الوقت وتتجدد وحدها','هدف أسبوعي وتقرير شهري كصورة','إصلاح إضافة التذكيرات للتقويم','الوضع الفاتح هو الافتراضي']],['1.3.0',['تصميم جديد بروح iPhone','شرح تفاعلي للتطبيق','الاقتراحات تفتح تطبيق البريد','بطاقة أسبوعك ورسالة احتفال','نسخ احتياطي كملف ومشاركة التطبيق','إصلاح أيقونة iPhone وزر الرجوع']],['1.2.0',['أيقونة جديدة وحديقة الجنة','قيام الليل وأذكاري الخاصة','تنبيهات منتصف الشاشة «حاضر إن شاء الله»','إصلاح العدّ السريع والتمرير في الإعدادات']],['1.1.0',['إصلاح تحميل صفحات القرآن ومصدر بديل','تحميل المصحف كاملاً للقراءة بدون إنترنت','٢٩ آية وحديثاً يومياً بشرحها','«ما الجديد» وتحديث تلقائي']],['1.0.0',['الأذكار وورد القرآن والعداد الحر','الـ Streak والتذكيرات وتذكرة الصيام','الإعدادات والعمل بدون إنترنت (PWA)']]];
 function openLog(){modal('<h2 class="lt2">سجل الإصدارات</h2>'+LOG.map(([v,a])=>'<div class="gl">الإصدار '+v+(v===VER?' (الحالي)':'')+'</div><div class="grp"><div class="rw" style="display:block;line-height:2"><ul style="margin:0;padding-inline-start:18px">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div></div>').join('')+'<button class="btn" id="bkS" style="width:100%;margin-top:14px">رجوع</button>')}
 function autoBak(){try{localStorage.setItem('athkary.bak',JSON.stringify({t:Date.now(),v:VER,d:S}))}catch(e){}}
 function newer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<3;i++){const p=x[i]||0,q=y[i]||0;if(p!==q)return p>q}return false}
@@ -1051,6 +1051,6 @@ $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();rend
 [applyTheme,renderHome,renderAdh,renderQ,renderF,boot,applyLang].forEach(f=>{try{f()}catch(e){window.__showErr&&window.__showErr(f.name+': '+(e&&e.message)+(e&&e.stack?'\n'+e.stack.split('\n').slice(0,3).join('\n'):''))}});
 window.__booted=1;
 </script>
-<script src="reassurance.js"></script><script src="sakina.js"></script><script src="prayer.js"></script>
+<script src="reassurance.js"></script><script src="sakina.js"></script><script src="prayer.js"></script><script src="umrah.js"></script><script src="readiness.js"></script><script src="notify.js"></script>
 </body>
 </html>

@@ -1,15 +1,15 @@
-/* أذكاري — Service Worker v1.8.1
+/* أذكاري — Service Worker v1.9.1
    - يخزّن ملفات التطبيق للعمل بدون إنترنت
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.8.1';
+const VER = '1.9.1';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [
   './', 'index.html', 'manifest.webmanifest',
   'icon-192.png', 'apple-touch-icon.png',
-  'reassurance.js', 'sakina.js', 'prayer.js', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav'
+  'reassurance.js', 'sakina.js', 'prayer.js', 'umrah.js', 'notify.js', 'readiness.js', 'dua-library.json', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav'
 ];
 
 self.addEventListener('install', e => {

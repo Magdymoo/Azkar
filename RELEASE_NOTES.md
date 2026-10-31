@@ -1,13 +1,22 @@
-# أذكاري v1.8.1
-## Fixes
-- Sakina "كرب شديد": the Salah video button was missing because v1.8 removed it from the `salah` view (`render()` had no `vbtn`). Restored: back + video (`videos/Salah.mp4`, exact case) + «حاضر…» only.
-- Tones: code requested `sounds/tone1` + `.mp3`/`.wav` (lowercase); real files are `Tone1.wav…Tone5.wav` (GitHub Pages is case-sensitive → 404 → fallback beep). Paths now exact; legacy lowercase kept as fallback. Tones dialog shows per-file status + size (HEAD).
-## Improvements
-- Video button: gold filled 52px-high button, ▶ icon, 17.6px/700 text, dark text on gold (≈9:1 contrast), dashed "الفيديو قريبًا" when missing.
-- sw.js: Tone*.wav + prayer.js precached; Range support for /sounds/ (iOS); cache name = athkar-1.8.1.
-## Features
-- Prayer tab (`prayer.js`): local astronomical engine (no CDN, works offline), geolocation + 9 cities fallback, 5 methods (default Egyptian 19.5°/17.5°), next-prayer countdown, last third of the night, suhoor in Ramadan only. Also syncs Isha/Fajr to the night-wake dua window.
-- Post-prayer adhkar with auto-advancing counter + optional vibration.
-## Known limits
-- adhan-js not bundled (no network at build time): in-repo equivalent used. Compare with your local timetable (±1–3 min; Egyptian Survey publishes rounded times).
-- iOS PWA: custom tone plays inside the app only; system notifications keep the default sound.
+# أذكاري v1.9.1 (partial scope — see "Not done")
+## Added
+- Umrah section (`umrah.js`): 7 stages (ihram/talbiyah, entering the Haram, tawaf, 2 rakaat + zamzam, sa'i, tahallul, leaving), 7-round counters for tawaf and sa'i (persisted in localStorage `azkar_umrah`), mawquf narrations tagged «موقوف», fully offline.
+- Dua library engine: all duas referenced by id from `dua-library.json` (single source, never copied); picker never repeats inside a tawaf/sa'i until the whole library is exhausted.
+- Startup readiness card (`readiness.js`): install → notifications → location → service worker; ONE card, at most every 3 days, "don't remind me" honored; on iOS notification permission is never requested before the app is installed.
+## Not done (needs your decision/input)
+- Full library (117 entries): `dua-library.json` is a **seed of 11 entries**. The prompt text was only in the chat, not a file, so it could not be extracted/diffed by script. Upload the prompt as a .md file and it will be generated verbatim with an automatic diff.
+- Sections 4–7: escalating reminders, prayer-time notifications with hadith, notification settings, scheduling/Periodic Sync/Triggers, Diagnostics screen, rain card.
+## Known overlap
+- LIB-059 «اللهم افتح لي أبواب رحمتك» is also the tail of the mosque-entry dua (stage 2). Decide whether to drop LIB-059 from the picker.
+
+## v1.9.1 additions (`notify.js`, `sw.js` notificationclick)
+- Prayer notifications with the per-prayer hadith + source (Friday dhuhr uses the Jumu'a hadith), optional 10-min pre-adhan.
+- Escalating reminders: morning (fajr+30/+90/+150), evening (asr+30…), qiyam (last third, +45); max 3 per kind; quiet hours; master/individual toggles (all ON by default).
+- Delivery only via `registration.showNotification`; the "test in 10 s" button uses the same path. TimestampTrigger when available, else timers while the page is alive.
+- Settings card: toggles, readiness ✅/⚠️, Diagnostics (permissions, location, prayer times JSON, weather JSON, scheduled list, log).
+- Rain card via Open-Meteo (only lat/lng sent); button opens the existing "المطر" occasions list (no text copied).
+- Tap on a notification opens the app (hadith details or the adhkar page).
+## Still not done
+- Escalation stop-on-completion: `AZKAR_markDone('m'|'e'|'q')` exists but is NOT yet called from the app's completion logic (needs a hook in the adhkar-completion code) → today ladders keep going even after reading.
+- Reminders for sleep adhkar / duha / witr / Friday Kahf / fasting-eve notifications, and the 3.1 location-permission flow tied to Open-Meteo privacy page.
+- Closed-app delivery needs Web Push (server). Proposed (not implemented without your approval): Cloudflare Worker + VAPID. iOS: only installed PWA (16.4+), no guarantee while force-quit.
