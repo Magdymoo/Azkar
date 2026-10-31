@@ -1,10 +1,11 @@
-/* أذكاري — Service Worker v1.7
+/* أذكاري — Service Worker v1.8
    - يخزّن ملفات التطبيق للعمل بدون إنترنت
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.7';
+const VER = '1.8';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
+const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [
   './', 'index.html', 'manifest.webmanifest',
   'icon-192.png', 'apple-touch-icon.png',
@@ -19,7 +20,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE && k !== QURAN).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => k !== CACHE && k !== QURAN && k !== VCACHE).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
@@ -29,7 +30,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;            // الواجهات الخارجية (المصحف، الطقس، الخطوط) يتولاها التطبيق
-  if (url.pathname.includes('/videos/')) return;          // الفيديوهات: من الشبكة مباشرة (بدون كاش، تدعم Range)
+  if (url.pathname.includes('/videos/')) { e.respondWith(videoResp(req)); return; } // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
   if (url.pathname.endsWith('/version.json')) return;     // دائماً من الشبكة لاكتشاف التحديثات
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
   if (isPage) {                                           // الصفحة: الشبكة أولاً ثم الكاش
@@ -85,3 +86,16 @@ self.addEventListener('notificationclick', e => {
     return self.clients.openWindow(target);
   }));
 });
+
+// Serve cached videos with Range support (required by iOS Safari); fall back to network
+async function videoResp(req) {
+  const c = await caches.open(VCACHE), hit = await c.match(req.url), rng = req.headers.get('range');
+  if (!hit) return fetch(req).catch(() => new Response('', { status: 504 }));
+  if (!rng) return hit;
+  const buf = await hit.arrayBuffer(), len = buf.byteLength, m = /bytes=(\d*)-(\d*)/.exec(rng);
+  if (!m) return hit;
+  let s, en;
+  if (m[1] === '') { s = Math.max(0, len - (+m[2] || 0)); en = len - 1; } else { s = +m[1]; en = m[2] ? Math.min(+m[2], len - 1) : len - 1; }
+  if (s >= len || s > en) return new Response('', { status: 416, headers: { 'Content-Range': 'bytes */' + len } });
+  return new Response(buf.slice(s, en + 1), { status: 206, headers: { 'Content-Type': hit.headers.get('Content-Type') || 'video/mp4', 'Content-Range': 'bytes ' + s + '-' + en + '/' + len, 'Content-Length': String(en - s + 1), 'Accept-Ranges': 'bytes' } });
+}

@@ -13,7 +13,7 @@
 <script>
 /* ===== حارس الأخطاء v1.6.1: سكربت مستقل ليعمل حتى لو تعطّل السكربت الرئيسي (SyntaxError) ===== */
 (function(){
-var errs=[],ver='1.7';
+var errs=[],ver='1.8';
 function env(){var o=[];try{o.push('Azkari v'+ver);o.push(navigator.userAgent);o.push(location.protocol+'//'+(location.host||'(none)')+location.pathname);
 o.push('iframe='+(window.top!==window));}catch(e){o.push('iframe=?(cross-origin)')}
 function t(n,f){try{o.push(n+'='+(f()?'ok':'no'))}catch(e){o.push(n+'=blocked')}}
@@ -292,7 +292,7 @@ body{background-color:var(--bg1);background-image:var(--bgi);background-attachme
   <div class="card"><h2>أسبوعك</h2><div class="wkb" id="wk"></div></div>
   <div class="card"><h2>هدف الأسبوع</h2><div id="glT" style="line-height:2"></div><div class="prog"><b id="glB"></b></div><button class="btn" id="glC" style="margin-top:10px;width:100%">تغيير الهدف</button></div>
   <div class="card"><h2>تقرير الشهر</h2><div class="src" style="text-align:right;margin-bottom:8px">صورة جميلة بإنجازك هذا الشهر تشاركها مع أحبابك</div><button class="btn main" id="repB" style="width:100%">شارك تقرير الشهر</button></div>
-  <div class="card"><h2>أذكار المناسبات</h2><div class="row"><button class="btn" data-oc="1">السفر</button><button class="btn" data-oc="1">الطعام</button><button class="btn" data-oc="1">المطر</button></div></div>
+  <div class="card"><h2>أذكار المناسبات</h2><div class="row"><button class="btn" data-oc="السفر">السفر</button><button class="btn" data-oc="الطعام">الطعام</button><button class="btn" data-oc="المطر">المطر</button></div></div>
   <div class="card" id="qy"><h2>قيام الليل</h2><div class="src" id="qyS" style="margin-bottom:8px">ولو ركعتين في الثلث الأخير من الليل</div><button class="btn main" id="qyB" style="width:100%"></button><div class="src" id="qyK" style="margin:10px 0;line-height:2"></div>
     <details><summary>فضل قيام الليل (أحاديث صحيحة)</summary>
     <p class="fh">«أَفْضَلُ الصَّلَاةِ بَعْدَ الْفَرِيضَةِ صَلَاةُ اللَّيْلِ»<small>رواه مسلم</small></p>
@@ -369,7 +369,7 @@ body{background-color:var(--bg1);background-image:var(--bgi);background-attachme
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.7</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 1.8</footer>
 </div>
 
 <nav>
@@ -503,12 +503,12 @@ function twice(k){if(twice.k===k){twice.k=null;return true}twice.k=k;toast('اض
 function renderAdh(){setTimeout(()=>{hydrateSur();tmChip()},0);LG='';
   $$('#segA button').forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
   const d=day(today());
-  $('#adhList').innerHTML=focRow()+(cur==='u'?'<button class="btn main" id="addU" style="width:100%;margin-bottom:12px">＋ إضافة ذكر جديد</button>'+(ADH.u.length?'':'<div class="src" style="margin-bottom:12px">أضف أذكارك المفضلة هنا مع فضلها ودرجة الحديث</div>'):'')+(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ORD(cur).map(i=>{const a=ADH[cur][i],c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100),hd=(cur==='o'&&a.g!==LG)?(LG=a.g,'<div class="gl">'+a.g+'</div>'):'';if(a.sur)return surCard(i,a,c);
+  $('#adhList').innerHTML=focRow()+ocChips()+(cur==='u'?'<button class="btn main" id="addU" style="width:100%;margin-bottom:12px">＋ إضافة ذكر جديد</button>'+(ADH.u.length?'':'<div class="src" style="margin-bottom:12px">أضف أذكارك المفضلة هنا مع فضلها ودرجة الحديث</div>'):'')+(cur==='s'?'<div class="card expl">من السنة قبل النوم: الوضوء، ونفض الفراش، والاضطجاع على الشق الأيمن، ووضع اليد اليمنى تحت الخد. (متفق عليه)</div>':'')+ORD(cur).filter(i=>cur!=='o'||!OCG||ADH.o[i].g===OCG).map(i=>{const a=ADH[cur][i],c=(d[cur]||[])[i]||0,p=Math.min(100,c/a.n*100),hd=(cur==='o'&&a.g!==LG)?(LG=a.g,'<div class="gl">'+a.g+'</div>'):'';if(a.sur)return surCard(i,a,c);
     return hd+`<button class="item ${c>=a.n?'done':''}" data-i="${i}" aria-label="${a.t}">${gift(i)}<div class="t">${a.t}</div>${a.f?`<div class="f">${clean(a.f)}</div>`:''}<div class="c"><span>${ar(c)} / ${ar(a.n)}</span><span>${c>=a.n?'تم ✓':'اضغط للعد'}</span></div><div class="bar"><b style="width:${p}%"></b></div></button>`}).join('')+'<div class="gf" style="text-align:center">اضغط مطوّلاً على أي ذكر لتغيير ترتيبه</div><button class="btn" id="rstS" style="width:100%">↺ إعادة عدّ هذا القسم لليوم</button>'}
 $('#adhList').onclick=e=>{const gf=e.target.closest('[data-gift]');if(gf)return openGift(cur,+gf.dataset.gift);const sd=e.target.closest('[data-sdone]');if(sd){count(cur,+sd.dataset.sdone);return}if(e.target.closest('[data-sretry]'))return hydrateSur(1);if(e.target.id==='addU')return openU();if(e.target.id==='focB')return openFocus();if(e.target.id==='tmc')return tmToggle(cur);
   if(e.target.id==='rstS'){if(twice('s')){day(today())[cur]=[];delete TM[cur];save();renderAdh();renderHome()}return}
   const b=e.target.closest('.item');if(!b||b.classList.contains('surah'))return;count(cur,+b.dataset.i)};
-$('#segA').onclick=e=>{if(e.target.dataset.k){cur=e.target.dataset.k;renderAdh()}};
+$('#segA').onclick=e=>{if(e.target.dataset.k){cur=e.target.dataset.k;if(cur==='o')OCG='';renderAdh()}};
 
 /* ===== ورد القرآن ===== */
 function renderQ(){renderKh();
@@ -666,7 +666,7 @@ $('#mc').onchange=e=>{const t=e.target;if(t.id==='fi'){impFile(t.files[0]);retur
  else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=1;save()},()=>{t.checked=false});else S.rem.m.sun=S.rem.e.sun=S.rem.ql.sun=0}save()};
 $('#md').onclick=e=>{if(e.target.id==='md'&&S.profile.name)closeM()};
 $('#bSet').onclick=openSet;
-const ICONVER=2,VER='1.7',NEWS=['«سَكِينة»: وضع هادئ لمن يمرّ بخوف أو كرب شديد، بآيات وأحاديث مع شرح معناها وأدعية نبوية وفيديو لكل بطاقة', 'دعاء من تعارّ من الليل (حديث عبادة بن الصامت) يظهر في الليل فقط', 'مؤشر تقدّم الأذكار أثناء التمرير في أعلى الصفحة', 'تذكرة الصيام قبل يوم: اضغط لمشاهدة فيديو تذكير للاثنين والخميس والأيام البيض', 'سورة الملك كاملة داخل أذكار النوم، وإصلاح تحميل المصحف كاملاً', 'ختمتك: ٣٠ جزءاً مع هدف الختمة ووتيرتك وتاريخ الختم المتوقع', '٩ ثيمات جديدة وأيقونة جديدة، وإطار أخضر للذكر المكتمل وأحمر للناقص', 'أهدِ هذا الذكر كبطاقة مصمّمة، وسلسلة ليالي القيام، وأذكار السفر والطعام والمطر', 'حارس أخطاء يعرض شاشة استرجاع بدل الصفحة الفارغة، واختبار الإشعارات، ونغمات جاهزة، وإصلاحات عامة'];
+const ICONVER=2,VER='1.8',NEWS=['إصلاح زر الرجوع في «سَكِينة»', 'أذكار السفر والطعام والمطر: كل زر يعرض أذكاره فقط مع شريط للتبديل', 'شاشة «كرب شديد» أبسط: رجوع وزر «حاضر، هاقوم أصلي»', 'كارت سَكِينة أوضح على الرئيسية', 'فيديوهات سَكِينة تُحفظ للعمل بدون إنترنت، مع التحكم في المساحة من الإعدادات'];
 function boot(){try{Object.keys(localStorage).filter(k=>/^qp\d+$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
  try{if(navigator.serviceWorker&&navigator.serviceWorker.register){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){toast('تم تحديث التطبيق ✨');setTimeout(()=>location.reload(),1500)}});navigator.serviceWorker.addEventListener('message',e=>{const m=e.data;if(m&&m.type==='azkar-ack'){(window.__ack=window.__ack||[]).push(m.stage);if(m.stage==='failed')toast('تعذر إرسال الإشعار')}})}}catch(e){}
  if(!S.profile.name){S.ver=VER;save();onboard()}else if(S.ver!==VER){S.ver=VER;save();modal('<h2 style="color:var(--gold);margin:0">ما الجديد في الإصدار '+VER+' ✨</h2><ul>'+NEWS.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn main" id="lat" style="width:100%">حسناً</button><button class=\"btn\" id=\"tutB\" style=\"width:100%;margin-top:8px\">شاهد شرح التطبيق</button>')}check();setInterval(check,6e4);
@@ -799,7 +799,7 @@ addEventListener('resize',()=>{refit();setTimeout(refit,120);setTimeout(refit,40
 if(window.visualViewport)visualViewport.addEventListener('resize',refit);
 if(window.ResizeObserver){let rf=0;new ResizeObserver(()=>{cancelAnimationFrame(rf);rf=requestAnimationFrame(()=>{if(!$('#fm').hidden)fitF()})}).observe($('#fB'))}
 /* ----- سجل الإصدارات والتحديث ----- */
-const LOG=[['1.7',NEWS],['1.4.0',['وضع التركيز: ذكر بملء الشاشة مع تدوير للعرض','مؤقّت اختياري برسائل تشجيعية متجددة','ترتيب الأذكار بالضغط المطوّل','سجل الإصدارات وتحقق تلقائي من التحديثات مع نسخة احتياطية','الصفحة الرئيسية تعرف الوقت وتتجدد وحدها','هدف أسبوعي وتقرير شهري كصورة','إصلاح إضافة التذكيرات للتقويم','الوضع الفاتح هو الافتراضي']],['1.3.0',['تصميم جديد بروح iPhone','شرح تفاعلي للتطبيق','الاقتراحات تفتح تطبيق البريد','بطاقة أسبوعك ورسالة احتفال','نسخ احتياطي كملف ومشاركة التطبيق','إصلاح أيقونة iPhone وزر الرجوع']],['1.2.0',['أيقونة جديدة وحديقة الجنة','قيام الليل وأذكاري الخاصة','تنبيهات منتصف الشاشة «حاضر إن شاء الله»','إصلاح العدّ السريع والتمرير في الإعدادات']],['1.1.0',['إصلاح تحميل صفحات القرآن ومصدر بديل','تحميل المصحف كاملاً للقراءة بدون إنترنت','٢٩ آية وحديثاً يومياً بشرحها','«ما الجديد» وتحديث تلقائي']],['1.0.0',['الأذكار وورد القرآن والعداد الحر','الـ Streak والتذكيرات وتذكرة الصيام','الإعدادات والعمل بدون إنترنت (PWA)']]];
+const LOG=[['1.8',NEWS],['1.7',['وضع «سَكِينة» للكرب الشديد','دعاء من تعارّ من الليل','مؤشر تقدّم الأذكار','فيديو تذكرة الصيام','سورة الملك وختمتك و٩ ثيمات وأيقونة جديدة']],['1.4.0',['وضع التركيز: ذكر بملء الشاشة مع تدوير للعرض','مؤقّت اختياري برسائل تشجيعية متجددة','ترتيب الأذكار بالضغط المطوّل','سجل الإصدارات وتحقق تلقائي من التحديثات مع نسخة احتياطية','الصفحة الرئيسية تعرف الوقت وتتجدد وحدها','هدف أسبوعي وتقرير شهري كصورة','إصلاح إضافة التذكيرات للتقويم','الوضع الفاتح هو الافتراضي']],['1.3.0',['تصميم جديد بروح iPhone','شرح تفاعلي للتطبيق','الاقتراحات تفتح تطبيق البريد','بطاقة أسبوعك ورسالة احتفال','نسخ احتياطي كملف ومشاركة التطبيق','إصلاح أيقونة iPhone وزر الرجوع']],['1.2.0',['أيقونة جديدة وحديقة الجنة','قيام الليل وأذكاري الخاصة','تنبيهات منتصف الشاشة «حاضر إن شاء الله»','إصلاح العدّ السريع والتمرير في الإعدادات']],['1.1.0',['إصلاح تحميل صفحات القرآن ومصدر بديل','تحميل المصحف كاملاً للقراءة بدون إنترنت','٢٩ آية وحديثاً يومياً بشرحها','«ما الجديد» وتحديث تلقائي']],['1.0.0',['الأذكار وورد القرآن والعداد الحر','الـ Streak والتذكيرات وتذكرة الصيام','الإعدادات والعمل بدون إنترنت (PWA)']]];
 function openLog(){modal('<h2 class="lt2">سجل الإصدارات</h2>'+LOG.map(([v,a])=>'<div class="gl">الإصدار '+v+(v===VER?' (الحالي)':'')+'</div><div class="grp"><div class="rw" style="display:block;line-height:2"><ul style="margin:0;padding-inline-start:18px">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div></div>').join('')+'<button class="btn" id="bkS" style="width:100%;margin-top:14px">رجوع</button>')}
 function autoBak(){try{localStorage.setItem('athkary.bak',JSON.stringify({t:Date.now(),v:VER,d:S}))}catch(e){}}
 function newer(a,b){const x=String(a).split('.').map(Number),y=String(b).split('.').map(Number);for(let i=0;i<3;i++){const p=x[i]||0,q=y[i]||0;if(p!==q)return p>q}return false}
@@ -902,7 +902,8 @@ ADH.o=[
 {g:'المطر',t:'اللَّهُمَّ صَيِّبًا نَافِعًا',n:1,f:'عند نزول المطر — رواه البخاري.'},
 {g:'المطر',t:'اللَّهُمَّ حَوَالَيْنَا وَلَا عَلَيْنَا، اللَّهُمَّ عَلَى الْآكَامِ وَالظِّرَابِ، وَبُطُونِ الْأَوْدِيَةِ، وَمَنَابِتِ الشَّجَرِ',n:1,f:'عند شدة المطر والخوف من ضرره — متفق عليه.'},
 {g:'المطر',t:'مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ',n:1,f:'بعد نزول المطر — متفق عليه.'}];
-document.addEventListener('click',e=>{if(e.target.dataset&&e.target.dataset.oc){cur='o';renderAdh();go('adh')}});
+let OCG='';const OCL=['السفر','الطعام','المطر'];function ocChips(){return cur==='o'?'<div class="seg" id="ocs">'+['',...OCL].map(g=>'<button data-ocg="'+g+'" class="'+(OCG===g?'on':'')+'">'+(g||'الكل')+'</button>').join('')+'</div>':''}
+document.addEventListener('click',e=>{const t=e.target,d=t&&t.dataset;if(!d)return;if(d.ocg!==undefined){OCG=d.ocg;renderAdh();return}if(d.oc){OCG=OL_OK(d.oc);cur='o';renderAdh();go('adh')}});function OL_OK(g){return OCL.includes(g)?g:''}
 async function checkRain(){if(!S.rain||!S.loc||!navigator.onLine)return;try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+S.loc.lat.toFixed(2)+'&longitude='+S.loc.lon.toFixed(2)+'&current=precipitation,weather_code');if(!r.ok)return;const j=await r.json(),c=j.current||{},w=c.weather_code;if((c.precipitation||0)>0||(w>=51&&w<=67)||(w>=80&&w<=82)||(w>=95&&w<=99)){RAIN=Date.now();renderSmart()}}catch(e){}}
 /* ----- روابط سريعة وفتح ذكي واختصار ----- */
 function deepLink(){const q=new URLSearchParams(location.search),g=q.get('go');if(!g)return;try{history.replaceState(null,'',location.pathname)}catch(e){}
