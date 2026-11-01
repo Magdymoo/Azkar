@@ -1,15 +1,15 @@
-/* أذكاري — Service Worker v1.9.1
+/* أذكاري — Service Worker v1.9.2
    - يخزّن ملفات التطبيق للعمل بدون إنترنت
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.9.1';
+const VER = '1.9.2';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [
   './', 'index.html', 'manifest.webmanifest',
   'icon-192.png', 'apple-touch-icon.png',
-  'reassurance.js', 'sakina.js', 'prayer.js', 'umrah.js', 'notify.js', 'readiness.js', 'dua-library.json', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav'
+  'reassurance.js', 'sakina.js', 'prayer.js', 'umrah.js', 'notify.js', 'readiness.js', 'dua-library.json', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav', 'splash.webp', 'splash.jpg'
 ];
 
 self.addEventListener('install', e => {
@@ -34,11 +34,18 @@ self.addEventListener('fetch', e => {
   if (url.pathname.includes('/sounds/')) { e.respondWith(videoResp(req, CACHE)); return; } // صوت: دعم Range من الكاش (iOS) // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
   if (url.pathname.endsWith('/version.json')) return;     // دائماً من الشبكة لاكتشاف التحديثات
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
-  if (isPage) {                                           // الصفحة: الشبكة أولاً ثم الكاش
-    e.respondWith(fetch(req).then(r => {
-      if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put('index.html', cp)).catch(() => {}); }
-      return r;
-    }).catch(() => caches.match('index.html').then(r => r || caches.match('./'))));
+  if (isPage) {                                           // الصفحة: الشبكة بمهلة ٢٫٥ ث ثم الكاش (والتحديث يكمل في الخلفية)
+    e.respondWith((async () => {
+      const cached = await caches.match('index.html');
+      const net = fetch(req).then(r => {
+        if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put('index.html', cp)).catch(() => {}); }
+        return r;
+      });
+      if (!cached) return net.catch(() => caches.match('./').then(r => r || Response.error()));
+      e.waitUntil(net.catch(() => {}));
+      const r = await Promise.race([net.catch(() => null), new Promise(res => setTimeout(() => res(null), 2500))]);
+      return r || cached;
+    })());
     return;
   }
   e.respondWith(caches.match(req).then(hit => {            // الباقي: الكاش أولاً مع تحديث في الخلفية
