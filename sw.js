@@ -1,15 +1,16 @@
-/* أذكاري — Service Worker v1.9.2
-   - يخزّن ملفات التطبيق للعمل بدون إنترنت
+/* أذكاري — Service Worker v1.13.1
+   - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.9.2';
+const VER = '1.13.1';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
-const CORE = [
+const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
   './', 'index.html', 'manifest.webmanifest',
   'icon-192.png', 'apple-touch-icon.png',
-  'reassurance.js', 'sakina.js', 'prayer.js', 'umrah.js', 'notify.js', 'readiness.js', 'dua-library.json', 'sounds/Tone1.wav', 'sounds/Tone2.wav', 'sounds/Tone3.wav', 'sounds/Tone4.wav', 'sounds/Tone5.wav', 'splash.webp', 'splash.jpg'
+  'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
+  'splash.webp'
 ];
 
 self.addEventListener('install', e => {
@@ -60,6 +61,12 @@ self.addEventListener('fetch', e => {
 self.addEventListener('message', e => {
   const d = e.data;
   if (d === 'skip' || (d && d.type === 'skip')) { self.skipWaiting(); return; }
+  if (d && d.type === 'warm' && Array.isArray(d.urls)) {
+    // تخزين مسبق هادئ لملفات ثانوية (مسارات نسبية فقط، ولا يُعاد جلب ما هو مخزَّن)
+    const urls = d.urls.filter(u => typeof u === 'string' && !/^[a-z]+:|^\/\/|\.\./i.test(u)).slice(0, 12);
+    e.waitUntil(caches.open(CACHE).then(c => Promise.all(urls.map(u => c.match(u).then(h => h || c.add(u)).catch(() => null)))));
+    return;
+  }
   if (d && d.type === 'delay') {
     // اختبار الإشعار بعد مهلة: نُبقي العامل حياً بـ waitUntil. المتصفح قد يقطع المهلة الطويلة (لذلك الاختبار ١٠ ثوانٍ فقط)
     const ms = Math.min(Math.max(+d.ms || 0, 0), 30000);
@@ -76,7 +83,7 @@ self.addEventListener('message', e => {
   }
 });
 
-// Web Push حقيقي (يتطلب خادماً، انظر CLOUDFLARE_GUIDE.md)
+// Web Push حقيقي (يتطلب خادماً، خادم Push اختياري)
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
