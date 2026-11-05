@@ -1,8 +1,8 @@
-/* أذكاري — Service Worker v1.13.1
+/* أذكاري — Service Worker v1.14.0
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '1.13.1';
+const VER = '1.14.0';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
@@ -33,6 +33,7 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;            // الواجهات الخارجية (المصحف، الطقس، الخطوط) يتولاها التطبيق
   if (url.pathname.includes('/videos/')) { e.respondWith(videoResp(req, VCACHE)); return; }
   if (url.pathname.includes('/sounds/')) { e.respondWith(videoResp(req, CACHE)); return; } // صوت: دعم Range من الكاش (iOS) // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
+  if (url.pathname.includes('/quran/') || url.pathname.includes('/fonts/')) { e.respondWith(caches.match(req).then(hit => hit || fetch(req))); return; }  // بيانات المصحف والخط: كاش أولًا بلا إعادة تحميل في الخلفية (يحفظها التطبيق في athkar-quran)
   if (url.pathname.endsWith('/version.json')) return;     // دائماً من الشبكة لاكتشاف التحديثات
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
   if (isPage) {                                           // الصفحة: الشبكة بمهلة ٢٫٥ ث ثم الكاش (والتحديث يكمل في الخلفية)
