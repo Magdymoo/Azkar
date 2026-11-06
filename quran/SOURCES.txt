@@ -1,0 +1,10 @@
+مصادر ملفات المصحف — Sources
+1) نص المصحف (الرسم العثماني، رواية حفص) والبيانات الوصفية (الصفحات/الأجزاء/الأحزاب/السور/السجدات): Tanzil.net.
+   ملف البيانات الوصفية يحمل في رأسه: "Quran Metadata (ver 1.0) — Copyright (C) 2008-2009 Tanzil.info — License: Creative Commons Attribution 3.0".
+   ملف النص المرفوع لا يحمل ترخيصًا في رأسه؛ راجعوا شروط الاستخدام في tanzil.net قبل النشر. نحتفظ بالنص كما هو في الملفات، والتعديلات كلها وقت العرض فقط.
+2) تفسير الميسر: مجمع الملك فهد لطباعة المصحف الشريف، عبر Tanzil.net (ID: ar.muyassar، آخر تحديث 7 يناير 2011).
+3) الخط: KFGQPC HAFS Uthmanic Script (الإصدار 2.2)، © مجمع الملك فهد لطباعة المصحف الشريف، http://fonts.qurancomplex.gov.sa/ —
+   يُستخدم كما هو دون أي تعديل أو تحويل أو تجزئة وفق اتفاقية الترخيص في fonts/KFGQPC-LICENSE.txt (لا يُباع ولا يُعدَّل).
+
+Quran text and metadata: Tanzil.net. Tafsir al-Muyassar: King Fahd Glorious Quran Printing Complex via Tanzil.net.
+Font: KFGQPC HAFS Uthmanic Script (v2.2), (c) King Fahd Glorious Quran Printing Complex, used unmodified per its licence.
