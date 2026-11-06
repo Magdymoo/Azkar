@@ -10,7 +10,7 @@ const smooth=(prev,next,k)=>prev==null?next:norm(prev+diff(next,prev)*k);
 /* الاتجاه (درجات من الشمال مع عقارب الساعة) من حدث الجهاز، أو null إن لم يكن مطلقًا */
 function heading(e,ang){let h=null;if(typeof e.webkitCompassHeading==='number'&&isFinite(e.webkitCompassHeading))h=e.webkitCompassHeading;else if((e.absolute===true||e.type==='deviceorientationabsolute')&&typeof e.alpha==='number')h=360-e.alpha;return h==null?null:norm(h+(ang||0))}
 const scrAng=()=>{try{return(screen.orientation&&screen.orientation.angle)||window.orientation||0}catch(e){return 0}};
-const loc=()=>{try{const o=JSON.parse(localStorage.getItem('azkar_loc')||'null');return o&&isFinite(o.lat)&&isFinite(o.lng)?o:null}catch(e){return null}};
+const loc=()=>{try{const o=JSON.parse(AZ.data.get('azkar_loc')||'null');return o&&isFinite(o.lat)&&isFinite(o.lng)?o:null}catch(e){return null}};
 /* ---------- الصفحة ---------- */
 let st=null;
 function dial(q){let t='';for(let i=0;i<72;i++){const l=i%9===0?14:6;t+='<line x1="100" y1="12" x2="100" y2="'+(12+l)+'" transform="rotate('+(i*5)+' 100 100)" stroke="var(--mut)" stroke-width="'+(i%9===0?2:1)+'"/>'}
@@ -31,7 +31,7 @@ async function start(){const s=st;if(!s||s.on)return;
 function stop(manual){const s=st;if(!s)return;removeEventListener('deviceorientationabsolute',onO,true);removeEventListener('deviceorientation',onO,true);clearTimeout(s.tm);cancelAnimationFrame(s.raf);s.on=false;if(manual){s.h=null;const R=$('#qbR',s.root);if(R)R.setAttribute('transform','');const row=$('.row',s.root);if(row)row.innerHTML='<button class="btn main" data-qb="on">تشغيل البوصلة</button>';say('تم إيقاف البوصلة.')}}
 function onO(e){const s=st;if(!s)return;const h=heading(e,scrAng());if(h==null)return;s.h=smooth(s.h,h,.25);if(!s.raf)s.raf=requestAnimationFrame(()=>{s.raf=0;paint()})}
 function paint(){const s=st;if(!s||s.h==null)return;const R=$('#qbR',s.root);if(R)R.setAttribute('transform','rotate('+(-s.h).toFixed(1)+' 100 100)');const d=diff(s.q,s.h),a=Math.abs(d),S=$('#qbS',s.root);
- if(a<=3){if(S)S.innerHTML='<b>✓ أنت في اتجاه القبلة</b>';if(!s.al){s.al=true;try{if(navigator.vibrate&&localStorage.getItem('azkar_vib')!=='0')navigator.vibrate([40,30,40])}catch(e){}}}
+ if(a<=3){if(S)S.innerHTML='<b>✓ أنت في اتجاه القبلة</b>';if(!s.al){s.al=true;try{if(navigator.vibrate&&AZ.data.get('azkar_vib')!=='0')navigator.vibrate([40,30,40])}catch(e){}}}
  else{if(a>6)s.al=false;if(S)S.innerHTML='<span>أدر هاتفك</span> <b>'+A(Math.round(a))+'°</b> <span>'+(d>0?'لليمين':'لليسار')+'</span>'}}
 function unmount(){stop(false);st=null}
 function reg(){if(window.__tl&&window.__tl.register)window.__tl.register({id:'qibla',ic:'🧭',t:'القبلة',d:'بوصلة تستخدم حساس جهازك لتحديد اتجاه الكعبة',mount,unmount})}

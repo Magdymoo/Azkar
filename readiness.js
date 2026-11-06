@@ -1,6 +1,6 @@
 /* أذكاري — startup readiness: ONE card only, in order: install → notifications → location → service worker. */
 (function(){'use strict';
-const $=s=>document.querySelector(s),LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const $=s=>document.querySelector(s),LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}}};
 const DAY3=3*864e5;
 function pick(x){if(!x.installed)return'install';if(x.notif==='denied')return'notif-denied';if(x.notif!=='granted')return'notif';if(x.geo==='denied')return'geo-denied';if(x.geo==='prompt'||x.geo==='unsupported')return'geo';if(!x.sw)return'sw';return null}
 /* geo values: granted | denied | prompt | unsupported (API missing, never asked, no saved location) | unknown (API missing, asked before: don't nag) */

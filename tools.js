@@ -39,7 +39,7 @@ function tick(){if(!ov){clearInterval(tk);return}const e=$('[data-cd]',ov);if(!e
 function open(){if(ov)return;ov=document.createElement('div');ov.id='tl';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','الأدوات والإضافات');document.body.appendChild(ov);document.body.style.overflow='hidden';pg='hub';
  try{history.pushState({tl:1},'','#tools');pushed=true}catch(e){pushed=false}ov.addEventListener('click',onClick);ov.addEventListener('keydown',e=>{if(e.key==='Escape')close()});render();if(!modsOk)loadMods().then(()=>{if(ov&&pg==='hub')render()});const b=$('[data-tl="back"]',ov);if(b&&b.focus)b.focus()}
 function close(fromPop){if(!ov)return;leave();const o=ov;ov=null;clearInterval(tk);o.remove();document.body.style.overflow='';if(pushed&&!fromPop){try{history.back()}catch(e){}}pushed=false}
-function navTo(k){const sel={q:'q',adh:'adh',pt:'pt',qada:'pt'}[k];if(k==='qada'){try{localStorage.setItem('azkar_pt_sub','q')}catch(e){}}if(k==='loc'){try{localStorage.setItem('azkar_pt_sub','t')}catch(e){}}const b=document.querySelector('nav button[data-v="'+(k==='loc'?'pt':sel)+'"]');if(b)setTimeout(()=>b.click(),0)}
+function navTo(k){const sel={q:'q',adh:'adh',pt:'pt',qada:'pt'}[k];if(k==='qada'){try{AZ.data.set('azkar_pt_sub','q')}catch(e){}}if(k==='loc'){try{AZ.data.set('azkar_pt_sub','t')}catch(e){}}const b=document.querySelector('nav button[data-v="'+(k==='loc'?'pt':sel)+'"]');if(b)setTimeout(()=>b.click(),0)}
 function onClick(e){const b=e.target.closest&&e.target.closest('[data-tl]');if(!b||!ov)return;const a=b.dataset.tl;
  if(a==='back'){if(pg==='hub')close();else{pg='hub';render()}}
  else if(a==='pg'){pg=b.dataset.p;render()}

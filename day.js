@@ -63,6 +63,13 @@
       var f = T.fajr.getTime(), d = T.dhuhr.getTime(), a = T.asr.getTime(), i = T.isha.getTime();
       return t < f ? 'n' : t < d ? 'm' : t < a ? 'd' : t < i ? 'e' : 'n';
     }
+    try {                                            // قبل تحميل prayer.js: نستعمل آخر مواقيت محفوظة (تُزاح بمضاعفات 24 ساعة) بدل الساعات الثابتة
+      var an = L && JSON.parse(AZ.data.get('azkar_anchors') || 'null');
+      if (an && an.fajr && an.dhuhr && an.asr && an.isha) {
+        var sh = Math.round((t - an.asr) / 864e5) * 864e5, f2 = an.fajr + sh, d2 = an.dhuhr + sh, a2 = an.asr + sh, i2 = an.isha + sh;
+        return t < f2 ? 'n' : t < d2 ? 'm' : t < a2 ? 'd' : t < i2 ? 'e' : 'n';
+      }
+    } catch (e) {}
     var h = p.hour; return h >= 4 && h < 11 ? 'm' : h >= 11 && h < 15 ? 'd' : h >= 15 && h < 21 ? 'e' : 'n';   // بلا موقع: البديل القديم
   }
   function setStart(mode) { try { AZ.data.set('azkar_daystart', mode === 'midnight' ? 'midnight' : 'fajr'); } catch (e) {} invalidate('daystart'); }

@@ -1,14 +1,14 @@
-/* أذكاري — Service Worker v2.0.0-rc.4
+/* أذكاري — Service Worker v2.0.0-rc.5
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.4';
+const VER = '2.0.0-rc.5';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
   './', 'index.html', 'manifest.webmanifest',
-  'data.js?v=2.0.0-rc.4', 'day.js?v=2.0.0-rc.4', 'home.js?v=2.0.0-rc.4', 'diag.js?v=2.0.0-rc.4',
+  'data.js?v=2.0.0-rc.5', 'day.js?v=2.0.0-rc.5', 'home.js?v=2.0.0-rc.5', 'diag.js?v=2.0.0-rc.5',
   'icon-192.png', 'apple-touch-icon.png',
   'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
   'splash.webp'
@@ -98,11 +98,13 @@ self.addEventListener('push', e => {
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const target = (e.notification.data && e.notification.data.url) || './';
-  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
-    for (const c of list) { if ('focus' in c) return c.focus(); }
-    return self.clients.openWindow(target);
-  }));
+  const go = (e.notification.data && e.notification.data.go) || '';
+  e.waitUntil((async () => {
+    const list = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const open = list.find(c => c.url.startsWith(self.registration.scope));
+    if (open) { try { await open.focus(); } catch (x) {} if (go) open.postMessage({ type: 'notif', go }); return; }   // مفتوح: رسالة ثم focus
+    return clients.openWindow('./' + (go ? '?n=' + encodeURIComponent(go) : ''));                                     // مغلق: افتح الشاشة المطلوبة
+  })());
 });
 
 // Serve cached videos with Range support (required by iOS Safari); fall back to network
