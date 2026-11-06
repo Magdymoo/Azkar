@@ -2,7 +2,7 @@
    Self-contained: loaded after the main script; every part is wrapped so a failure never breaks the app. */
 (function(){'use strict';
 const $=(s,r)=>(r||document).querySelector(s),$$=(s,r)=>[...(r||document).querySelectorAll(s)];
-const LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}}};
 const safe=f=>function(){try{return f.apply(this,arguments)}catch(e){console.warn('[sakina]',e)}};
 const VID='videos/',DUA='videos/duas/';
 /* ---------- video helpers (never precached; HEAD check so no broken player) ---------- */
@@ -61,7 +61,7 @@ function settingsCard(){const m=$('#mc');if(!m||$('#skvs',m))return;const d=docu
  $('#skv1',d).onchange=e=>{LS.s('azkar_vcore',e.target.checked?'1':'0');vsync().then(z)};$('#skv2',d).onchange=e=>{LS.s('azkar_vextra',e.target.checked?'1':'0');vsync().then(z)};$('#skvc',d).onclick=async()=>{await vclear();z()}}
 /* ---------- night window (Isha → Fajr, fallback times configurable via localStorage) ---------- */
 const mins=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec(s||'');return m?+m[1]*60+ +m[2]:null};
-function isNight(d){d=d||new Date();const m=d.getHours()*60+d.getMinutes(),a=mins(LS.g('azkar_isha'))??21*60,b=mins(LS.g('azkar_fajr'))??4*60+30;return a>b?(m>=a||m<b):(m>=a&&m<b)}
+function isNight(d){if(!d&&window.AZ&&AZ.day&&AZ.day.phase)return AZ.day.phase()==='n';d=d||new Date();const m=d.getHours()*60+d.getMinutes(),a=mins(LS.g('azkar_isha'))??21*60,b=mins(LS.g('azkar_fajr'))??4*60+30;return a>b?(m>=a||m<b):(m>=a&&m<b)}
 const NIGHT={id:'tarr-min-allayl',t:'دعاء من تعارّ من الليل',a:'«مَنْ تَعَارَّ مِنَ اللَّيْلِ فَقَالَ: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، الْحَمْدُ لِلَّهِ، وَسُبْحَانَ اللَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ، ثُمَّ قَالَ: اللَّهُمَّ اغْفِرْ لِي — أَوْ دَعَا — اسْتُجِيبَ لَهُ، فَإِنْ تَوَضَّأَ وَصَلَّى قُبِلَتْ صَلَاتُهُ»',s:'البخاري ١١٥٤ (من حديث عبادة بن الصامت)',m:'من استيقظ في الليل فقال هذا الذكر ثم دعا استُجيب له، فإن قام فتوضأ وصلى قُبلت صلاته. وله أن يسأل ما شاء: المغفرة والصلاح والزوجة الصالحة والذرية الطيبة، قبل الصلاة أو فيها أو بعدها.'};
 function nightCard(){let c=$('#sknight');if(!c){const h=$('#v-home');if(!h)return;c=document.createElement('div');c.id='sknight';c.className='card';c.hidden=true;c.innerHTML='<details><summary>كنت نايم وقلقت من النوم؟</summary><h2 style="margin-top:10px">'+NIGHT.t+'</h2><p class="skm">'+NIGHT.m+'</p><p class="sq">'+NIGHT.a+'</p><div class="src">'+NIGHT.s+'</div>'+vbtn(DUA+NIGHT.id+'.mp4','شاهد الفيديو')+'</details>';c.dataset.slot='night';h.appendChild(c);vhydrate(c);try{window.layoutHome&&window.layoutHome()}catch(e){}}c.hidden=!isNight()}
 /* ---------- scroll progress (Azkar page): completed items / total, from the DOM ---------- */

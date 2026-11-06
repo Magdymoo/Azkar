@@ -1,7 +1,7 @@
 /* أذكاري — local notifications: prayer times (hadith), escalating reminders, settings card, diagnostics, rain card.
    ALL notifications go through reg.showNotification (system notifications). No server: see limits in RELEASE_NOTES. */
 (function(){'use strict';
-const $=(s,r)=>(r||document).querySelector(s),LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const $=(s,r)=>(r||document).querySelector(s),LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}}};
 const tr=x=>{try{return typeof trs==='function'&&typeof LANG!=='undefined'&&LANG!=='ar'?(trs(x,LANG)||x):x}catch(e){return x}};
 const PN={fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء'};
 const H={fajr:['حان وقت الفجر 🌅','«مَنْ صَلَّى الصُّبْحَ فِي جَمَاعَةٍ فَكَأَنَّمَا صَلَّى اللَّيْلَ كُلَّهُ»','مسلم'],
@@ -16,7 +16,7 @@ const R={m:['صباح الخير 🌤️','أذكار الصباح بتنتظر�
 const DEF={on:true,m:true,e:true,q:true,pre:true,esc:true,g1:60,g2:120,qh:null,p:{fajr:true,dhuhr:true,asr:true,maghrib:true,isha:true}};
 const cfg=()=>{try{return Object.assign({},DEF,JSON.parse(LS.g('azkar_nc')||'{}'),{p:Object.assign({},DEF.p,(JSON.parse(LS.g('azkar_nc')||'{}')).p)})}catch(e){return DEF}};
 const save=c=>LS.s('azkar_nc',JSON.stringify(c));
-const dk=d=>new Date(d).toISOString().slice(0,10),done=(k,now)=>LS.g('azkar_done_'+k+'_'+dk(now))==='1';
+const dk=d=>AZ.day.key(+new Date(d)),done=(k,now)=>LS.g('azkar_done_'+k+'_'+dk(now))==='1';
 window.AZKAR_markDone=k=>LS.s('azkar_done_'+k+'_'+dk(Date.now()),'1');
 /* ---------- pure planner ---------- */
 function inQuiet(at,q){if(!q)return false;const d=new Date(at),m=d.getHours()*60+d.getMinutes(),a=q[0],b=q[1];return a>b?(m>=a||m<b):(m>=a&&m<b)}

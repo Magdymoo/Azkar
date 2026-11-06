@@ -1,14 +1,14 @@
-/* أذكاري — Service Worker v2.0.0-rc.2
+/* أذكاري — Service Worker v2.0.0-rc.3
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.2';
+const VER = '2.0.0-rc.3';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
   './', 'index.html', 'manifest.webmanifest',
-  'data.js?v=2.0.0-rc.2', 'diag.js?v=2.0.0-rc.2',
+  'data.js?v=2.0.0-rc.3', 'day.js?v=2.0.0-rc.3', 'diag.js?v=2.0.0-rc.3',
   'icon-192.png', 'apple-touch-icon.png',
   'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
   'splash.webp'

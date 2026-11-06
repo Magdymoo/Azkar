@@ -15,7 +15,7 @@ function lastThird(y,m,d,lat,lng,M,now){const t=times(y,m,d,lat,lng,M),n=times(y
  const [mg,fj]=(now&&t.fajr&&now<t.fajr)?[p.maghrib,t.fajr]:[t.maghrib,n.fajr];return mg&&fj?new Date(mg.getTime()+(fj-mg)*2/3):null}
 /* ---------- state ---------- */
 const $=(s,r)=>(r||document).querySelector(s),$$=(s,r)=>[...(r||document).querySelectorAll(s)];
-const LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}}};
 const loc=()=>{try{return JSON.parse(LS.g('azkar_loc'))}catch(e){return null}},method=()=>{const l=loc();return METHODS[LS.g('azkar_pmethod')]||(l&&METHODS[l.dm])||METHODS.egyptian};
 const A=n=>typeof ar==='function'?ar(n):String(n);
 const fmt=(d,tz)=>{if(!d)return '--';let s=new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:tz}).format(d);if(typeof LANG==='undefined'||LANG==='ar')s=s.replace('AM','ص').replace('PM','م');return A(s)};
@@ -114,6 +114,6 @@ function css(){const s=document.createElement('style');s.textContent=`
 /* ---------- tones: exact (case-sensitive) paths + diagnostics ---------- */
 function toneDiag(){$$('#mc [data-tone]').forEach(r=>{const id=r.dataset.tone;if(!/^t\d$/.test(id)||typeof TONES==='undefined')return;const T=TONES.find(x=>x.id===id);if(!T)return;fetch(T.f,{method:'HEAD'}).then(x=>{const n=+x.headers.get('content-length')||0,sp=$('span',r);if(sp)sp.insertAdjacentHTML('beforeend','<small style="opacity:.7;display:block">'+(x.ok?'✓ '+(n?(n/1048576).toFixed(2)+' م.ب'+(n>1.5e6?' — كبير، يُفضّل تحويله إلى mp3/m4a':''):'موجود'):'✗ الملف غير موجود ('+x.status+')')+'</small>')}).catch(()=>{})})}
 function init(){try{css();initTab();if(typeof openTones==='function'){const o=openTones;window.openTones=function(){const r=o.apply(this,arguments);setTimeout(toneDiag,0);return r}}}catch(e){console.warn('[prayer]',e)}}
-window.__pt={times,lastThird,METHODS,compute,ST};
+window.__pt={times,lastThird,METHODS,compute,ST,loc,method};
 if(typeof document!=='undefined'&&document.body)init();
 })();

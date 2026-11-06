@@ -3,7 +3,7 @@
 (function(){'use strict';
 const KEY='azkari_qada',PR=['fajr','dhuhr','asr','maghrib','isha','witr'],P5=PR.slice(0,5),DAY=864e5;
 const NM={fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',witr:'الوتر'};
-const LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}},d(k){try{localStorage.removeItem(k)}catch(e){}}};
+const LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}},d(k){try{AZ.data.remove(k)}catch(e){}}};
 const A=n=>typeof ar==='function'?ar(n):String(n),say=m=>{if(typeof toast==='function')toast(m)};
 const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const z=()=>({fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0,witr:0}),clampN=(v,m)=>Math.min(m||200000,Math.max(0,Math.floor(+v)||0));
@@ -19,7 +19,7 @@ function san(o){if(!o||typeof o!=='object'||o.version!==1)return null;const r=bl
 const load=()=>{try{return san(JSON.parse(LS.g(KEY)))}catch(e){return null}},store=o=>LS.s(KEY,JSON.stringify(o));
 /* ---------- estimation (pure) ---------- */
 const pd=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?Date.UTC(+m[1],+m[2]-1,+m[3]):NaN};
-const todayS=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const todayS=()=>AZ.day.key();
 /* days from start until YESTERDAY (inclusive), minus the union of excluded ranges */
 function daysA(start,ex,today){const s=pd(start),e=pd(today)-DAY;if(!(s<=e))return 0;let tot=(e-s)/DAY+1;
  const iv=(ex||[]).map(x=>[Math.max(pd(x.from),s),Math.min(pd(x.to),e)]).filter(x=>isFinite(x[0])&&isFinite(x[1])&&x[0]<=x[1]).sort((a,b)=>a[0]-b[0]);let cs=null,ce=0,cut=0;
