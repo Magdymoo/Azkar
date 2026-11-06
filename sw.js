@@ -1,13 +1,14 @@
-/* أذكاري — Service Worker v2.0.0-rc.1
+/* أذكاري — Service Worker v2.0.0-rc.2
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.1';
+const VER = '2.0.0-rc.2';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
   './', 'index.html', 'manifest.webmanifest',
+  'data.js?v=2.0.0-rc.2', 'diag.js?v=2.0.0-rc.2',
   'icon-192.png', 'apple-touch-icon.png',
   'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
   'splash.webp'
@@ -31,6 +32,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;            // الواجهات الخارجية (المصحف، الطقس، الخطوط) يتولاها التطبيق
+  if (url.pathname.endsWith('/recover.html')) return;    // صفحة الإنقاذ: دائمًا من الشبكة، لا تُستبدل بصفحة التطبيق
   if (url.pathname.includes('/videos/')) { e.respondWith(videoResp(req, VCACHE)); return; }
   if (url.pathname.includes('/sounds/')) { e.respondWith(videoResp(req, CACHE)); return; } // صوت: دعم Range من الكاش (iOS) // من كاش الفيديو إن وُجد (مع Range) وإلا الشبكة
   if (url.pathname.includes('/quran/') || url.pathname.includes('/fonts/')) { e.respondWith(caches.match(req).then(hit => hit || fetch(req))); return; }  // بيانات المصحف والخط: كاش أولًا بلا إعادة تحميل في الخلفية (يحفظها التطبيق في athkar-quran)

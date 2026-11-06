@@ -1,0 +1,31 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>إنقاذ بيانات أذكاري</title>
+<style>body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#17394d;color:#f4f1e8;line-height:1.8}h1{font-size:1.2rem}.c{background:rgba(255,255,255,.08);border-radius:12px;padding:12px;margin:10px 0}button{font:inherit;min-height:44px;padding:8px 14px;border-radius:10px;border:0;background:#d8b45a;color:#17394d;font-weight:700;margin:4px 0}button.g{background:#fff3;color:#fff}pre{white-space:pre-wrap;word-break:break-all;font-size:11px;direction:ltr;text-align:left}small{opacity:.8}</style></head><body>
+<h1>إنقاذ بيانات أذكاري</h1>
+<p>هذه الصفحة تبحث عن أي نسخة من بياناتك في هذا المتصفح وتسمح لك باسترجاعها. <b>لا تمسح بيانات الموقع ولا تحذف التطبيق قبل ذلك.</b></p>
+<div id="o">جارٍ الفحص…</div>
+<div class="c"><button id="dl" class="g">تنزيل كل المحفوظات كملف (للأمان)</button> <button id="fr" class="g">تفريغ مساحة (يحذف النسخ المساعدة فقط)</button></div>
+<p><a href="./" style="color:#d8b45a">الرجوع للتطبيق</a></p><pre id="log"></pre>
+<script>
+var L=localStorage,lg=function(t){document.getElementById('log').textContent+=t+'\n'};
+function rich(s){try{var o=JSON.parse(s);if(!o||typeof o!=='object')return null;var d=o.days&&typeof o.days==='object'?Object.keys(o.days).sort():[];return{days:d.length,last:d[d.length-1]||'-',name:o.profile&&o.profile.name||'',len:s.length,o:o}}catch(e){return null}}
+function cands(){var c=[];function add(src,v){if(typeof v==='string'){var r=rich(v);if(r)c.push({src:src,val:v,r:r})}}function bk(src,v){try{var b=JSON.parse(v);if(b&&b.d)add(src,JSON.stringify(b.d))}catch(e){}}
+ add('azkari_state (الحالي الجديد)',L.getItem('azkari_state'));add('athkary.v1 (القديم)',L.getItem('athkary.v1'));add('نسخة تعارض',L.getItem('azkari__conf_azkari_state'));
+ bk('النسخة التلقائية (azkari_bak)',L.getItem('azkari_bak'));bk('النسخة التلقائية (athkary.bak)',L.getItem('athkary.bak'));
+ try{var p=JSON.parse(L.getItem('azkari__premigrate')||'null');if(p&&p.k){add('لقطة قبل الترحيل',p.k['athkary.v1']);bk('لقطة: نسخة تلقائية',p.k['athkary.bak'])}}catch(e){}
+ return c.sort(function(a,b){return(b.r.days-a.r.days)||(b.r.len-a.r.len)})}
+function used(){var t=0;for(var i=0;i<L.length;i++){var k=L.key(i);t+=k.length+(L.getItem(k)||'').length}return t}
+function free(){var n=0;['azkari__premigrate','azkari__sync'].forEach(function(k){if(L.getItem(k)!==null){L.removeItem(k);n++}});for(var i=L.length-1;i>=0;i--){var k=L.key(i);if(k&&k.indexOf('azkari__conf_')===0){L.removeItem(k);n++}}return n}
+function restore(i){var c=window._c[i];if(!confirm('سيُستبدل الحالي بهذه النسخة ('+c.r.days+' يوم). متأكد؟'))return;
+ try{var cur=L.getItem('athkary.v1')||L.getItem('azkari_state');if(cur&&cur.length>200)try{L.setItem('azkari__rescue_prev',cur)}catch(e){}}catch(e){}
+ var ok=false;function w(k){try{L.setItem(k,c.val);return true}catch(e){return false}}
+ if(!w('azkari_state')&&!w('athkary.v1')){free();L.removeItem('azkari__rescue_prev');ok=w('azkari_state')||w('athkary.v1')}else ok=true;
+ w('athkary.v1');L.removeItem('azkari__rescue_prev');
+ alert(ok?'تم الاسترجاع ✅ افتح التطبيق الآن.':'تعذّر الكتابة. حمّل الملف أولًا ثم أخبرني.');if(ok)location.reload()}
+function render(){var c=window._c=cands(),h='<div class="c"><b>المساحة المستخدمة:</b> '+used()+' حرفًا<br><small>الحد التقريبي في iPhone ≈ 2,500,000</small></div>';
+ if(!c.length)h+='<div class="c">لم أجد أي نسخة فيها بيانات في هذا المتصفح. إن كنت تستخدم التطبيق المثبَّت على iPhone فهو يحتفظ بتخزين منفصل عن Safari: افتح هذه الصفحة من داخله، أو استعد من «نسخة احتياطية» إن كان لديك ملف.</div>';
+ c.forEach(function(x,i){h+='<div class="c"><b>'+x.src+'</b><br>'+x.r.days+' يومًا · آخر يوم: '+x.r.last+(x.r.name?' · الاسم: '+x.r.name:'')+' · '+x.r.len+' حرفًا<br><button onclick="restore('+i+')">استرجاع هذه النسخة</button></div>'});
+ document.getElementById('o').innerHTML=h}
+document.getElementById('dl').onclick=function(){var o={};for(var i=0;i<L.length;i++){var k=L.key(i);o[k]=L.getItem(k)}var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download='azkari-localstorage-'+Date.now()+'.json';a.click()};
+document.getElementById('fr').onclick=function(){lg('حُذف '+free()+' عنصرًا مساعدًا');render()};
+render();
+</script></body></html>
