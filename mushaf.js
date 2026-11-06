@@ -5,7 +5,7 @@ const $=(s,r)=>(r||document).querySelector(s);
 const A=n=>typeof ar==='function'?ar(n):String(n);
 const AD=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);        /* أرقام الآيات دائمًا هندية: الخط يرسم منها الزخرفة */
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}},d(k){try{AZ.data.remove(k)}catch(e){}}};
+const LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}},d(k){try{localStorage.removeItem(k)}catch(e){}}};
 const KEY='azkari_mushaf',QC='athkar-quran',B='quran/',FONT='fonts/KFGQPC-HAFS-Uthmanic-Script.ttf',FN='KFGQPC HAFS Uthmanic Script';
 const say=m=>{if(typeof toast==='function')toast(m)};
 /* ---------- عرض النص بهذا الخط (لا يغيّر الملفات المخزَّنة) ----------

@@ -8,7 +8,6 @@ const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
   './', 'index.html', 'manifest.webmanifest',
-  'data.js?v=2.0.0-rc.1', 'diag.js?v=2.0.0-rc.1',
   'icon-192.png', 'apple-touch-icon.png',
   'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
   'splash.webp'
