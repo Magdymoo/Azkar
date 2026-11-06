@@ -8,4 +8,4 @@ test('no legacy sun()/lt()/S.rem.*.sun reads outside migration; all app scripts 
  assert.ok(!/function sun\(t,lat,lon\)/.test(src));assert.ok(!/[^a-zA-Z.]lt\(-?\d|[^a-zA-Z.]lt\(i/.test(src));
  assert.ok(!/r\.m\.sun|S\.rem\.m\.sun|S\.rem\.e\.sun/.test(src));
  for(const f of['data.js','day.js','home.js','times.js'])assert.ok(new RegExp('src="'+f+'\\?v=[^"]+"').test(src),f);
- const sw=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8'),v=/const VER = '([^']+)'/.exec(sw)[1];assert.ok(sw.includes("'times.js?v="+v+"'"));assert.ok(src.includes('times.js?v='+v))});
+ const{swInfo}=require('../tools/check-version.js'),si=swInfo(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8'));assert.ok(si.CORE.includes('times.js?v='+si.VER));assert.ok(src.includes('times.js?v='+si.VER))});
