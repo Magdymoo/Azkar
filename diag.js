@@ -22,7 +22,7 @@
       mismatch: (loc && S && S.loc) ? { latDiff: +(loc.lat - S.loc.lat).toFixed(5), lonDiff: +(loc.lng - S.loc.lon).toFixed(5) } : null };
     var pt = w.__pt || {};
     o.prayer = { methodStored: raw('azkar_pmethod'), methodsAvailable: tryv(function () { return Object.keys(pt.METHODS || {}); }, []), fajrStored: raw('azkar_fajr'), ishaStored: raw('azkar_isha'),
-      effectiveMethod: 'pending (A5: source user/default/fallback)', today: tryv(function () { var r = pt.compute && pt.compute(); return r ? JSON.parse(JSON.stringify(r)) : null; }, null) };
+      effectiveMethod: tryv(function () { return pt.methodKey ? pt.methodKey() : null; }, null), times: (AZ.times && AZ.times.snapshot) ? tryv(function () { return AZ.times.snapshot(); }, null) : 'pending (A4-b)', today: tryv(function () { var r = pt.compute && pt.compute(); return r ? JSON.parse(JSON.stringify(r)) : null; }, null) };
     o.data = tryv(function () { return AZ.data.status(); });
     o.keys = tryv(function () { return AZ.data.inventory(); });
     o.storage = await tryv(function () { return navigator.storage && navigator.storage.estimate ? navigator.storage.estimate() : null; }, null);

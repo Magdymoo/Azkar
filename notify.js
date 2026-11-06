@@ -32,8 +32,9 @@ function plan(now,T,third,c,friday,ctx){ctx=ctx||{};const out=[],M=6e4,sk=ctx.sk
   if(c.p[k])add('p-'+k,T[k],h[0],h[1],k==='dhuhr'&&friday?'jum':k,'p');
   if(c.pre&&c.p[k])add('pre-'+k,+T[k]-10*M,'اقترب وقت '+PN[k],'بعد ١٠ دقائق إن شاء الله','','pre')}
  const ladder=(kind,base,offs,txt,go)=>{if(!base)return;const key=dk(+base);offs.slice(0,c.esc?offs.length:1).forEach((o,i)=>{const at=+base+o*M;if(at<=now)return;if(doneK(kind,key)){sk.push({id:kind+'-'+i+'@'+key,kind,at,skipped:'done'});return}add(kind+'-'+i,at,txt[0],txt[i+1],go||kind,kind)})};
- if(c.m){let b=T.fajr&&+T.fajr+30*M;if(b&&T.sunrise&&b>+T.sunrise-5*M)b=+T.sunrise-5*M;ladder('m',b,[0,c.g1,c.g2],RT.m)}
- if(c.e)ladder('e',T.asr&&+T.asr+30*M,[0,c.g1,c.g2],RT.e);
+ const rb=k=>{try{const d=window.AZ&&AZ.times&&AZ.times.resolve(k,ctx.off||0);if(d)return +d}catch(e){}return null};   /* مرساة واحدة: نفس موعد الإعدادات ونوافذ الرئيسية */
+ if(c.m){let b=rb('m');if(b==null){b=T.fajr&&+T.fajr+30*M;if(b&&T.sunrise&&b>+T.sunrise-5*M)b=+T.sunrise-5*M}ladder('m',b,[0,c.g1,c.g2],RT.m)}
+ if(c.e){let b=rb('e');if(b==null)b=T.asr&&+T.asr+30*M;ladder('e',b,[0,c.g1,c.g2],RT.e)}
  if(c.q)ladder('q',third,[0,45],RT.q,'night');
  try{const q=window.__qd&&window.__qd.notifPlan&&window.__qd.notifPlan(T,now);(q||[]).forEach(x=>add(x.id,x.at,x.title,x.body,x.go,'qd'))}catch(e){}
  try{((window.__nf&&window.__nf.extra)||[]).forEach(f=>{try{(f(T,now,c)||[]).forEach(x=>add(x.id,x.at,x.title,x.body,x.go,'x'))}catch(e){}})}catch(e){}
@@ -50,7 +51,7 @@ const fri=(tz,off)=>{try{return new Intl.DateTimeFormat('en-US',{weekday:'short'
 async function schedule(){timers.forEach(clearTimeout);timers=[];clearTimeout(nextT);const pt=window.__pt;if(!pt||!pt.compute||(typeof Notification==='undefined')||Notification.permission!=='granted'||!pt.loc()){lastPlan=[];return}
  const now=Date.now(),c=cfg(),L=pt.loc(),out=[],skipped=[],fajrs=[];
  for(let off=0;off<=2;off++){let P=null;try{P=off===0?pt.compute():pt.computeFor(off)}catch(e){}if(!P||!P.T)continue;if(P.T.fajr)fajrs.push(+P.T.fajr);
-  out.push(...plan(now,P.T,P.third,c,off===0?fri(L.tz,0):P.dayOfWeek===5,{tz:L.tz,skipped}))}
+  out.push(...plan(now,P.T,P.third,c,off===0?fri(L.tz,0):P.dayOfWeek===5,{tz:L.tz,skipped,off}))}
  const seen={};lastPlan=out.filter(n=>seen[n.id]?false:(seen[n.id]=1)).sort((a,b)=>a.at-b.at);
  const h=hist();lastPlan.forEach(n=>{if(!h[n.id])h[n.id]={k:n.kind,at:n.at}});skipped.forEach(x=>{if(!h[x.id])h[x.id]={k:x.kind,at:x.at,s:x.skipped};else if(!h[x.id].s&&!h[x.id].f)h[x.id].s=x.skipped});hsave(h);
  for(const n of lastPlan){if(trig){try{const r=await reg();await r.showNotification(n.title,{body:n.body,tag:n.id,data:{go:n.go,kind:n.kind},showTrigger:new TimestampTrigger(n.at)});log({id:n.id,kind:n.kind,sched:n.at,res:'trigger-set',path:'trigger'});continue}catch(e){}}
@@ -82,7 +83,7 @@ async function card(){const m=$('#mc');if(!m||$('#nfs',m))return;const c=cfg(),r
  const refresh=()=>{let P=null;try{P=window.__pt.compute()}catch(e){}$('#ndg',d).textContent=JSON.stringify({permissions:rd,location:JSON.parse(LS.g('azkar_loc')||'null'),prayerTimes:P&&{T:P.T,third:P.third},weather:JSON.parse(LS.g('azkar_wx')||'null'),scheduled:lastPlan.map(n=>({id:n.id,kind:n.kind,at:new Date(n.at).toISOString()})),reliability7d:(()=>{const h=hist(),o={};Object.values(h).forEach(x=>{const d=new Date(x.at).toISOString().slice(0,10);o[d]=o[d]||{planned:0,fired:0,skippedDone:0,skippedQuiet:0,missed:0};const r=o[d];r.planned++;if(x.f)r.fired++;else if(x.s==='done')r.skippedDone++;else if(x.s==='quiet')r.skippedQuiet++;else if(x.at<Date.now()-6e4)r.missed++});return o})(),log:JSON.parse(LS.g(LOGK)||'[]').slice(-15)},null,1)};refresh();
  d.onchange=e=>{const t=e.target,n=t.dataset&&t.dataset.n,x=cfg();if(n){if(n.startsWith('p.'))x.p[n.slice(2)]=t.checked;else x[n]=t.checked}else if(t.id==='ntone'){x.tone=t.value}else if(t.id==='nq1'||t.id==='nq2'){const a=($('#nq1',d).value||'').split(':'),b=($('#nq2',d).value||'').split(':');x.qh=(a.length===2&&b.length===2&&a[0]!==''&&b[0]!=='')?[+a[0]*60+ +a[1],+b[0]*60+ +b[1]]:null}else return;save(x);schedule().then(refresh)};
  $('#nt',d).onclick=async()=>{if(typeof Notification!=='undefined'&&Notification.permission!=='granted'){try{await Notification.requestPermission()}catch(e){}}const at=Date.now()+1e4;log({id:'test',sched:at,res:'queued'});setTimeout(()=>fire({id:'test',title:tr('اختبار أذكاري ✅'),body:tr('وصل الإشعار عبر نفس مسار الإشعارات الحقيقي.'),go:''},at).then(refresh),1e4)}}
-function init(){try{bootNav();if(typeof openSet==='function'){const o=openSet;window.openSet=function(){const r=o.apply(this,arguments);card();return r}}setTimeout(()=>{missed();schedule()},2500);setTimeout(weather,3500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});window.addEventListener('azkar:times',()=>{setTimeout(schedule,300)})}catch(e){console.warn('[notify]',e)}}
+function init(){try{bootNav();if(typeof openSet==='function'){const o=openSet;window.openSet=function(){const r=o.apply(this,arguments);card();return r}}setTimeout(()=>{missed();schedule()},2500);setTimeout(weather,3500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});window.addEventListener('azkar:times',()=>{setTimeout(schedule,300)});window.addEventListener('times:changed',()=>{setTimeout(schedule,300)})}catch(e){console.warn('[notify]',e)}}
 const covers=k=>{const c=cfg();return !!(c.on&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&((k==='m'&&c.m)||(k==='e'&&c.e)||(k==='ql'&&c.q)))};
 window.__nf={plan,cfg,DEF,H,R,RF,inQuiet,covers,schedule,extra:[]};
 if(typeof document!=='undefined'&&document.body)init();
