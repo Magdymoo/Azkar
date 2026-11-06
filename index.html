@@ -13,7 +13,7 @@
 <script>
 /* ===== حارس الأخطاء v1.6.1: سكربت مستقل ليعمل حتى لو تعطّل السكربت الرئيسي (SyntaxError) ===== */
 (function(){
-var errs=[],ver='2.0.0-rc.6';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;
+var errs=[],ver='2.0.0-rc.7';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;window.AZ.asset=function(p){p=String(p);return /[?#]/.test(p)?p:p+'?v='+ver};
 function env(){var o=[];try{o.push('Azkari v'+ver);o.push(navigator.userAgent);o.push(location.protocol+'//'+(location.host||'(none)')+location.pathname);
 o.push('iframe='+(window.top!==window));}catch(e){o.push('iframe=?(cross-origin)')}
 function t(n,f){try{o.push(n+'='+(f()?'ok':'no'))}catch(e){o.push(n+'=blocked')}}
@@ -54,10 +54,10 @@ if(c)c.onclick=function(){copy();c.textContent='✓'};if(x)x.onclick=function(){
 setTimeout(function(){if(!window.__booted&&!errs.length)add('لم يكتمل تشغيل التطبيق (السكربت الرئيسي لم يعمل). جرّب إعادة التحميل أو فتح الرابط مباشرة في المتصفح.')},3000)});
 })();
 </script>
-<script src="data.js?v=2.0.0-rc.6"></script>
-<script src="day.js?v=2.0.0-rc.6"></script>
-<script src="home.js?v=2.0.0-rc.6"></script>
-<script src="times.js?v=2.0.0-rc.6"></script>
+<script src="data.js?v=2.0.0-rc.7"></script>
+<script src="day.js?v=2.0.0-rc.7"></script>
+<script src="home.js?v=2.0.0-rc.7"></script>
+<script src="times.js?v=2.0.0-rc.7"></script>
 <script>if(!(window.AZ&&AZ.day)){AZ.day={key:function(t){var d=new Date(t===undefined?Date.now():t);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},phase:function(){var h=new Date().getHours();return h>=4&&h<11?"m":h>=11&&h<15?"d":h>=15&&h<21?"e":"n"},start:function(){return"fajr"},setStart:function(){},invalidate:function(){},info:function(){return{method:"shim"}}}}</script>
 <script>if(!(window.AZ&&AZ.data)){window.AZ=window.AZ||{};AZ.data={get:function(k){return AZ.data.get(k)},set:function(k,v){AZ.data.set(k,v)},remove:function(k){AZ.data.remove(k)},wipeAll:function(){var n=0;Object.keys(localStorage).forEach(function(k){if(/^(azkar|athkary)/.test(k)){AZ.data.remove(k);n++}});return n},exportPrefs:function(){return{}},importPrefs:function(){return 0},status:function(){return{mode:"shim"}},inventory:function(){return[]}}}</script>
 <style>
@@ -292,7 +292,7 @@ body{background-color:var(--bg1);background-image:var(--bgi);background-attachme
 </style>
 
 <style id="sk-css">.sk{display:flex;flex-direction:column;gap:10px;padding:8px 0}.sk i{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,var(--cell,#eee) 25%,rgba(128,128,128,.22) 50%,var(--cell,#eee) 75%);background-size:200% 100%;animation:skm 1.2s linear infinite}.sk i:nth-child(3n){width:62%}.sk i.t{height:22px;width:42%}@keyframes skm{to{background-position:-200% 0}}@media (prefers-reduced-motion:reduce){.sk i{animation:none}}</style>
-<script>window.AZ_lazy=function(src){var L=window.__lz=window.__lz||{};return L[src]||(L[src]=new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=function(){res()};s.onerror=function(){delete L[src];rej(new Error(src))};document.body.appendChild(s)}))};
+<script>window.AZ_lazy=function(src){var L=window.__lz=window.__lz||{};return L[src]||(L[src]=new Promise(function(res,rej){var s=document.createElement('script');s.src=window.AZ.asset(src);s.onload=function(){res()};s.onerror=function(){delete L[src];rej(new Error(src))};document.body.appendChild(s)}))};
 window.AZ_skel=function(n){n=n||6;var h='<div class="sk" role="status" aria-busy="true" aria-label="جارٍ التحميل…"><i class="t"></i>';for(var i=0;i<n;i++)h+='<i></i>';return h+'</div>'}</script>
 <style id="ntl-css">.ntl{display:flex;flex-direction:column;gap:8px;margin:8px 0}.nti{display:flex;gap:12px;align-items:flex-start;background:var(--cell);border-radius:14px;padding:12px 14px;border-inline-start:4px solid var(--mut)}.nti.ok{border-inline-start-color:#34c759}.nti.wn{border-inline-start-color:#ff9500}.nic{font-size:1.25rem;line-height:1.6;flex:none}.ntx{font-size:.95rem;line-height:1.9;color:var(--tx)}</style>
 <style id="splash-css">html{background:#17394d}#splash{position:fixed;inset:0;z-index:90;overflow:hidden;background:linear-gradient(#17394d,#143548);transition:opacity .3s ease;direction:ltr}#splash.out{opacity:0;pointer-events:none}#splash i{position:absolute;left:50%;top:50%;width:max(100vw,calc(100vh*.4615));height:max(100vh,calc(100vw/.4615));transform:translate(-50%,-50%);background:url(splash.jpg) center/100% 100% no-repeat;background-image:image-set(url(splash.webp) type("image/webp"),url(splash.jpg) type("image/jpeg"))}#splash b{position:absolute;left:28%;width:44%;top:80.6%;height:1.3%;min-height:8px;border:1.5px solid rgba(255,255,255,.6);border-radius:99px;overflow:hidden;box-sizing:border-box}#splash b::after{content:"";position:absolute;top:0;bottom:0;width:45%;border-radius:99px;background:linear-gradient(90deg,#c9a25a,#f0d58f);animation:spl 1.4s ease-in-out infinite}@keyframes spl{0%{left:-45%}100%{left:100%}}@media (min-aspect-ratio:3/5){#splash b{display:none}}@media (prefers-reduced-motion:reduce){#splash{transition:none}#splash b::after{animation:none;left:0;width:45%}}</style>
@@ -422,7 +422,7 @@ function chk(){var v=document.getElementById('v-home');if(window.__errs&&window.
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 2.0.0-rc.6</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 2.0.0-rc.7</footer>
 </div>
 
 <nav>
@@ -733,7 +733,7 @@ $('#mc').onchange=e=>{const t=e.target;if(t.id==='fi'){impFile(t.files[0]);retur
  else if(t.id==='sunC'){if(t.checked)getLoc(()=>{S.rem.ql.sun=1;S.rem.ql.mode='anchor';S.rem.ql.anchor='lastThird';S.rem.ql.offset=0;save();try{AZ.times.invalidate('ql')}catch(e){}},()=>{t.checked=false});else{S.rem.ql.sun=0;S.rem.ql.mode='fixed';try{AZ.times.invalidate('ql')}catch(e){}}}save()};
 $('#md').onclick=e=>{if(e.target.id==='md'&&S.profile.name)closeM()};
 $('#bSet').onclick=openSet;
-const ICONVER=2,VER='2.0.0-rc.6',NEWS=["المصحف الكامل (٦٠٤ صفحة) بالرسم العثماني وخط مجمع الملك فهد: سحب بين الصفحات، هيدر بالجزء والحزب والسورة، فهرس بالسور والأجزاء، علامات، وضع ليلي، تكبير الخط، والتفسير الميسر", "ربط الورد اليومي: يفتح على صفحة الورد وزر «تمت القراءة» يتمّ الورد ويزيد التقدم. الملفات تُحمَّل كسولًا ويمكن حفظها كاملة للقراءة بدون إنترنت"];
+const ICONVER=2,VER=window.AZ_V,NEWS=["المصحف الكامل (٦٠٤ صفحة) بالرسم العثماني وخط مجمع الملك فهد: سحب بين الصفحات، هيدر بالجزء والحزب والسورة، فهرس بالسور والأجزاء، علامات، وضع ليلي، تكبير الخط، والتفسير الميسر", "ربط الورد اليومي: يفتح على صفحة الورد وزر «تمت القراءة» يتمّ الورد ويزيد التقدم. الملفات تُحمَّل كسولًا ويمكن حفظها كاملة للقراءة بدون إنترنت"];
 function boot(){try{const r=AZ.data.status().recovered;if(r)setTimeout(()=>toast('تم استرجاع بياناتك من نسخة محفوظة ✅'),1800)}catch(e){}try{Object.keys(localStorage).filter(k=>/^qp\d+$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}
  try{if(navigator.serviceWorker&&navigator.serviceWorker.register){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register('sw.js').catch(()=>{});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had){toast('تم تحديث التطبيق ✨');setTimeout(()=>location.reload(),1500)}});navigator.serviceWorker.addEventListener('message',e=>{const m=e.data;if(m&&m.type==='azkar-ack'){(window.__ack=window.__ack||[]).push(m.stage);if(m.stage==='failed')toast('تعذر إرسال الإشعار')}})}}catch(e){}
  if(!S.profile.name){S.ver=VER;save();onboard()}else if(S.ver!==VER){S.ver=VER;save();modal('<h2 style="color:var(--gold);margin:0">ما الجديد في الإصدار '+VER+' ✨</h2><ul>'+NEWS.map(x=>'<li>'+x+'</li>').join('')+'</ul><button class="btn main" id="lat" style="width:100%">حسناً</button><button class=\"btn\" id=\"tutB\" style=\"width:100%;margin-top:8px\">شاهد شرح التطبيق</button>')}check();setInterval(check,6e4);
@@ -1090,7 +1090,7 @@ function openMail(){modal(`<h2 class="lt2" style="font-size:24px">إرسال ا�
  <div class="gf" style="line-height:1.9">إن لم يكن التطبيق مثبتاً على جهازك فلن يُفتح، جرّب خياراً آخر. وأي فكرة تنفع الناس قد تكون صدقة جارية لك، تقبّل الله منا ومنكم.</div><button class="btn" id="bkS" style="width:100%;margin-top:10px">رجوع</button>`)}
 /* ----- النسخة الاحتياطية (صفحة مستقلة) ----- */
 function bkObj(){const o=Object.assign({},S);try{if(window.__qd)Object.assign(o,window.__qd.exportData())}catch(e){}try{const m=JSON.parse(AZ.data.get('azkari_mushaf')||'null');if(m)o.azkari_mushaf=m}catch(e){}o.schema=2;try{o.prefs=AZ.data.exportPrefs()}catch(e){}return o}
-function openDiag(){const go=()=>{try{AZ.diag.open()}catch(e){toast('تعذّر فتح التشخيص')}};if(window.AZ&&AZ.diag)return go();const s=document.createElement('script');s.src='diag.js?v='+VER;s.onload=go;s.onerror=()=>toast('تعذّر تحميل التشخيص');document.head.appendChild(s)}
+function openDiag(){const go=()=>{try{AZ.diag.open()}catch(e){toast('تعذّر فتح التشخيص')}};if(window.AZ&&AZ.diag)return go();const s=document.createElement('script');s.src=AZ.asset('diag.js');s.onload=go;s.onerror=()=>toast('تعذّر تحميل التشخيص');document.head.appendChild(s)}
 function openBackup(){modal(`<h2 class="lt2" style="font-size:24px">نسخة احتياطية</h2><div class="gf" style="line-height:1.9">احفظ بياناتك (الأذكار والورد والإعدادات) في ملف، أو استعدها عند تغيير الجهاز.</div>
  <div class="grp"><button class="rw lnk" id="fileE">حفظ نسخة كملف</button><button class="rw lnk" id="fileI">استعادة من ملف</button><button class="rw lnk" id="bkE">نسخ البيانات كنص</button><div class="rw"><textarea id="bk" rows="3" placeholder="الصق هنا النص للاستعادة" aria-label="النسخة الاحتياطية"></textarea></div><button class="rw lnk" id="bkI">استعادة من النص</button><a class="rw lnk" id="recB" href="https://magdymoo.github.io/Azkar/recover.html" target="_blank" rel="noopener">استرجاع البيانات (صفحة الإنقاذ)<span class="chev"></span></a></div><input type="file" id="fi" accept=".json,application/json" hidden>
  <button class="btn" id="bkS" style="width:100%;margin-top:12px">رجوع</button>`)}
@@ -1181,9 +1181,9 @@ $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();rend
 [applyTheme,renderHome,renderAdh,renderQ,renderF,boot,applyLang].forEach(f=>{try{f()}catch(e){window.__showErr&&window.__showErr(f.name+': '+(e&&e.message)+(e&&e.stack?'\n'+e.stack.split('\n').slice(0,3).join('\n'):''))}});
 window.__booted=1;
 </script>
-<script src="reassurance.js"></script><script src="sakina.js"></script><script src="prayer.js"></script><script src="qada.js"></script>
-<script src="tools.js"></script>
-<script src="polish.js"></script>
-<script src="umrah.js"></script><script src="readiness.js"></script><script src="notify.js"></script>
+<script src="reassurance.js?v=2.0.0-rc.7"></script><script src="sakina.js?v=2.0.0-rc.7"></script><script src="prayer.js?v=2.0.0-rc.7"></script><script src="qada.js?v=2.0.0-rc.7"></script>
+<script src="tools.js?v=2.0.0-rc.7"></script>
+<script src="polish.js?v=2.0.0-rc.7"></script>
+<script src="umrah.js?v=2.0.0-rc.7"></script><script src="readiness.js?v=2.0.0-rc.7"></script><script src="notify.js?v=2.0.0-rc.7"></script>
 </body>
 </html>

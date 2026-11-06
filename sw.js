@@ -1,22 +1,39 @@
-/* أذكاري — Service Worker v2.0.0-rc.6
+/* أذكاري — Service Worker v2.0.0-rc.7
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.6';
+const VER = '2.0.0-rc.7';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
-const CORE = [   // الأساسي فقط؛ الباقي (أدوات القبلة/البحث/الأسماء، مكتبة الأدعية، النغمة المختارة) يُخزَّن في الخلفية بعد الإقلاع (رسالة warm)
-  './', 'index.html', 'manifest.webmanifest',
-  'data.js?v=2.0.0-rc.6', 'day.js?v=2.0.0-rc.6', 'home.js?v=2.0.0-rc.6', 'times.js?v=2.0.0-rc.6', 'diag.js?v=2.0.0-rc.6',
-  'icon-192.png', 'apple-touch-icon.png',
-  'reassurance.js', 'sakina.js', 'prayer.js', 'qada.js', 'tools.js', 'polish.js', 'umrah.js', 'notify.js', 'readiness.js',
-  'splash.webp'
+const Q = '?v=' + VER;   // نفس اللاحقة في index.html (AZ.asset) — يضبطها tools/bump-version.js ويفحصها tools/check-version.js
+const CORE = [   // الأساسي: تثبيت ذرّي (إن فشل ملف واحد يفشل التثبيت كله فيبقى الإصدار القديم شغّالًا كاملًا بدل خليط نسخ)
+  './', 'index.html',
+  'data.js' + Q, 'day.js' + Q, 'home.js' + Q, 'times.js' + Q, 'diag.js' + Q,
+  'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q
 ];
+const OPTIONAL = [   // غيابها لا يمنع التثبيت (أيقونات/شاشة بدء/manifest)
+  'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'splash.webp'
+];
+// الباقي (القبلة/البحث/الأسماء/المصحف، مكتبة الأدعية، النغمة المختارة) يُخزَّن بعد الإقلاع (رسالة warm)
 
 self.addEventListener('install', e => {
-  // كل ملف على حدة: غياب ملف (مثل أيقونة) لا يُفشل التثبيت كله
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => null)))));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    try {
+      // نجلب الكل من الشبكة مباشرة (تجاوز كاش HTTP) ولا نكتب شيئًا قبل التأكد أن كل الأساسي نجح
+      const rs = await Promise.all(CORE.map(async u => {
+        const r = await fetch(new Request(u, { cache: 'reload' }));
+        if (!r || !r.ok) throw new Error('core:' + u + ':' + (r && r.status));
+        return r;
+      }));
+      await Promise.all(CORE.map((u, i) => c.put(u, rs[i])));
+    } catch (err) {
+      await caches.delete(CACHE);   // لا نترك كاشًا ناقصًا
+      throw err;                    // التثبيت يفشل ← يبقى العامل القديم، ويُعاد المحاولة لاحقًا
+    }
+    await Promise.all(OPTIONAL.map(u => c.add(u).catch(() => null)));
+  })());
 });
 
 self.addEventListener('activate', e => {

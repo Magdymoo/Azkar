@@ -10,7 +10,7 @@ let ov=null,pg='hub',pushed=false,tk=0,tgt=0,curP=null;const EXT=[];
 const ORDER=['qibla','search','names'],LAZY=['qibla.js','search.js','names.js'];let modsOk=false,modsP=null;
 const register=p=>{if(p&&p.id&&!EXT.find(x=>x.id===p.id))EXT.push(p)},allP=()=>PAGES.concat(EXT.slice().sort((a,b)=>(ORDER.indexOf(a.id)+1||99)-(ORDER.indexOf(b.id)+1||99)));
 /* تحميل كسول لأدوات القبلة والبحث والأسماء عند أول فتح للصفحة (يخفّف الإقلاع) */
-function loadMods(){if(modsP)return modsP;modsP=Promise.all(LAZY.map(src=>new Promise(res=>{try{if(document.querySelector('script[data-lz="'+src+'"]'))return res();const s=document.createElement('script');s.src=src;s.dataset.lz=src;s.onload=s.onerror=()=>res();document.body.appendChild(s)}catch(e){res()}}))).then(()=>{modsOk=true});return modsP}
+function loadMods(){if(modsP)return modsP;modsP=Promise.all(LAZY.map(src=>new Promise(res=>{try{if(document.querySelector('script[data-lz="'+src+'"]'))return res();const s=document.createElement('script');s.src=AZ.asset(src);s.dataset.lz=src;s.onload=s.onerror=()=>res();document.body.appendChild(s)}catch(e){res()}}))).then(()=>{modsOk=true});return modsP}
 const PAGES=[{id:'today',ic:'🗓️',t:'ملخص اليوم',d:'الصلاة القادمة والورد والأذكار والفوائت في مكان واحد'}];
 /* ---------- بيانات ---------- */
 function nextPrayer(){try{const c=window.__pt&&window.__pt.compute&&window.__pt.compute();if(!c)return null;const now=Date.now();for(const k of['fajr','dhuhr','asr','maghrib','isha'])if(c.T[k]&&+c.T[k]>now)return{k,t:+c.T[k],tz:c.L.tz,city:c.L.name};return c.tomorrowFajr?{k:'fajr',t:+c.tomorrowFajr,tz:c.L.tz,city:c.L.name}:null}catch(e){return null}}
