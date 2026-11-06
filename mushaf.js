@@ -5,7 +5,7 @@ const $=(s,r)=>(r||document).querySelector(s);
 const A=n=>typeof ar==='function'?ar(n):String(n);
 const AD=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);        /* أرقام الآيات دائمًا هندية: الخط يرسم منها الزخرفة */
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const LS={g(k){try{return localStorage.getItem(k)}catch(e){return null}},s(k,v){try{localStorage.setItem(k,v)}catch(e){}},d(k){try{localStorage.removeItem(k)}catch(e){}}};
+const LS={g(k){try{return AZ.data.get(k)}catch(e){return null}},s(k,v){try{AZ.data.set(k,v)}catch(e){}},d(k){try{AZ.data.remove(k)}catch(e){}}};
 const KEY='azkari_mushaf',QC='athkar-quran',B='quran/',FONT='fonts/KFGQPC-HAFS-Uthmanic-Script.ttf',FN='KFGQPC HAFS Uthmanic Script';
 const say=m=>{if(typeof toast==='function')toast(m)};
 /* ---------- عرض النص بهذا الخط (لا يغيّر الملفات المخزَّنة) ----------
@@ -50,17 +50,17 @@ function open(o){o=o||{};if(st)return Promise.resolve(true);return(async()=>{try
  const P=load(),w=o.wird?wirdInfo():null;let n=clampP(w?w.from:(o.page||P.last.page));try{await pageData(n)}catch(e){return false}
  if(st)return true;const el=document.createElement('div');el.id='mf';el.className=P.night?'nt':'';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','المصحف');document.body.appendChild(el);document.body.style.overflow='hidden';
  st={el,n,P,wird:!!w,seq:0,x0:0,y0:0,sv:0,menu:false,tab:'s'};try{history.pushState({mf:1},'','#mushaf');st.pushed=true}catch(e){}
- el.innerHTML='<div class="mfH"><button class="mfb" data-mf="back" aria-label="رجوع">رجوع</button><div class="mfTt"><b id="mfT1"></b><span id="mfT2"></span><span id="mfT3"></span></div><button class="mfb" data-mf="menu" aria-label="الفهرس">☰</button></div><div id="mfWd"></div><div class="mfBody" id="mfB" tabindex="-1"><div class="mfPg" id="mfPg"></div><div class="mfT" id="mfTf"></div></div>'
-  +'<div class="mfF"><div class="mfR"><button class="mfb" data-mf="prev" aria-label="الصفحة السابقة">السابق</button><input type="range" id="mfS" min="1" max="604" step="1" dir="rtl" aria-label="رقم الصفحة"><button class="mfb" data-mf="next" aria-label="الصفحة التالية">التالي</button></div><div class="mfR mfTl"><button class="mfb sm" data-mf="fm" aria-label="تصغير الخط">أ−</button><button class="mfb sm" data-mf="fp" aria-label="تكبير الخط">أ+</button><button class="mfb sm" data-mf="nt" id="mfNt"></button><button class="mfb sm" data-mf="tf" id="mfTg"></button><button class="mfb sm" data-mf="bm" id="mfBm" aria-label="إضافة علامة">☆</button></div></div><div id="mfMn" hidden></div><div class="src mfSt" id="mfSt" role="status" aria-live="polite"></div>';
- el.addEventListener('click',onClick);el.addEventListener('touchstart',ts,{passive:true});el.addEventListener('touchend',te,{passive:true});el.addEventListener('keydown',onKey);el.addEventListener('input',e=>{if(e.target.id==='mfS')st.sv=+e.target.value});el.addEventListener('change',e=>{if(e.target.id==='mfS')go(+e.target.value)});
+ el.innerHTML='<div class="mfTop" id="mfTop"><div class="mfH"><button class="mfb" data-mf="back" aria-label="رجوع">رجوع</button><div class="mfTt"><b id="mfT1"></b><span id="mfT2"></span><span id="mfT3"></span></div><button class="mfb" data-mf="menu" aria-label="الفهرس">☰</button></div><div id="mfWd"></div></div><div class="mfBody" id="mfB" tabindex="-1"><div class="mfPg" id="mfPg"></div><div class="mfT" id="mfTf"></div></div>'
+  +'<div class="mfF" id="mfFt"><div class="mfR"><button class="mfb" data-mf="prev" aria-label="الصفحة السابقة">السابق</button><div class="mfSl" id="mfS" role="slider" tabindex="0" aria-label="رقم الصفحة" aria-valuemin="1" aria-valuemax="604" aria-valuenow="1"><div class="mfTr"><div class="mfFl"></div><div class="mfTh"></div></div><div class="mfBub" hidden></div></div><button class="mfb" data-mf="next" aria-label="الصفحة التالية">التالي</button></div><div class="mfR mfTl"><button class="mfb sm" data-mf="fm" aria-label="تصغير الخط">أ−</button><button class="mfb sm" data-mf="fp" aria-label="تكبير الخط">أ+</button><button class="mfb sm" data-mf="nt" id="mfNt"></button><button class="mfb sm" data-mf="tf" id="mfTg"></button><button class="mfb sm" data-mf="bm" id="mfBm" aria-label="إضافة علامة">☆</button></div></div><div id="mfMn" hidden></div><div class="src mfSt" id="mfSt" role="status" aria-live="polite"></div>';
+ el.addEventListener('click',onClick);el.addEventListener('touchstart',ts,{passive:true});el.addEventListener('touchend',te,{passive:true});el.addEventListener('keydown',onKey);initUi();
  ensureFont().then(()=>{if(st)st.el.classList.toggle('nof',!fontOK)});render(0);const b=$('[data-mf="back"]',el);if(b&&b.focus)b.focus();return true})()}
-function close(fromPop){if(!st)return;const s=st;st=null;s.el.removeEventListener('click',onClick);s.el.remove();document.body.style.overflow='';flush(s);if(s.pushed&&!fromPop){try{history.back()}catch(e){}}}
+function close(fromPop){if(!st)return;const s=st;st=null;uiOff(s);s.el.removeEventListener('click',onClick);s.el.remove();document.body.style.overflow='';flush(s);if(s.pushed&&!fromPop){try{history.back()}catch(e){}}}
 function flush(s){clearTimeout(s.sv2);const P=load();P.last.page=s.n;P.fs=s.P.fs;P.night=s.P.night;P.tafsir=s.P.tafsir;P.bm=s.P.bm;store(P)}
 function save(){clearTimeout(st.sv2);st.sv2=setTimeout(()=>{if(st)flush(st)},500)}
 async function render(dir){const s=st;if(!s)return;const n=s.n,seq=++s.seq,H=head(n),pg=$('#mfPg',s.el),B0=$('#mfB',s.el);
  $('#mfT1',s.el).innerHTML='<span>صفحة</span> <b>'+A(n)+'</b>';$('#mfT2',s.el).innerHTML='<span>الجزء</span> <b>'+A(H.juz)+'</b> · <span>'+QLAB[H.part]+'</span> <b>'+A(H.hizb)+'</b>';
  $('#mfT3',s.el).innerHTML=H.suras.slice(0,2).map(x=>'<span>سورة</span> '+esc(M.su[x-1][0])).join(' · ');
- $('#mfS',s.el).value=n;$('#mfNt',s.el).textContent=s.P.night?'☀':'☾';$('#mfNt',s.el).setAttribute('aria-label',s.P.night?'وضع نهاري':'وضع ليلي');const tg=$('#mfTg',s.el);tg.textContent='تفسير';tg.setAttribute('aria-pressed',String(s.P.tafsir));
+ setSl(s,n);$('#mfNt',s.el).textContent=s.P.night?'☀':'☾';$('#mfNt',s.el).setAttribute('aria-label',s.P.night?'وضع نهاري':'وضع ليلي');const tg=$('#mfTg',s.el);tg.textContent='تفسير';tg.setAttribute('aria-pressed',String(s.P.tafsir));
  const has=s.P.bm.some(x=>x.page===n);$('#mfBm',s.el).textContent=has?'★':'☆';$('#mfBm',s.el).setAttribute('aria-label',has?'حذف العلامة':'إضافة علامة');
  pg.style.fontSize=s.P.fs+'px';s.el.style.setProperty('--mfs',s.P.fs+'px');
  if(window.AZ_skel&&dir!==undefined)pg.innerHTML=window.AZ_skel(8);
@@ -72,14 +72,48 @@ async function render(dir){const s=st;if(!s)return;const n=s.n,seq=++s.seq,H=hea
 function pre(n){if(chunkOf(n)!==chunkOf(st.n)||n%M.cs>=M.cs-3||n%M.cs<=2)pageData(n).catch(()=>{})}
 function wird(s,n){const box=$('#mfWd',s.el);if(!s.wird){box.innerHTML='';return}const w=wirdInfo(),d=dayO();if(!w){box.innerHTML='';return}const both=d&&d.qm&&d.qe,atEnd=n>=w.to;
  box.innerHTML='<div class="mfW"><span>الورد:</span> <span>صفحة</span> <b>'+A(w.from)+'</b>'+(w.to>w.from?' <span>إلى</span> <b>'+A(w.to)+'</b>':'')+(both?' <span class="mfOk">ورد اليوم مكتمل ✓</span>':(atEnd?' <button class="mfb gold" data-mf="done">تمت القراءة ✅</button>':''))+'</div>'}
+/* ---------- إخفاء الأشرطة بعد 5 ثوانٍ، شريط الصفحات، منع انطفاء الشاشة ---------- */
+const HIDE_MS=5000;
+function barsHide(){const s=st;if(!s)return;clearTimeout(s.ht);s.el.classList.add('hid')}
+function barsShow(){const s=st;if(!s)return;s.el.classList.remove('hid');barsPing()}
+function barsPing(){const s=st;if(!s)return;clearTimeout(s.ht);if(s.el.classList.contains('hid'))return;
+ s.ht=setTimeout(function f(){if(st!==s)return;const a=document.activeElement;if(s.drag||s.menu||(a&&s.el.contains(a)&&/^(INPUT|TEXTAREA)$/.test(a.tagName))){s.ht=setTimeout(f,HIDE_MS);return}barsHide()},HIDE_MS)}
+function tapToggle(e){const s=st;if(!s||s.menu)return;const t=e.target;if(t.closest&&t.closest('.mfTop,.mfF,#mfMn,a,button,input'))return;
+ try{const g=window.getSelection&&window.getSelection();if(g&&String(g).length)return}catch(x){}
+ if(s.el.classList.contains('hid'))barsShow();else barsHide()}
+function meas(s){const t=$('#mfTop',s.el),f=$('#mfFt',s.el);if(!t||!f)return;s.el.style.setProperty('--mfTh',t.offsetHeight+'px');s.el.style.setProperty('--mfFh',f.offsetHeight+'px')}
+function wlOn(s){try{if(!navigator.wakeLock||document.visibilityState!=='visible'||s.wl)return;
+ navigator.wakeLock.request('screen').then(l=>{if(st!==s){try{l.release()}catch(x){}return}s.wl=l;l.addEventListener('release',()=>{if(s.wl===l)s.wl=null})}).catch(()=>{})}catch(x){}}
+/* شريط الصفحات: مخصّص بالكامل (لا input range) ليعمل اتجاه RTL بنفس الطريقة على كل المتصفحات */
+function slPage(s,x){const r=$('.mfTr',s.el).getBoundingClientRect();let f=(x-r.left)/(r.width||1);f=Math.min(1,Math.max(0,f));if(rtl())f=1-f;return Math.round(f*603)+1}
+function setSl(s,n,live){const sl=$('#mfS',s.el);if(!sl)return;const f=(n-1)/603,pos=rtl()?1-f:f,th=$('.mfTh',sl),fl=$('.mfFl',sl);
+ th.style.left=(pos*100)+'%';fl.style.width=(f*100)+'%';if(rtl()){fl.style.right='0';fl.style.left='auto'}else{fl.style.left='0';fl.style.right='auto'}
+ sl.setAttribute('aria-valuenow',n);sl.setAttribute('aria-valuetext','صفحة '+n);
+ const bub=$('.mfBub',sl);if(!live||!bub)return;const H=head(n);
+ bub.innerHTML='<b>صفحة '+A(n)+'</b><span>الجزء '+A(H.juz)+(H.suras.length?' · '+esc(M.su[H.suras[0]-1][0]):'')+'</span>';
+ const W=sl.clientWidth,x=16+pos*(W-32),h=Math.min(90,W/2);bub.style.left=Math.min(W-h,Math.max(h,x))+'px'}
+function initUi(){const s=st,sl=$('#mfS',s.el),top=$('#mfTop',s.el),ft=$('#mfFt',s.el);
+ const bubS=on=>{const b=$('.mfBub',sl);if(b)b.hidden=!on};
+ sl.addEventListener('pointerdown',e=>{if(e.button>0)return;s.drag=1;try{sl.setPointerCapture(e.pointerId)}catch(x){}s.dn=slPage(s,e.clientX);setSl(s,s.dn,1);bubS(1);e.preventDefault()});
+ sl.addEventListener('pointermove',e=>{if(!s.drag)return;const n=slPage(s,e.clientX);if(n!==s.dn){s.dn=n;setSl(s,n,1)}});
+ const end=e=>{if(!s.drag)return;s.drag=0;bubS(0);const n=s.dn;if(e.type==='pointerup'&&n!==s.n)go(n);else setSl(s,s.n);barsPing()};
+ sl.addEventListener('pointerup',end);sl.addEventListener('pointercancel',end);
+ sl.addEventListener('keydown',e=>{const k=e.key,R=rtl();let d=0;if(k==='ArrowLeft')d=R?1:-1;else if(k==='ArrowRight')d=R?-1:1;else if(k==='PageUp')d=-10;else if(k==='PageDown')d=10;
+  if(k==='Home'){e.preventDefault();go(1);return}if(k==='End'){e.preventDefault();go(604);return}if(d){e.preventDefault();e.stopPropagation();go(s.n+d);barsPing()}});
+ s.el.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.mfTop,.mfF'))barsPing()},true);
+ s.el.addEventListener('focusin',e=>{if(e.target.closest&&e.target.closest('.mfTop,.mfF')&&s.el.classList.contains('hid'))barsShow()});
+ meas(s);if(window.ResizeObserver){s.ro=new ResizeObserver(()=>{if(st===s)meas(s)});s.ro.observe(top);s.ro.observe(ft)}
+ s.vh=()=>{if(st===s&&document.visibilityState==='visible')wlOn(s)};document.addEventListener('visibilitychange',s.vh);
+ wlOn(s);barsPing()}
+function uiOff(s){clearTimeout(s.ht);try{s.ro&&s.ro.disconnect()}catch(x){}try{document.removeEventListener('visibilitychange',s.vh)}catch(x){}try{s.wl&&s.wl.release()}catch(x){}s.wl=null}
 function go(n,dir){const s=st;if(!s)return;n=clampP(n);if(n===s.n&&dir===undefined)return;const d=dir===undefined?(n>s.n?1:-1):dir;s.n=n;render(d)}
 function step(k){go(st.n+k,k)}
 /* RTL: الإصبع يمينًا = الصفحة التالية (كالكتاب العربي)، ويُعكس في واجهات LTR */
 const rtl=()=>{try{return document.documentElement.dir==='rtl'}catch(e){return true}};
-function ts(e){const t=e.changedTouches&&e.changedTouches[0];if(st&&t){st.x0=t.clientX;st.y0=t.clientY}}
-function te(e){const t=e.changedTouches&&e.changedTouches[0];if(!st||!t||st.menu)return;const dx=t.clientX-st.x0,dy=t.clientY-st.y0;if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.6)return;step((dx>0)===rtl()?1:-1)}
+function ts(e){const t=e.changedTouches&&e.changedTouches[0];if(st&&t){st.x0=t.clientX;st.y0=t.clientY;st.inb=!!(e.target.closest&&e.target.closest('.mfTop,.mfF,#mfMn'))}}
+function te(e){const t=e.changedTouches&&e.changedTouches[0];if(!st||!t||st.menu||st.inb)return;const dx=t.clientX-st.x0,dy=t.clientY-st.y0;if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.6)return;step((dx>0)===rtl()?1:-1)}
 function onKey(e){if(!st)return;if(e.key==='Escape'){if(st.menu)menu(false);else close()}else if(!st.menu&&e.target.id!=='mfS'){if(e.key==='ArrowLeft')step(rtl()?1:-1);else if(e.key==='ArrowRight')step(rtl()?-1:1)}}
-function onClick(e){const b=e.target.closest&&e.target.closest('[data-mf]');if(!b||!st)return;const a=b.dataset.mf,s=st;
+function onClick(e){const b=e.target.closest&&e.target.closest('[data-mf]');if(!st)return;if(!b){tapToggle(e);return}barsPing();const a=b.dataset.mf,s=st;
  if(a==='back')close();else if(a==='next')step(1);else if(a==='prev')step(-1);
  else if(a==='fp'||a==='fm'){s.P.fs=Math.min(48,Math.max(18,s.P.fs+(a==='fp'?2:-2)));$('#mfPg',s.el).style.fontSize=s.P.fs+'px';save()}
  else if(a==='nt'){s.P.night=!s.P.night;s.el.classList.toggle('nt',s.P.night);$('#mfNt',s.el).textContent=s.P.night?'☀':'☾';save()}
@@ -114,7 +148,15 @@ function css(){if($('#mf-css'))return;const s=document.createElement('style');s.
 +'#mf .mfH{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;border-bottom:1px solid var(--ln)}'
 +'#mf .mfTt{display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.5;min-width:0}#mf .mfTt b{font-size:1.05rem}#mf .mfTt span{font-size:.85rem;color:var(--mu)}#mf b{font-variant-numeric:tabular-nums}'
 +'#mf .mfb{background:var(--cd);color:var(--tx);border:1.5px solid var(--ln);border-radius:12px;padding:8px 12px;min-height:44px;min-width:44px;font:inherit}#mf .mfb.sm{padding:6px 10px}#mf .mfb.gold{background:var(--ac);color:var(--bg);border-color:var(--ac);font-weight:700}#mf .mfb[aria-pressed=true]{border-color:var(--ac);color:var(--ac)}'
-+'#mf .mfBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 14px 18px}'
++'#mf .mfBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(--mfTh,60px) + 6px) 14px calc(var(--mfFh,110px) + 12px)}'
++'#mf.hid .mfBody{padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}'
++'#mf .mfTop,#mf .mfF{position:absolute;left:0;right:0;z-index:3;background:var(--bg);transition:transform .25s ease,opacity .25s ease}#mf .mfTop{top:0}#mf .mfF{bottom:0}'
++'#mf.hid .mfTop{transform:translateY(-105%);opacity:0;pointer-events:none}#mf.hid .mfF{transform:translateY(105%);opacity:0;pointer-events:none}'
++'#mf .mfSl{position:relative;flex:1;min-width:0;height:44px;touch-action:none;cursor:pointer;direction:ltr;outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}'
++'#mf .mfTr{position:absolute;left:16px;right:16px;top:0;bottom:0}#mf .mfTr::before{content:"";position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:var(--ln)}'
++'#mf .mfFl{position:absolute;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:var(--ac)}'
++'#mf .mfTh{position:absolute;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:var(--ac);border:3px solid var(--bg);box-shadow:0 0 0 1.5px var(--ac)}#mf .mfSl:focus-visible .mfTh{box-shadow:0 0 0 3px var(--tx)}'
++'#mf .mfBub{position:absolute;bottom:calc(100% + 6px);transform:translateX(-50%);background:var(--ac);color:var(--bg);border-radius:12px;padding:6px 12px;text-align:center;line-height:1.5;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.3);font-size:.85rem;z-index:5}#mf .mfBub b{display:block;font-size:1.15rem}#mf .mfBub[hidden]{display:none}'
 +'#mf .mfPg{direction:rtl;text-align:justify;text-align-last:center;font-family:"'+FN+'","Amiri Quran","Amiri","Noto Naskh Arabic","Traditional Arabic",serif;font-size:var(--mfs,28px);line-height:2.25;padding:6px 2px}'
 +'#mf .mfPg.dN{animation:mfn .22s ease}#mf .mfPg.dP{animation:mfp .22s ease}@keyframes mfn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}@keyframes mfp{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}'
 +'#mf .mfSn{text-align:center;border:2px solid var(--ac);border-radius:14px;padding:2px 10px;margin:10px 0 4px;color:var(--ac);font-family:Cairo,system-ui,sans-serif;font-size:.7em;line-height:2;background:var(--cd);text-align-last:center}#mf .mfBm{text-align:center;font-size:.85em;margin:2px 0 6px}'
@@ -123,7 +165,7 @@ function css(){if($('#mf-css'))return;const s=document.createElement('style');s.
 +'#mf .mfF{border-top:1px solid var(--ln);padding:6px 10px calc(8px + env(safe-area-inset-bottom,0px));background:var(--bg)}#mf .mfR{display:flex;align-items:center;gap:8px;margin:2px 0}#mf .mfR input[type=range]{flex:1;min-width:0;height:44px;accent-color:var(--ac)}#mf .mfTl{justify-content:center;flex-wrap:wrap}'
 +'#mf .mfW{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 12px;background:var(--cd);border-bottom:1px solid var(--ln);line-height:1.8}#mf .mfOk{color:var(--ac);font-weight:700}'
 +'#mf .mfEr{text-align:center;padding:30px 10px;line-height:2}#mf .mfEm{text-align:center;color:var(--mu);padding:20px}'
-+'#mfMn{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:2}#mfMn[hidden]{display:none}#mf .mfMh{display:flex;justify-content:space-between;align-items:center;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;border-bottom:1px solid var(--ln)}#mf .mfSp{min-width:60px}'
++'#mfMn{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:4}#mfMn[hidden]{display:none}#mf .mfMh{display:flex;justify-content:space-between;align-items:center;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;border-bottom:1px solid var(--ln)}#mf .mfSp{min-width:60px}'
 +'#mf .mfTabs{display:flex;gap:6px;padding:8px 10px}#mf .mfTabs button{flex:1;min-height:44px;border-radius:12px;border:1.5px solid var(--ln);background:var(--cd);color:var(--tx);font:inherit}#mf .mfTabs button.on{background:var(--ac);color:var(--bg);border-color:var(--ac);font-weight:700}'
 +'#mf .mfMb{flex:1;overflow-y:auto;padding:4px 10px calc(16px + env(safe-area-inset-bottom,0px))}#mf .mfL{display:flex;flex-direction:column;gap:6px}#mf .mfI{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:48px;text-align:start;padding:8px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--cd);color:var(--tx);font:inherit}#mf .mfI .src{flex:1;margin-inline-start:8px;color:var(--mu)}#mf .mfPn{color:var(--ac);font-weight:700}#mf .mfBr{display:flex;gap:6px;align-items:center}'
 +'#mf .mfJp{display:flex;gap:10px;align-items:flex-end;padding:10px 4px}#mf .mfJp label{display:flex;flex-direction:column;gap:6px;flex:1}#mf .mfJp input{font:inherit;min-height:44px;padding:8px;border-radius:10px;border:1.5px solid var(--ln);background:var(--cd);color:var(--tx)}#mf .mfFt{margin-top:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}#mf .mfCr,#mf .src{color:var(--mu);line-height:1.8;font-size:.85rem}#mf .mfSt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}'
