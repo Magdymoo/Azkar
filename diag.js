@@ -16,17 +16,19 @@
     var tz = tryv(function () { return Intl.DateTimeFormat().resolvedOptions().timeZone; }, null), now = new Date();
     o.time = { deviceTz: tz, offsetMin: -now.getTimezoneOffset(), nowISO: now.toISOString(),
       calendarKey: now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'),
-      azkariDayKey: (AZ.day && AZ.day.key) ? tryv(function () { return AZ.day.key(); }, null) : 'pending (A2)', dayKeyMethod: (AZ.day && AZ.day.info) ? tryv(function () { return AZ.day.info(); }, null) : 'pending (A2)' };
+      azkariDayKey: (AZ.day && AZ.day.key) ? tryv(function () { return AZ.day.key(); }, null) : null, dayKeyMethod: (AZ.day && AZ.day.info) ? tryv(function () { return AZ.day.info(); }, null) : null };
     var loc = jp('azkar_loc'), S = tryv(function () { return AZ.state(); }, null);
     o.location = { azkar_loc: loc, legacyStateLoc: S ? (S.loc ? true : false) : null, storedTz: loc && loc.tz || null, tzMatchesDevice: loc && loc.tz ? loc.tz === tz : null,
       single: 'AZ.loc (loc.js)' };
     var pt = w.__pt || {};
     o.prayer = { methodStored: raw('azkar_pmethod'), methodsAvailable: tryv(function () { return Object.keys(pt.METHODS || {}); }, []), fajrStored: raw('azkar_fajr'), ishaStored: raw('azkar_isha'),
-      effectiveMethod: tryv(function () { return pt.methodKey ? pt.methodKey() : null; }, null), times: (AZ.times && AZ.times.snapshot) ? tryv(function () { return AZ.times.snapshot(); }, null) : 'pending (A4-b)', today: tryv(function () { var r = pt.compute && pt.compute(); return r ? JSON.parse(JSON.stringify(r)) : null; }, null) };
+      effectiveMethod: tryv(function () { return pt.methodKey ? pt.methodKey() : null; }, null), times: (AZ.times && AZ.times.snapshot) ? tryv(function () { return AZ.times.snapshot(); }, null) : null, today: tryv(function () { var r = pt.compute && pt.compute(); return r ? JSON.parse(JSON.stringify(r)) : null; }, null) };
     o.data = tryv(function () { return AZ.data.status(); });
     o.keys = tryv(function () { return AZ.data.inventory(); });
     o.storage = await tryv(function () { return navigator.storage && navigator.storage.estimate ? navigator.storage.estimate() : null; }, null);
-    o.notifications = { nc: raw('azkar_nc', 600), nlog: raw('azkar_nlog', 3000), wx: raw('azkar_wx', 300) };
+    o.notifications = { nc: raw('azkar_nc', 600), nlog: raw('azkar_nlog', 3000), wx: raw('azkar_wx', 300),
+      reliability7d: tryv(function () { var h = jp('azkar_nhist') || {}, r = {}; Object.keys(h).forEach(function (id) { var x = h[id], d = (AZ.day && AZ.day.key) ? AZ.day.key(x.at) : new Date(x.at).toISOString().slice(0, 10);
+        var e = r[d] = r[d] || { planned: 0, fired: 0, skippedDone: 0, skippedQuiet: 0, missed: 0 }; e.planned++; if (x.f) e.fired++; else if (x.s === 'done') e.skippedDone++; else if (x.s === 'quiet') e.skippedQuiet++; else if (x.at < Date.now() - 6e4) e.missed++; }); return r; }, null) };
     o.serviceWorker = { controller: !!(navigator.serviceWorker && navigator.serviceWorker.controller), registrations: null, caches: null };
     try {
       var regs = navigator.serviceWorker ? await navigator.serviceWorker.getRegistrations() : [];

@@ -148,5 +148,15 @@
     o.tz = v ? v.tz : null; return o;
   }
 
-  AZ.times = { ANCH: ANCH, PRESETS: PRESETS, bind: bind, get: get, at: at, model: model, resolve: resolve, describe: describe, presetId: presetId, setPreset: setPreset, eveningStarted: eveningStarted, eveningText: eveningText, invalidate: invalidate, snapshot: snapshot, fmt: fmt };
+  /* أقرب موعد قادم لتذكير k (للتقويم .ics وروابطه): المراسي للنمط anchor، وS.rem[k].t للثابت (qm/qe) — نفس مصدر الإشعارات */
+  function nextAt(k, now) {
+    now = now == null ? Date.now() : +now;
+    var S = getS(), r = S && S.rem && S.rem[k], d;
+    for (var i = 0; i < 3; i++) {
+      d = (k === 'm' || k === 'e' || k === 'ql') ? resolve(k, i) : (r ? fixedAt(r, i) : null);
+      if (d && +d > now) return d;
+    }
+    return d || null;
+  }
+  AZ.times = { nextAt: nextAt, ANCH: ANCH, PRESETS: PRESETS, bind: bind, get: get, at: at, model: model, resolve: resolve, describe: describe, presetId: presetId, setPreset: setPreset, eveningStarted: eveningStarted, eveningText: eveningText, invalidate: invalidate, snapshot: snapshot, fmt: fmt };
 })(window);
