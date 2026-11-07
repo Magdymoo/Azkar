@@ -11,7 +11,7 @@ test('الطلبات الخارجية المتبقية محصورة فيما ي�
  const allowed=/open-meteo|alquran\.cloud|quran\.com|mail\.google|outlook\.live|calendar\.google|magdymoo\.github\.io|athkar\.invalid|alifta|dar-alifta|w3\.org/;
  for(const f of fs.readdirSync(ROOT).filter(f=>/\.(js|html)$/.test(f))){for(const m of R(f).matchAll(/https?:\/\/[a-z0-9.-]+/gi))assert.ok(allowed.test(m[0]),f+' '+m[0])}});
 test('readiness: طلب إذن الإشعارات محروس عند غياب Notification',()=>{assert.ok(/typeof Notification==='undefined'\)return;await Notification\.requestPermission/.test(R('readiness.js')))});
-const files=['data.js','day.js','home.js','loc.js','times.js','prayer.js','notify.js','readiness.js','polish.js','sakina.js','reassurance.js','search.js','qada.js','qibla.js','tools.js','umrah.js','names.js','mushaf.js','diag.js'];
+const files=['data.js','day.js','home.js','loc.js','times.js','prayer.js','notify.js','readiness.js','polish.js','sakina.js','reassurance.js','search.js','qada.js','qibla.js','tools.js','umrah.js','names.js','mushaf.js','diag.js','wadq.js'];
 function stub(){const f=function(){return p};const p=new Proxy(f,{get:(t,k)=>k===Symbol.toPrimitive?()=>'':k==='then'?undefined:k==='length'?0:p,apply:()=>p,construct:()=>p,set:()=>true});return p}
 function load(priv){const t=()=>{throw new Error('SecurityError')},m=new Map();
  const ls=priv?new Proxy({},{get:(_,k)=>['getItem','setItem','removeItem','key'].includes(k)?t:k==='length'?t():undefined}):{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),key:i=>[...m.keys()][i]??null,get length(){return m.size}};
