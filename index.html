@@ -13,7 +13,7 @@
 <script>
 /* ===== حارس الأخطاء v1.6.1: سكربت مستقل ليعمل حتى لو تعطّل السكربت الرئيسي (SyntaxError) ===== */
 (function(){
-var errs=[],ver='2.0.0-rc.13';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;window.AZ.asset=function(p){p=String(p);return /[?#]/.test(p)?p:p+'?v='+ver};
+var errs=[],ver='2.0.0-rc.14';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;window.AZ.asset=function(p){p=String(p);return /[?#]/.test(p)?p:p+'?v='+ver};
 function env(){var o=[];try{o.push('Azkari v'+ver);o.push(navigator.userAgent);o.push(location.protocol+'//'+(location.host||'(none)')+location.pathname);
 o.push('iframe='+(window.top!==window));}catch(e){o.push('iframe=?(cross-origin)')}
 function t(n,f){try{o.push(n+'='+(f()?'ok':'no'))}catch(e){o.push(n+'=blocked')}}
@@ -315,12 +315,12 @@ function chk(){var v=document.getElementById('v-home');if(window.__errs&&window.
 <body>
 <div id="splash" aria-hidden="true"><i><b></b></i></div>
 <!-- A7: السكربتات المتزامنة هنا (بعد الـsplash) كي يُرسَم الإقلاع قبل تنفيذها؛ الترتيب النسبي كما كان -->
-<script src="data.js?v=2.0.0-rc.13"></script>
-<script src="day.js?v=2.0.0-rc.13"></script>
-<script src="home.js?v=2.0.0-rc.13"></script>
-<script src="loc.js?v=2.0.0-rc.13"></script>
+<script src="data.js?v=2.0.0-rc.14"></script>
+<script src="day.js?v=2.0.0-rc.14"></script>
+<script src="home.js?v=2.0.0-rc.14"></script>
+<script src="loc.js?v=2.0.0-rc.14"></script>
 <script>if(!(window.AZ&&AZ.loc)){window.AZ=window.AZ||{};AZ.loc={get:function(){return null},set:function(){return null},migrate:function(){return false},has:function(){return false}}}</script>
-<script src="times.js?v=2.0.0-rc.13"></script>
+<script src="times.js?v=2.0.0-rc.14"></script>
 <script>if(!(window.AZ&&AZ.day)){AZ.day={key:function(t){var d=new Date(t===undefined?Date.now():t);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},phase:function(){var h=new Date().getHours();return h>=4&&h<11?"m":h>=11&&h<15?"d":h>=15&&h<21?"e":"n"},start:function(){return"fajr"},setStart:function(){},invalidate:function(){},info:function(){return{method:"shim"}}}}</script>
 <script>if(!(window.AZ&&AZ.data)){window.AZ=window.AZ||{};AZ.data={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},remove:function(k){try{localStorage.removeItem(k)}catch(e){}},wipeAll:function(){var n=0;try{Object.keys(localStorage).forEach(function(k){if(/^(azkar|athkary)/.test(k)){localStorage.removeItem(k);n++}})}catch(e){}return n},exportPrefs:function(){return{}},importPrefs:function(){return 0},status:function(){return{mode:"shim"}},inventory:function(){return[]}}}</script>
 <div id="eb" hidden role="alert"><span></span><button id="ebR">إعادة تحميل</button><button id="ebS">إرسال تقرير</button><button id="ebC">نسخ التفاصيل</button><button id="ebX">إغلاق</button></div>
@@ -425,7 +425,7 @@ function chk(){var v=document.getElementById('v-home');if(window.__errs&&window.
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 2.0.0-rc.13</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 2.0.0-rc.14</footer>
 </div>
 
 <nav>
@@ -1037,7 +1037,7 @@ ADH.o=[
 {g:'المطر',t:'مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ',n:1,f:'بعد نزول المطر — متفق عليه.'}];
 let OCG='';const OCL=['السفر','الطعام','المطر'];function umCard(){return cur==='o'?'<button id="umgo" style="margin-bottom:12px">🕋 العمرة — أدعية وأذكار ومراحل وعدّاد أشواط</button>':''}function openOccasion(g){OCG=OL_OK(g);cur='o';renderAdh();go('adh')}window.openOccasion=openOccasion;function ocChips(){return cur==='o'?'<div class="seg" id="ocs">'+['',...OCL].map(g=>'<button data-ocg="'+g+'" class="'+(OCG===g?'on':'')+'">'+(g||'الكل')+'</button>').join('')+'</div>':''}
 document.addEventListener('click',e=>{const t=e.target,d=t&&t.dataset;if(!d)return;if(d.ocg!==undefined){OCG=d.ocg;renderAdh();return}if(d.oc){openOccasion(d.oc)}});function OL_OK(g){return OCL.includes(g)?g:''}
-async function checkRain(){const LC=AZ.loc.get();if(!S.rain||!LC||!navigator.onLine)return;try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+LC.lat.toFixed(2)+'&longitude='+LC.lng.toFixed(2)+'&current=precipitation,weather_code');if(!r.ok)return;const j=await r.json(),c=j.current||{},w=c.weather_code;if((c.precipitation||0)>0||(w>=51&&w<=67)||(w>=80&&w<=82)||(w>=95&&w<=99)){RAIN=Date.now();renderSmart()}}catch(e){}}
+async function checkRain(){const LC=AZ.loc.get();if(!S.rain||!LC||!navigator.onLine)return;try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+LC.lat.toFixed(2)+'&longitude='+LC.lng.toFixed(2)+'&current=precipitation,weather_code');if(!r.ok)return;const j=await r.json(),c=j.current||{},w=c.weather_code;try{AZ.data.set('azkar_wx',JSON.stringify(j))}catch(e){}if((c.precipitation||0)>0||(w>=51&&w<=67)||(w>=80&&w<=82)||(w>=95&&w<=99)){RAIN=Date.now();renderSmart()}}catch(e){}}
 /* ----- روابط سريعة وفتح ذكي ----- */
 function deepLink(){const q=new URLSearchParams(location.search),g=q.get('go');if(!g)return;try{history.replaceState(null,'',location.pathname)}catch(e){}
  if(['m','e','s','x','o','u'].includes(g)){cur=g;renderAdh();go('adh');if(q.get('focus'))setTimeout(openFocus,50)}else if(g==='q')go('q');else if(g==='free')go('free')}
@@ -1205,9 +1205,9 @@ $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();rend
 window.__booted=1;try{AZ.trace&&AZ.trace('booted')}catch(e){}
 try{requestAnimationFrame(function(){requestAnimationFrame(function(){window.__hideSplash&&window.__hideSplash()})})}catch(e){}
 </script>
-<script src="reassurance.js?v=2.0.0-rc.13"></script><script src="sakina.js?v=2.0.0-rc.13"></script><script src="prayer.js?v=2.0.0-rc.13"></script><script src="qada.js?v=2.0.0-rc.13"></script>
-<script src="tools.js?v=2.0.0-rc.13"></script>
-<script src="polish.js?v=2.0.0-rc.13"></script>
-<script src="umrah.js?v=2.0.0-rc.13"></script><script src="readiness.js?v=2.0.0-rc.13"></script><script src="notify.js?v=2.0.0-rc.13"></script>
+<script src="reassurance.js?v=2.0.0-rc.14"></script><script src="sakina.js?v=2.0.0-rc.14"></script><script src="prayer.js?v=2.0.0-rc.14"></script><script src="qada.js?v=2.0.0-rc.14"></script>
+<script src="tools.js?v=2.0.0-rc.14"></script>
+<script src="polish.js?v=2.0.0-rc.14"></script>
+<script src="umrah.js?v=2.0.0-rc.14"></script><script src="readiness.js?v=2.0.0-rc.14"></script><script src="notify.js?v=2.0.0-rc.14"></script>
 </body>
 </html>
