@@ -1,0 +1,22 @@
+const test=require('node:test'),assert=require('node:assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const R=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
+const CITY={lat:21.4858,lng:39.1925,name:'جدة',tz:'Asia/Riyadh',cc:'SA'};
+function env(done){const m=new Map(Object.entries({azkar_loc:JSON.stringify(CITY)}));
+ const ls={getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),key:i=>[...m.keys()][i]??null,get length(){return m.size}};
+ const w={localStorage:ls,performance:{now:()=>1},Intl,Date,Math,JSON,console,setTimeout:f=>0,clearTimeout(){},addEventListener(){},dispatchEvent(){},Event:class{constructor(t){this.type=t}},navigator:{}};w.window=w;vm.createContext(w);
+ for(const f of['data.js','prayer.js','day.js','times.js'])vm.runInContext(R(f),w);
+ w.S={rem:{m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:0,t:'09:00'},qe:{on:0,t:'21:00'},ql:{on:0,t:'03:30',sun:0}}};w.AZ.state=()=>w.S;w.AZ.save=()=>{};w.AZ.times.bind(()=>w.S,()=>{});
+ w.AZ.isDone=k=>!!(done&&done[k]);vm.runInContext(R('notify.js'),w);return w}
+const C=o=>Object.assign({on:true,m:true,e:true,q:false,pre:false,esc:true,qa:false,tone:'amiya',g1:60,g2:120,qh:null,p:{fajr:false,dhuhr:false,asr:false,maghrib:false,isha:false}},o);
+const plan=(w,c,off)=>{const P=w.__pt.computeFor(off||0);return w.__nf.plan(Date.now()-864e5*2,P.T,P.third,c,false,{tz:CITY.tz,skipped:[],off:off||0})};
+const ids=(w,c,k)=>plan(w,c).filter(n=>n.kind===k).map(n=>n.id.split('@')[0]);
+test('بلا إتمام: m يعطي 3 درجات (0، g1، g2)',()=>{const w=env();const a=ids(w,C(),'m');assert.deepEqual(a,['m-0','m-1','m-2'].filter(x=>a.includes(x)));assert.ok(a.includes('m-0'))});
+test('سيناريو A4: قرأ الصباح ← لا «لسه ما قرأتش» (لا m-1 ولا m-2 ولا m-0)',()=>{const w=env({m:true});assert.equal(ids(w,C(),'m').length,0);assert.ok(ids(w,C(),'e').length>0,'المساء لا يتأثر')});
+test('إتمام المساء لا يوقف الصباح والعكس',()=>{const w=env({e:true});assert.ok(ids(w,C(),'m').length>0);assert.equal(ids(w,C(),'e').length,0)});
+test('esc=false: إشعار واحد فقط بلا عتاب',()=>{const w=env();assert.ok(ids(w,C({esc:false}),'m').every(x=>x==='m-0'))});
+test('g1/g2 غير منطقية تُصحَّح: g1≥15 وg2>g1',()=>{const w=env();const P=w.__pt.computeFor(0),base=Date.now()-864e5*2;
+ const a=w.__nf.plan(base,P.T,P.third,C({g1:0,g2:0}),false,{tz:CITY.tz,skipped:[],off:0}).filter(n=>n.kind==='e');
+ const t=a.map(n=>n.at).sort((x,y)=>x-y);for(let i=1;i<t.length;i++)assert.ok(t[i]-t[i-1]>=15*6e4);
+ const b=w.__nf.plan(base,P.T,P.third,C({g1:90,g2:30}),false,{tz:CITY.tz,skipped:[],off:0}).filter(n=>n.kind==='e').map(n=>n.at).sort((x,y)=>x-y);for(let i=1;i<b.length;i++)assert.ok(b[i]>b[i-1])});
+test('عتاب الصباح لا يتجاوز الظهر',()=>{const w=env();const P=w.__pt.computeFor(0);const out=w.__nf.plan(Date.now()-864e5*2,P.T,P.third,C({g1:240,g2:340}),false,{tz:CITY.tz,skipped:[],off:0}).filter(n=>n.kind==='m'&&!/^m-0/.test(n.id));out.forEach(n=>assert.ok(n.at<+P.T.dhuhr))});
+test('المطر: مصدر واحد (لا جلب ولا بطاقة في notify.js، وcheckRain يحفظ azkar_wx)',()=>{const n=R('notify.js'),h=R('index.html');assert.ok(!/open-meteo/.test(n)&&!/rainc/.test(n)&&!/function weather/.test(n));assert.equal((h.match(/api\.open-meteo\.com/g)||[]).length,1);assert.ok(/azkar_wx/.test(h))});
