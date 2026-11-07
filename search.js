@@ -17,6 +17,7 @@ async function build(){if(IDX)return IDX;if(P)return P;P=(async()=>{const it=[],
  try{(window.__pt&&window.__pt.ST||[]).forEach(a=>add('أذكار بعد الصلاة',a.t,a.s||a.b))}catch(e){}
  let lib=[];try{const r=await fetch('dua-library.json');const j=await r.json();lib=j.duas||[];lib.forEach(d=>add('أدعية',d.t,d.c))}catch(e){}
  try{const byId={};lib.forEach(d=>byId[d.id]=d);((window.__um&&window.__um.STG)||[]).forEach(g=>(g.it||[]).forEach(x=>{const t=x.t||(x.ref&&byId[x.ref]&&byId[x.ref].t);if(t)add('العمرة',t,g.n+(x.s?' — '+x.s:''))}))}catch(e){}
+ try{const nd=window.__needs&&await window.__needs.index();(nd||[]).forEach(o=>add(o.g,o.t,o.f))}catch(e){}
  const seen=new Set();IDX=it.filter(o=>{const k=o.g+'|'+o.n;if(seen.has(k))return false;seen.add(k);return true});return IDX})();return P}
 function customItems(){try{return(typeof S!=='undefined'&&S.custom||[]).map(a=>{const o={g:'أذكاري',t:String(a.t||''),f:a.f?String(a.f):''};o.n=norm(o.t);return o}).filter(o=>o.n)}catch(e){return[]}}
 /* ---------- الصفحة ---------- */

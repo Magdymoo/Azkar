@@ -53,7 +53,7 @@ function btn(a,l,m){return '<button class="wb'+(m?' main':'')+'" data-a="'+a+'">
 function view(s){var h='',u=$('.wdu',s.el);
  if(s.scene==='fire')h='<div class="wdp"><h2>الودق</h2><p class="wdm">اجلس قليلًا، وخذ نفسًا عميقًا… واذكر الله.</p><p class="wdq">﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾</p><div class="wdc">الرعد ٢٨</div></div><div class="wdr">'+btn('ok','قلبي اطمأن',1)+btn('more','ما زلت أحتاج المزيد')+'</div>';
  else if(s.scene==='rain')h='<div class="wdp"><p class="wdq">﴿فَتَرَى الْوَدْقَ يَخْرُجُ مِنْ خِلَالِهِ﴾</p><div class="wdc">النور ٤٣، والروم ٤٨</div><p class="wdm">الحمد لله… بعد الغيم يأتي الودق.</p></div><div class="wdr">'+btn('skip',reduced()?'التالي':'تخطّي',1)+'</div>';
- else{var x=s.item;h='<div class="wdp"><span class="wdt">'+x.c+'</span><p class="wdq big">'+x.t+'</p><div class="wdc">'+cite(x)+'</div></div><div class="wdr two">'+btn('next','آية/حديث آخر',1)+btn('copy','نسخ')+btn('share','مشاركة')+btn('close','إغلاق')+'</div>'}
+ else{var x=s.item;h='<div class="wdp"><span class="wdt">'+x.c+'</span><p class="wdq big">'+x.t+'</p><div class="wdc">'+cite(x)+'</div></div><div class="wdr two">'+btn('next','آية/حديث آخر',1)+btn('copy','نسخ')+btn('share','مشاركة')+btn('close','إغلاق')+'</div><div class="wdr">'+btn('needs','أحتاج دعاءً لموقفي… (أنا محتاج)')+'</div>'}
  u.innerHTML=h;u.setAttribute('aria-live','polite');var f=$('button.main',u)||$('button',u);try{f&&f.focus({preventScroll:true})}catch(e){}}
 function go(s,scene){if(s.timer){clearTimeout(s.timer);s.timer=0}s.scene=scene;s.cv.style.opacity=scene==='word'?'.35':'1';
  if(scene==='word'){s.item=pick(s.cat);stopSnd(s)}
@@ -63,6 +63,7 @@ function onClick(e){var s=st;if(!s||s.closed)return;var b=e.target.closest&&e.ta
  if(a==='close')return close();
  if(a==='ok')go(s,'rain');else if(a==='skip')go(s,'word');else if(a==='next'){s.item=pick(s.cat);view(s)}
  else if(a==='more'){close();try{window.__sk&&window.__sk.open()}catch(x){}}
+ else if(a==='needs'){close();window.AZ_lazy('needs.js','__needs').then(function(){window.__needs.open()}).catch(function(){})}
  else if(a==='copy')copy(s.item);else if(a==='share')share(s.item);else if(a==='snd')toggleSnd(s,b)}
 function toastM(m){try{if(typeof toast==='function')toast(m)}catch(e){}}
 function copy(x){var t=full(x);function fb(){try{var a=D.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';D.body.appendChild(a);a.select();D.execCommand('copy');a.remove();toastM('تم النسخ')}catch(e){toastM('تعذر النسخ')}}

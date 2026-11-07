@@ -7,7 +7,7 @@ const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const NM={fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء'};
 let ov=null,pg='hub',pushed=false,tk=0,tgt=0,curP=null;const EXT=[];
 /* صفحات الأدوات المتاحة (تُضاف هنا) */
-const ORDER=['qibla','search','names'],LAZY=['qibla.js','search.js','names.js'];let modsOk=false,modsP=null;
+const ORDER=['needs','qibla','search','names'],LAZY=['needs.js','qibla.js','search.js','names.js'];let modsOk=false,modsP=null;
 const register=p=>{if(p&&p.id&&!EXT.find(x=>x.id===p.id))EXT.push(p)},allP=()=>PAGES.concat(EXT.slice().sort((a,b)=>(ORDER.indexOf(a.id)+1||99)-(ORDER.indexOf(b.id)+1||99)));
 /* تحميل كسول لأدوات القبلة والبحث والأسماء عند أول فتح للصفحة (يخفّف الإقلاع) */
 function loadMods(){if(modsP)return modsP;modsP=Promise.all(LAZY.map(src=>new Promise(res=>{try{if(document.querySelector('script[data-lz="'+src+'"]'))return res();const s=document.createElement('script');s.src=AZ.asset(src);s.dataset.lz=src;s.onload=s.onerror=()=>res();document.body.appendChild(s)}catch(e){res()}}))).then(()=>{modsOk=true});return modsP}
