@@ -1,0 +1,25 @@
+const test=require('node:test'),assert=require('node:assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const R=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
+const CITY={lat:21.4858,lng:39.1925,name:'جدة',tz:'Asia/Riyadh',cc:'SA'};
+function env(rem,nc,perm){const m=new Map(Object.entries({azkar_loc:JSON.stringify(CITY)}));if(nc)m.set('azkar_nc',JSON.stringify(nc));
+ const ls={getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),key:i=>[...m.keys()][i]??null,get length(){return m.size}};
+ const w={localStorage:ls,performance:{now:()=>1},Intl,Date,Math,JSON,console,setTimeout:f=>0,clearTimeout(){},addEventListener(){},dispatchEvent(){},Event:class{constructor(t){this.type=t}},navigator:{},Notification:perm?{permission:perm}:undefined};w.window=w;w.__m=m;vm.createContext(w);
+ for(const f of['data.js','prayer.js','day.js','times.js'])vm.runInContext(R(f),w);
+ w.S={rem:Object.assign({m:{on:1,t:'05:00',sun:0},e:{on:1,t:'17:00',sun:0},qm:{on:1,t:'09:00'},qe:{on:1,t:'21:00'},ql:{on:0,t:'03:30',sun:0}},rem||{})};w.AZ.state=()=>w.S;let sv=0;w.AZ.save=()=>{sv++};w.__sv=()=>sv;w.AZ.times.bind(()=>w.S,()=>{});
+ w.AZ.isDone=()=>false;w.RT=k=>'نص-'+k;w.RNM={qm:'ورد الصباح',qe:'ورد الليل'};vm.runInContext(R('notify.js'),w);return w}
+const C={on:true,m:false,e:false,q:false,pre:false,esc:true,qa:false,tone:'amiya',g1:60,g2:120,qh:null,p:{fajr:false,dhuhr:false,asr:false,maghrib:false,isha:false}};
+const plan=(w,off)=>{const P=off?w.__pt.computeFor(off):w.__pt.computeFor(0);const now=Date.now();return w.__nf.plan(now,P.T,P.third,Object.assign({},C),false,{tz:CITY.tz,skipped:[],off:off||0})};
+test('qm/qe تدخل في plan() كإشعار واحد بالنوع والوجهة الصحيحة',()=>{const w=env();const out=[0,1].flatMap(o=>plan(w,o)).filter(n=>n.kind==='qm'||n.kind==='qe');
+ assert.ok(out.some(n=>n.kind==='qm'&&n.go==='qm'&&/^qm-0@/.test(n.id)));assert.ok(out.some(n=>n.kind==='qe'&&n.go==='qe'));
+ const x=out.find(n=>n.kind==='qm'),d=new Date(x.at);assert.equal(d.getHours()*60+d.getMinutes(),9*60);assert.equal(x.body,'نص-qm')});
+test('qm مُعطَّل في S.rem ← لا إشعار؛ واكتمال النوع ← لا إشعار',()=>{let w=env({qm:{on:0,t:'09:00'}});assert.ok(![0,1].flatMap(o=>plan(w,o)).some(n=>n.kind==='qm'));
+ w=env();w.AZ.isDone=k=>k==='qe';assert.ok(![0,1].flatMap(o=>plan(w,o)).some(n=>n.kind==='qe'))});
+test('أفق الأيام: ctx.off=1 يعطي موعد الغد',()=>{const w=env();const a=plan(w,0).filter(n=>n.kind==='qm'),b=plan(w,1).filter(n=>n.kind==='qm');assert.ok(b.length===1);if(a.length)assert.equal(Math.round((b[0].at-a[0].at)/36e5),24)});
+test('وقت غير صالح لا يكسر المحرك',()=>{const w=env({qm:{on:1,t:'xx'},qe:{on:1,t:''}});assert.doesNotThrow(()=>plan(w,0))});
+test('eff(): S.rem هو المصدر الوحيد لـ m/e/q (ql)',()=>{const w=env({m:{on:0,t:'05:00'},e:{on:1,t:'17:00'},ql:{on:1,t:'03:30'}});const c=w.__nf.eff();assert.deepEqual([c.m,c.e,c.q],[false,true,true])});
+test('covers(): بإذن ممنوح يغطي qm/qe/m/e/ql حسب S.rem؛ بلا إذن لا يغطي شيئًا (check() يبقى احتياطًا)',()=>{let w=env({ql:{on:1,t:'03:30'},qe:{on:0,t:'21:00'}},null,'granted');for(const k of['m','e','qm','ql'])assert.equal(w.__nf.covers(k),true,k);assert.equal(w.__nf.covers('qe'),false);
+ w=env({},null,'default');for(const k of['m','e','qm','qe','ql'])assert.equal(w.__nf.covers(k),false,k)});
+test('ترحيل azkar_nc: m=false ← S.rem.m.on=0؛ يُنفَّذ مرة واحدة؛ لا يفعّل ما كان مطفأ',()=>{const w=env({},{m:false,e:true,q:false,on:true});assert.equal(w.__nf.migrateNc(),true);assert.equal(w.S.rem.m.on,0);assert.equal(w.S.rem.e.on,1);assert.equal(w.S.rem.ql.on,0);
+ const c=JSON.parse(w.__m.get('azkar_nc'));assert.equal(c.mig,1);assert.ok(!('m' in c)&&!('e' in c)&&!('q' in c));assert.equal(w.__nf.migrateNc(),false);assert.ok(w.__sv()>=1)});
+test('ترحيل قيام الليل: الإشعار كان مفعّلًا افتراضيًا ← يُحفظ للممنوحين الإذن فقط',()=>{let w=env({},{on:true},'granted');w.__nf.migrateNc();assert.equal(w.S.rem.ql.on,1);w=env({},{on:true},'default');w.__nf.migrateNc();assert.equal(w.S.rem.ql.on,0)});
+test('بطاقة الإشعارات لا تحوي مفاتيح m/e/q المكررة',()=>{const t=R('notify.js');assert.ok(!/tg\('m',/.test(t)&&!/tg\('e',/.test(t)&&!/tg\('q',/.test(t))});

@@ -20,15 +20,15 @@ test('SyntaxError في ملف JS أو سكربت مضمَّن يُرفض',()=>{l
 
 test('bump إلى rc جديد: كل المواضع تتغير ولا يُمسّ version.json',()=>{
  const d=clone(),before=fs.readFileSync(path.join(d,'version.json'),'utf8');
- const r=bump(d,'2.0.0-rc.7');assert.deepEqual(r.res.errs,[]);assert.ok(r.scripts>=13);
+ const r=bump(d,'9.9.9-rc.1');assert.deepEqual(r.res.errs,[]);assert.ok(r.scripts>=13);
  assert.equal(fs.readFileSync(path.join(d,'version.json'),'utf8'),before);
  assert.ok(!/2\.0\.0-rc\.6/.test(fs.readFileSync(path.join(d,'sw.js'),'utf8')));
- const h=fs.readFileSync(path.join(d,'index.html'),'utf8');assert.ok(!/\?v=2\.0\.0-rc\.6/.test(h));assert.ok(h.includes("ver='2.0.0-rc.7'"));assert.ok(h.includes('الإصدار 2.0.0-rc.7</footer>'));
+ const h=fs.readFileSync(path.join(d,'index.html'),'utf8');assert.ok(!/\?v=2\.0\.0-rc\.8/.test(h));assert.ok(h.includes("ver='9.9.9-rc.1'"));assert.ok(h.includes('الإصدار 9.9.9-rc.1</footer>'));
  assert.deepEqual(errs(d),[])});
-test('bump idempotent',()=>{const d=clone();bump(d,'2.0.0-rc.7');const a=fs.readFileSync(path.join(d,'index.html'),'utf8');bump(d,'2.0.0-rc.7');assert.equal(fs.readFileSync(path.join(d,'index.html'),'utf8'),a)});
+test('bump idempotent',()=>{const d=clone();bump(d,'9.9.9-rc.1');const a=fs.readFileSync(path.join(d,'index.html'),'utf8');bump(d,'9.9.9-rc.1');assert.equal(fs.readFileSync(path.join(d,'index.html'),'utf8'),a)});
 test('bump النهائي --publish يكتب version.json ويمرّ فحص --release',()=>{
  const d=clone(),r=bump(d,'2.0.0',{publish:true,date:'2026-12-01'});assert.deepEqual(r.res.errs,[]);
  const j=JSON.parse(fs.readFileSync(path.join(d,'version.json'),'utf8'));assert.equal(j.version,'2.0.0');assert.equal(j.date,'2026-12-01');assert.ok(j.notes.length);
  assert.deepEqual(check(d,{release:true}).errs,[])});
-test('bump يرفض rc مع publish وصيغة غير صالحة',()=>{const d=clone();assert.throws(()=>bump(d,'2.0.0-rc.8',{publish:true}));assert.throws(()=>bump(d,'v2'))});
+test('bump يرفض rc مع publish وصيغة غير صالحة',()=>{const d=clone();assert.throws(()=>bump(d,'2.0.0-rc.11',{publish:true}));assert.throws(()=>bump(d,'v2'))});
 test('--release على rc يُرفض',()=>{assert.ok(check(ROOT,{release:true}).errs.length>0)});
