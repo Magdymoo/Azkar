@@ -3,7 +3,7 @@
    environment (no network), so this is an equivalent in-repo implementation. Verify against your local timetable. */
 (function(){'use strict';
 const R=Math.PI/180,sin=x=>Math.sin(x*R),cos=x=>Math.cos(x*R),tan=x=>Math.tan(x*R),asin=x=>Math.asin(x)/R,acos=x=>Math.acos(x)/R,atan=x=>Math.atan(x)/R,fix=(x,m)=>x-m*Math.floor(x/m);
-const METHODS={egyptian:{n:'الهيئة المصرية العامة للمساحة',f:19.5,i:17.5},mwl:{n:'رابطة العالم الإسلامي',f:18,i:17},ummalqura:{n:'أم القرى',f:18.5,im:90},karachi:{n:'جامعة العلوم الإسلامية - كراتشي',f:18,i:18},isna:{n:'أمريكا الشمالية (ISNA)',f:15,i:15}};
+const METHODS={egyptian:{n:'الهيئة المصرية العامة للمساحة',f:19.5,i:17.5},mwl:{n:'رابطة العالم الإسلامي',f:18,i:17},ummalqura:{n:'أم القرى',f:18.5,im:90,imr:120},karachi:{n:'جامعة العلوم الإسلامية - كراتشي',f:18,i:18},isna:{n:'أمريكا الشمالية (ISNA)',f:15,i:15}};
 const CITIES0=[['القاهرة',30.0444,31.2357,'Africa/Cairo'],['الإسكندرية',31.2001,29.9187,'Africa/Cairo'],['مكة المكرمة',21.3891,39.8579,'Asia/Riyadh'],['المدينة المنورة',24.4672,39.6111,'Asia/Riyadh'],['الرياض',24.7136,46.6753,'Asia/Riyadh'],['دبي',25.2048,55.2708,'Asia/Dubai'],['عمّان',31.9454,35.9284,'Asia/Amman'],['إسطنبول',41.0082,28.9784,'Europe/Istanbul'],['لندن',51.5072,-0.1276,'Europe/London'],['طرابلس',32.8872,13.1913,'Africa/Tripoli','mwl'],['بنغازي',32.1167,20.0667,'Africa/Tripoli','mwl'],['مصراتة',32.3754,15.0925,'Africa/Tripoli','mwl'],['سبها',27.0377,14.4283,'Africa/Tripoli','mwl'],['البيضاء',32.7627,21.7551,'Africa/Tripoli','mwl'],['طبرق',32.0836,23.9764,'Africa/Tripoli','mwl'],['سرت',31.2089,16.5887,'Africa/Tripoli','mwl'],['الزاوية',32.7571,12.7276,'Africa/Tripoli','mwl'],['زليتن',32.4674,14.5687,'Africa/Tripoli','mwl'],['درنة',32.767,22.6367,'Africa/Tripoli','mwl']];
 /* ليبيا (LY, Africa/Tripoli, UTC+2 بلا توقيت صيفي): الطريقة الافتراضية = رابطة العالم الإسلامي (فجر ١٨° / عشاء ١٧°) — يحتاج مراجعة مع تقويم وزارة الأوقاف المحلي؛ يمكن تغييرها من «طريقة الحساب». */;
 const CC={"SA":"السعودية","EG":"مصر","LY":"ليبيا","AE":"الإمارات","KW":"الكويت","QA":"قطر","BH":"البحرين","OM":"عُمان","YE":"اليمن","JO":"الأردن","PS":"فلسطين","LB":"لبنان","SY":"سوريا","IQ":"العراق","SD":"السودان","TN":"تونس","DZ":"الجزائر","MA":"المغرب","TR":"تركيا","PK":"باكستان","GB":"المملكة المتحدة","US":"الولايات المتحدة","CA":"كندا"};const CCM={"SA":"ummalqura","QA":"ummalqura","EG":"egyptian","SD":"egyptian","PK":"karachi","US":"isna","CA":"isna"};const BOX=[["BH",25.5,26.4,50.3,50.9],["QA",24.4,26.2,50.7,51.7],["KW",28.5,30.2,46.5,48.5],["AE",22.6,26.1,51.5,56.4],["OM",16.6,26.5,52,60],["YE",12,16.3,42.5,54.6],["YE",16.3,19,47,53],["JO",29.15,33.4,34.9,39.3],["PS",29.4,33.3,34.2,35.9],["LB",33,34.7,35.1,36.7],["SY",32.3,37.3,35.7,42.4],["IQ",29,37.4,38.8,48.6],["SA",16.3,32.2,34.5,55.7],["EG",22,31.7,24.7,36.9],["SD",8.7,22,21.8,38.6],["LY",19.5,33.2,9.3,25.2],["TN",30.2,37.5,7.5,11.6],["DZ",18.9,37.1,-8.7,12],["MA",27.6,35.9,-13.2,-1],["TR",35.8,42.2,26,44.8],["PK",23.6,37.1,60.8,77.8],["GB",49.9,60.9,-8.2,1.8],["US",24.5,49.5,-125,-66.9],["CA",49.5,70,-141,-52]];const TZCC={"Africa/Cairo":"EG","Asia/Riyadh":"SA","Asia/Dubai":"AE","Asia/Kuwait":"KW","Asia/Qatar":"QA","Asia/Bahrain":"BH","Asia/Muscat":"OM","Africa/Tripoli":"LY","Europe/Istanbul":"TR","Europe/London":"GB","Asia/Amman":"JO","Asia/Karachi":"PK","Asia/Baghdad":"IQ","Asia/Beirut":"LB","Asia/Damascus":"SY","Africa/Khartoum":"SD","Africa/Tunis":"TN","Africa/Algiers":"DZ","Africa/Casablanca":"MA","Asia/Aden":"YE"};
@@ -18,10 +18,16 @@ function methodKey(){const l=loc(),mode=LS.g('azkar_pmode'),pm=LS.g('azkar_pmeth
 const T_=x=>{try{return typeof LANG!=='undefined'&&LANG!=='ar'&&typeof trs==='function'?(trs(x,LANG)||x):x}catch(e){return x}};
 const changed=()=>{try{window.AZ&&AZ.day&&AZ.day.invalidate();window.dispatchEvent(new Event('azkar:times'))}catch(e){}};
 function sun(ts){const n=ts/864e5+2440587.5-2451545,L=fix(280.46+0.9856474*n,360),g=fix(357.528+0.9856003*n,360),lam=L+1.915*sin(g)+0.02*sin(2*g),eps=23.439-4e-7*n,dec=asin(sin(eps)*sin(lam));let ra=fix(Math.atan2(cos(eps)*sin(lam),cos(lam))/R/15,24),eqt=fix(L/15-ra+12,24)-12;return{dec,eqt}}
+/* هل التاريخ الميلادي (y,m0,d) يقع في رمضان بتقويم أم القرى؟ (للعشاء +120د) */
+const _hf=(()=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{month:'numeric',timeZone:'UTC'})}catch(e){return null}})();
+function isRamadan(y,m,d){try{return !!_hf&&+_hf.format(Date.UTC(y,m,d,12))===9}catch(e){return false}}
 function times(y,m,d,lat,lng,M){const{dec,eqt}=sun(Date.UTC(y,m,d,12)-lng/15*36e5),noon=12-lng/15-eqt,
  ang=a=>{const c=(sin(a)-sin(lat)*sin(dec))/(cos(lat)*cos(dec));return c<-1||c>1?NaN:acos(c)/15},base=Date.UTC(y,m,d),T=h=>isNaN(h)?null:new Date(base+h*36e5),
  asr=atan(1/(1+tan(Math.abs(lat-dec)))),mg=noon+ang(-0.833);
- return{fajr:T(noon-ang(-M.f)),sunrise:T(noon-ang(-0.833)),dhuhr:T(noon),asr:T(noon+ang(asr)),maghrib:T(mg),isha:M.im?T(mg+M.im/60):T(noon+ang(-M.i))}}
+ const sr=noon-ang(-0.833);let fj=noon-ang(-M.f),is=M.im?mg+((M.imr&&isRamadan(y,m,d))?M.imr:M.im)/60:noon+ang(-M.i);
+ /* خطوط العرض العالية: لو لم تبلغ الشمس زاوية الفجر/العشاء نستعمل قاعدة سُبع الليل (بدل null) */
+ if((isNaN(fj)||isNaN(is))&&!isNaN(sr)&&!isNaN(mg)){const night=24-(mg-sr),seven=night/7;if(isNaN(fj))fj=sr-seven;if(isNaN(is))is=mg+seven}
+ return{fajr:T(fj),sunrise:T(sr),dhuhr:T(noon),asr:T(noon+ang(asr)),maghrib:T(mg),isha:T(is)}}
 function lastThird(y,m,d,lat,lng,M,now){const t=times(y,m,d,lat,lng,M),n=times(y,m,d+1,lat,lng,M),p=times(y,m,d-1,lat,lng,M);
  const [mg,fj]=(now&&t.fajr&&now<t.fajr)?[p.maghrib,t.fajr]:[t.maghrib,n.fajr];return mg&&fj?new Date(mg.getTime()+(fj-mg)*2/3):null}
 /* ---------- state ---------- */
@@ -48,10 +54,10 @@ function view(){const v=$('#v-pt');if(!v)return;if(subV()==='q'){v.innerHTML=sub
  h+='<div class="card"><button class="btn main" id="paGo" style="width:100%">أذكار بعد الصلاة (بعدّاد تلقائي)</button></div>';v.innerHTML=subT()+h;cd()}
 function cd(){const e=$('#ptCd');if(!e)return;let s=Math.max(0,Math.floor((+e.dataset.t-Date.now())/1e3));const p=n=>String(n).padStart(2,'0');e.textContent=A(p(Math.floor(s/3600))+':'+p(Math.floor(s%3600/60))+':'+p(s%60));if(s===0)setTimeout(view,1500)}
 function onView(e){const t=e.target;const sb=t.closest&&t.closest('[data-sub]');if(sb){LS.s('azkar_pt_sub',sb.dataset.sub);return view()}if(t.id==='ptGps')return gps();if(t.id==='paGo')return openPA();}
-function gps(){const b=$('#ptGps');if(!navigator.geolocation){if(typeof toast==='function')toast('الموقع غير مدعوم، اختر مدينة');return}b.textContent='جارٍ تحديد الموقع…';
+function gps(done){const b=$('#ptGps');if(!navigator.geolocation){if(typeof toast==='function')toast('الموقع غير مدعوم، اختر مدينة');if(typeof done==='function')done(false);return}if(b)b.textContent='جارٍ تحديد الموقع…';
  navigator.geolocation.getCurrentPosition(p=>{const lat=p.coords.latitude,lng=p.coords.longitude,tz=Intl.DateTimeFormat().resolvedOptions().timeZone,cc=regionFor(lat,lng,tz),nc=nearestCity(lat,lng,60),pv=loc();
-  LS.s('azkar_loc',JSON.stringify({lat,lng,name:nc?nc[0]:'موقعي الحالي',tz,cc:cc||(nc&&nc[5])||null,src:'gps',acc:Math.round(p.coords.accuracy||0),ts:Date.now()}));LS.s('azkar_geo_ok','1');LS.s('azkar_geo_asked','1');try{window.__rd&&window.__rd.syncLoc()}catch(e){}afterLoc(pv,loc(),true);view()},
- e=>{if(typeof toast==='function')toast(e&&e.code===1?'تم رفض إذن الموقع، فعّله من إعدادات الجهاز أو اختر مدينة':e&&e.code===3?'انتهت مهلة تحديد الموقع، حاول مجددًا أو اختر مدينة':'تعذّر تحديد الموقع، اختر مدينة يدويًا');view()},{enableHighAccuracy:false,timeout:15000,maximumAge:3e5})}
+  LS.s('azkar_loc',JSON.stringify({lat,lng,name:nc?nc[0]:'موقعي الحالي',tz,cc:cc||(nc&&nc[5])||null,src:'gps',acc:Math.round(p.coords.accuracy||0),ts:Date.now()}));LS.s('azkar_geo_ok','1');LS.s('azkar_geo_asked','1');try{window.__rd&&window.__rd.syncLoc()}catch(e){}afterLoc(pv,loc(),true);view();if(typeof done==='function')done(true)},
+ e=>{if(typeof toast==='function')toast(e&&e.code===1?'تم رفض إذن الموقع، فعّله من إعدادات الجهاز أو اختر مدينة':e&&e.code===3?'انتهت مهلة تحديد الموقع، حاول مجددًا أو اختر مدينة':'تعذّر تحديد الموقع، اختر مدينة يدويًا');view();if(typeof done==='function')done(false)},{enableHighAccuracy:false,timeout:15000,maximumAge:3e5})}
 function afterLoc(pv,L,fromGps){try{if(!L)return;const prevCc=pv?(pv.cc||regionFor(pv.lat,pv.lng,pv.tz)):null,mi=methodKey(),a=autoDm(L);
  if(mi.src==='user'){const no=(LS.g('azkar_pm_no')||'').split(',');if(a&&a!==mi.k&&L.cc&&L.cc!==prevCc&&!no.includes(L.cc)&&METHODS[a]&&typeof confirm==='function'){
    if(confirm(T_('تغيّر موقعك إلى')+' '+T_(CC[L.cc]||'')+'. '+T_('هل تريد طريقة الحساب الافتراضية لهذه المنطقة؟')+' ('+T_(METHODS[a].n)+')')){LS.s('azkar_pmode','auto');try{AZ.data.remove('azkar_pmethod')}catch(e){}}else LS.s('azkar_pm_no',no.concat([L.cc]).filter(Boolean).join(','))}}
@@ -136,7 +142,7 @@ function init(){try{css();initTab();if(typeof openTones==='function'){const o=op
 function computeFor(off){const L=loc();if(!L)return null;const M=method(),q=new Intl.DateTimeFormat('en-CA',{timeZone:L.tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),o={};q.forEach(x=>{if(x.type!=='literal')o[x.type]=+x.value});
  const u=new Date(Date.UTC(o.year,o.month-1,o.day+(off||0))),Y=u.getUTCFullYear(),Mo=u.getUTCMonth(),D=u.getUTCDate(),T=times(Y,Mo,D,L.lat,L.lng,M);let third=null;try{third=lastThird(Y,Mo,D,L.lat,L.lng,M,null)}catch(e){}
  return{L,T,third,dayOfWeek:u.getUTCDay(),date:Y+'-'+String(Mo+1).padStart(2,'0')+'-'+String(D).padStart(2,'0')}}
-window.__pt={times,lastThird,METHODS,compute,computeFor,ST,loc,method,methodKey,regionFor,nearestCity,autoDm,CITIES,CC,CCM};
+window.__pt={locate:gps,times,isRamadan,lastThird,METHODS,compute,computeFor,ST,loc,method,methodKey,regionFor,nearestCity,autoDm,CITIES,CC,CCM};
 setTimeout(()=>{try{changed()}catch(e){}},0);
 if(typeof document!=='undefined'&&document.body)init();
 })();

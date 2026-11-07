@@ -18,8 +18,8 @@
       calendarKey: now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'),
       azkariDayKey: (AZ.day && AZ.day.key) ? tryv(function () { return AZ.day.key(); }, null) : 'pending (A2)', dayKeyMethod: (AZ.day && AZ.day.info) ? tryv(function () { return AZ.day.info(); }, null) : 'pending (A2)' };
     var loc = jp('azkar_loc'), S = tryv(function () { return AZ.state(); }, null);
-    o.location = { azkar_loc: loc, stateLoc: S ? S.loc || null : null, storedTz: loc && loc.tz || null, tzMatchesDevice: loc && loc.tz ? loc.tz === tz : null,
-      mismatch: (loc && S && S.loc) ? { latDiff: +(loc.lat - S.loc.lat).toFixed(5), lonDiff: +(loc.lng - S.loc.lon).toFixed(5) } : null };
+    o.location = { azkar_loc: loc, legacyStateLoc: S ? (S.loc ? true : false) : null, storedTz: loc && loc.tz || null, tzMatchesDevice: loc && loc.tz ? loc.tz === tz : null,
+      single: 'AZ.loc (loc.js)' };
     var pt = w.__pt || {};
     o.prayer = { methodStored: raw('azkar_pmethod'), methodsAvailable: tryv(function () { return Object.keys(pt.METHODS || {}); }, []), fajrStored: raw('azkar_fajr'), ishaStored: raw('azkar_isha'),
       effectiveMethod: tryv(function () { return pt.methodKey ? pt.methodKey() : null; }, null), times: (AZ.times && AZ.times.snapshot) ? tryv(function () { return AZ.times.snapshot(); }, null) : 'pending (A4-b)', today: tryv(function () { var r = pt.compute && pt.compute(); return r ? JSON.parse(JSON.stringify(r)) : null; }, null) };
