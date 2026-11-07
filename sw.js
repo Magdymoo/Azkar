@@ -1,15 +1,15 @@
-/* أذكاري — Service Worker v2.0.0-rc.7
+/* أذكاري — Service Worker v2.0.0-rc.12
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.7';
+const VER = '2.0.0-rc.12';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
 const Q = '?v=' + VER;   // نفس اللاحقة في index.html (AZ.asset) — يضبطها tools/bump-version.js ويفحصها tools/check-version.js
 const CORE = [   // الأساسي: تثبيت ذرّي (إن فشل ملف واحد يفشل التثبيت كله فيبقى الإصدار القديم شغّالًا كاملًا بدل خليط نسخ)
   './', 'index.html',
-  'data.js' + Q, 'day.js' + Q, 'home.js' + Q, 'times.js' + Q, 'diag.js' + Q,
+  'data.js' + Q, 'day.js' + Q, 'loc.js' + Q, 'home.js' + Q, 'times.js' + Q, 'diag.js' + Q,
   'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q
 ];
 const OPTIONAL = [   // غيابها لا يمنع التثبيت (أيقونات/شاشة بدء/manifest)
@@ -55,17 +55,12 @@ self.addEventListener('fetch', e => {
   if (url.pathname.includes('/quran/') || url.pathname.includes('/fonts/')) { e.respondWith(caches.match(req).then(hit => hit || fetch(req))); return; }  // بيانات المصحف والخط: كاش أولًا بلا إعادة تحميل في الخلفية (يحفظها التطبيق في athkar-quran)
   if (url.pathname.endsWith('/version.json')) return;     // دائماً من الشبكة لاكتشاف التحديثات
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
-  if (isPage) {                                           // الصفحة: الشبكة بمهلة ٢٫٥ ث ثم الكاش (والتحديث يكمل في الخلفية)
+  if (isPage) {                                           // الصفحة: من الكاش فورًا (بلا انتظار للشبكة). التحديث يصل عبر تحديث الـSW نفسه (تثبيت ذرّي)، فلا نكتب index.html جديدًا في كاش قديم (كان يخلط الإصدارات)
     e.respondWith((async () => {
       const cached = await caches.match('index.html');
-      const net = fetch(req).then(r => {
-        if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put('index.html', cp)).catch(() => {}); }
-        return r;
-      });
-      if (!cached) return net.catch(() => caches.match('./').then(r => r || Response.error()));
-      e.waitUntil(net.catch(() => {}));
-      const r = await Promise.race([net.catch(() => null), new Promise(res => setTimeout(() => res(null), 2500))]);
-      return r || cached;
+      if (cached) return cached;
+      try { return await fetch(req); }                    // لا كاش بعد (أول زيارة): الشبكة
+      catch (_) { return (await caches.match('./')) || Response.error(); }
     })());
     return;
   }
