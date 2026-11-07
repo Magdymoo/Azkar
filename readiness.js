@@ -30,7 +30,7 @@ const TXT={install:['علشان الإشعارات توصلك حتى لو الت
 /* الإنستول: المصدر الوحيد window.dip (يلتقطه index.html). الضغط بلا dip يفتح ورقة الإرشاد ولا يعيد رسم البطاقة (كان سبب «يظهر ويختفي») */
 async function act(step){try{
  if(step==='install'){const d=window.dip;if(d){window.dip=null;try{d.prompt();await d.userChoice}catch(e){}return}try{if(window.AZ&&AZ.installGuide)AZ.installGuide()}catch(e){}return 'noRerun'}
- if(step==='notif'){if(ios()&&!matchMedia('(display-mode: standalone)').matches)return;await Notification.requestPermission();return}   /* iOS: never before installed */
+ if(step==='notif'){if(ios()&&!matchMedia('(display-mode: standalone)').matches)return;if(typeof Notification==='undefined')return;await Notification.requestPermission();return}   /* iOS: never before installed */
  if(step==='geo')return new Promise(res=>{if(!navigator.geolocation)return res();LS.s('azkar_geo_asked','1');navigator.geolocation.getCurrentPosition(p=>{LS.s('azkar_geo_ok','1');syncLoc({lat:p.coords.latitude,lng:p.coords.longitude});try{document.dispatchEvent(new Event('visibilitychange'));if(typeof renderHome==='function')renderHome()}catch(e){}res(p)},()=>res(),{timeout:10000,maximumAge:36e5})});
  if(step==='sw')location.reload()}catch(e){}}
 async function run(){try{syncLoc();const h=$('#v-home');if(!h)return;const old=$('#rdy');if(old)old.remove();const x=await state(),step=pick(x);

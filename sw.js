@@ -1,8 +1,8 @@
-/* أذكاري — Service Worker v2.0.0-rc.14
+/* أذكاري — Service Worker v2.0.0-rc.15
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.0-rc.14';
+const VER = '2.0.0-rc.15';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
@@ -13,7 +13,8 @@ const CORE = [   // الأساسي: تثبيت ذرّي (إن فشل ملف وا
   'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q
 ];
 const OPTIONAL = [   // غيابها لا يمنع التثبيت (أيقونات/شاشة بدء/manifest)
-  'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'splash.webp'
+  'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'splash.webp',
+  'webfonts/amiri-arabic-400-normal.woff2', 'webfonts/amiri-arabic-700-normal.woff2', 'webfonts/amiri-latin-400-normal.woff2', 'webfonts/amiri-latin-700-normal.woff2', 'webfonts/cairo-arabic-400-normal.woff2', 'webfonts/cairo-arabic-600-normal.woff2', 'webfonts/cairo-arabic-700-normal.woff2', 'webfonts/cairo-latin-400-normal.woff2', 'webfonts/cairo-latin-600-normal.woff2', 'webfonts/cairo-latin-700-normal.woff2'
 ];
 // الباقي (القبلة/البحث/الأسماء/المصحف، مكتبة الأدعية، النغمة المختارة) يُخزَّن بعد الإقلاع (رسالة warm)
 
