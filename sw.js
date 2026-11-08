@@ -1,8 +1,8 @@
-/* أذكاري — Service Worker v2.0.1
+/* أذكاري — Service Worker v2.5.0
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.0.1';
+const VER = '2.5.0';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
@@ -40,7 +40,14 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE && k !== QURAN && k !== VCACHE).map(k => caches.delete(k)));
+    /* قرار 10: نُبقي كاش الإصدار السابق مباشرةً (جيلًا واحدًا فقط) كي لا تطلب صفحة قديمة ما زالت مفتوحة سكربتًا كسولًا ?v=القديم
+       فتأخذ نسخة جديدة مخلوطة. يُحذف عند التنشيط التالي. الأقدم منه يُحذف الآن. */
+    const ver = k => { const m = /^athkar-(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?$/.exec(k); return m ? [+m[1], +m[2], +m[3], m[4] === undefined ? 1e9 : +m[4]] : null; };
+    const cmp = (a, b) => { for (let i = 0; i < 4; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
+    const mine = ver(CACHE);
+    const olds = keys.filter(k => k !== CACHE && ver(k) && (!mine || cmp(ver(k), mine) < 0)).sort((x, y) => cmp(ver(y), ver(x)));
+    const keep = olds[0] || null;
+    await Promise.all(keys.filter(k => k !== CACHE && k !== QURAN && k !== VCACHE && k !== keep).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
