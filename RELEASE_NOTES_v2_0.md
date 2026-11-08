@@ -32,3 +32,10 @@
 
 ## ما لم يُنفَّذ / مؤجَّل
 انظر `FINAL_SUMMARY_v2_0.md` (جدول التحقق واقتراحات 2.1).
+
+
+## مراجعة 2.5.0 (Audit — كان 2.0.1)
+- sw.js: الاحتفاظ بكاش الإصدار السابق جيلًا واحدًا عند activate (قرار 10) + tests/sw-activate.test.js
+- data.js: لقطة premigrate للمفاتيح الكبيرة فقط، إلغاء الترحيل عند عدم اتساع المساحة، حذف بعد 14 يومًا (قرار 7) + tests/data-snapshot.test.js
+- index.html: حارس getContext في makeReport/shareReport
+- package.json: npm test / check / check:release

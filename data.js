@@ -109,10 +109,11 @@
     var created = [];
     try {
       var snap = { t: Date.now(), from: w.AZ_V || '', k: {} }, sl = 0;
-      olds.forEach(function (k) { if (k === 'athkary.bak') return; snap.k[k] = l.getItem(k); sl += snap.k[k].length; });
-      if (l.getItem('azkari__premigrate') === null) {              // 1) لقطة احتياطية، فقط إن كانت المساحة تسمح (المفاتيح القديمة نفسها لا تُحذف)
-        if (usage(l) + sl * 3 < BUDGET) l.setItem('azkari__premigrate', JSON.stringify(snap));
-        else ST.snapshot = 'skipped-size';
+      var BIG = { 'athkary.v1': 1, 'azkar_qada': 1, 'azkar_loc': 1 }, bl = 0, madeSnap = false;   // قرار 7: اللقطة للمفاتيح الكبيرة فقط (الحالة، الفوائت، الموقع)
+      olds.forEach(function (k) { if (k === 'athkary.bak') return; var v = l.getItem(k); sl += v.length; if (BIG[k]) { snap.k[k] = v; bl += v.length; } });
+      if (l.getItem('azkari__premigrate') === null) {              // 1) لقطة احتياطية؛ إن لم تتسع لها المساحة يُلغى الترحيل كله ونبقى على القديم (لا فقد)
+        if (usage(l) + bl * 3 >= BUDGET) { ST.snapshot = 'no-space'; throw new Error('snapshot-no-space'); }
+        l.setItem('azkari__premigrate', JSON.stringify(snap)); madeSnap = true;
       }
       if (usage(l) + sl * 2 > BUDGET * 1.1) throw new Error('not-enough-space');  // لا نضاعف بيانات تفوق السقف: نبقى على القديم
       olds.forEach(function (k) {                                  // 2) نسخ لا نقل، ولا نغطّي جديدًا موجودًا
@@ -128,6 +129,7 @@
       return true;
     } catch (e) {
       created.forEach(function (n) { try { l.removeItem(n); } catch (x) {} });   // تراجع كامل، ونكمل بالقديم
+      if (madeSnap) { try { l.removeItem('azkari__premigrate'); } catch (x) {} }   // لقطة هذا التشغيل لا لزوم لها بعد إلغاء الترحيل (لا تأكل مساحة)
       ST.mode = 'legacy'; ST.mig = 'failed'; ST.reason = String((e && e.message) || e);
       try { l.setItem('azkari__mig', JSON.stringify({ v: 'failed', t: Date.now(), reason: ST.reason })); } catch (x) {}
       return false;
@@ -202,6 +204,8 @@
       else if (!olds.length) { try { var f = { v: 2, t: Date.now(), n: 0 }; l.setItem('azkari__mig', JSON.stringify(f)); ST.flag = f; ST.mig = 'done'; } catch (e) { ST.mig = 'fresh-unmarked'; } }
       else migrate(l, olds);
       if (ST.mode === 'new') reconcile(l);
+      /* قرار 7: اللقطة مؤقتة. تُحذف بعد 14 يومًا من نجاح الترحيل (العلامة v:2) وتشغيل ناجح بلا أخطاء نسخ/تحقق. */
+      try { var fl = readFlag(l); if (fl && fl.v === 2 && ST.mig === 'done' && !ST.errors.length && fl.t && Date.now() - fl.t > 14 * 864e5 && l.getItem('azkari__premigrate') !== null) { l.removeItem('azkari__premigrate'); ST.snapshot = 'expired-removed'; } } catch (e) {}
       recover(l);
     } catch (e) { ST.mode = 'legacy'; ST.mig = 'error'; ST.reason = String((e && e.message) || e); }
   }
