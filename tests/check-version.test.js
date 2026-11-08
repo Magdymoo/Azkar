@@ -32,4 +32,4 @@ test('bump النهائي --publish يكتب version.json ويمرّ فحص --re
  assert.deepEqual(check(d,{release:true}).errs,[])});
 test('bump يرفض rc مع publish وصيغة غير صالحة',()=>{const d=clone();assert.throws(()=>bump(d,'2.0.0-rc.11',{publish:true}));assert.throws(()=>bump(d,'v2'))});
 test('--release على rc يُرفض',()=>{const d=clone();bump(d,'2.0.0-rc.99');assert.ok(check(d,{release:true}).errs.length>0)});
-test('الشجرة المسلَّمة نهائية: --release يمرّ و version.json بالإصدار النهائي',()=>{assert.deepEqual(check(ROOT,{release:true}).errs,[]);assert.equal(JSON.parse(fs.readFileSync(path.join(ROOT,'version.json'),'utf8')).version,'2.0.0')});
+test('الشجرة المسلَّمة نهائية: --release يمرّ و version.json بالإصدار النهائي',()=>{assert.deepEqual(check(ROOT,{release:true}).errs,[]);assert.equal(JSON.parse(fs.readFileSync(path.join(ROOT,'version.json'),'utf8')).version,'2.0.1')});
