@@ -11,11 +11,11 @@ test('المشروع الحالي يمرّ من check-version',()=>{assert.deepE
 test('سكربت ثابت بلا ?v= يُرفض',()=>{const d=clone();rw(d,'index.html',s=>s.replace('notify.js?v=','notify.js?x='));assert.ok(errs(d).some(e=>/notify\.js/.test(e)))});
 test('?v= غير مطابق يُرفض',()=>{const d=clone();rw(d,'index.html',s=>s.replace(/(prayer\.js\?v=)[^"]+/,'$11.0.0'));assert.ok(errs(d).some(e=>/غير مطابق/.test(e)))});
 test('sw.js VER مختلف يُرفض',()=>{const d=clone();rw(d,'sw.js',s=>s.replace(/const VER = '[^']+'/,"const VER = '9.9.9'"));assert.ok(errs(d).length>0)});
-test('سكربت ثابت غير مذكور في CORE يُرفض',()=>{const d=clone();rw(d,'sw.js',s=>s.replace(" 'notify.js' + Q",""));assert.ok(errs(d).some(e=>/CORE/.test(e)&&/notify/.test(e)))});
+test('سكربت ثابت غير مذكور في CORE يُرفض',()=>{const d=clone();rw(d,'sw.js',s=>s.replace(", 'extras.js' + Q",""));assert.ok(errs(d).some(e=>/CORE/.test(e)&&/extras/.test(e)))});
 test('CORE يشير لملف غير موجود يُرفض (سيُفشل التثبيت)',()=>{const d=clone();fs.unlinkSync(path.join(d,'diag.js'));assert.ok(errs(d).some(e=>/diag\.js/.test(e)))});
 test('تحميل ديناميكي بلا AZ.asset يُرفض',()=>{const d=clone();rw(d,'tools.js',s=>s.replace("s.src=AZ.asset(src)","s.src=src"));assert.ok(errs(d).some(e=>/AZ\.asset/.test(e)))});
 test('قائمة warm بلا AZ.asset تُرفض',()=>{const d=clone();rw(d,'polish.js',s=>s.replace(".map(x=>AZ.asset(x))",""));assert.ok(errs(d).some(e=>/warm/.test(e)))});
-test('version.json بنسخة rc يُرفض',()=>{const d=clone();rw(d,'version.json',s=>s.replace('"1.14.0"','"2.0.0-rc.6"'));assert.ok(errs(d).some(e=>/version\.json/.test(e)))});
+test('version.json بنسخة rc يُرفض',()=>{const d=clone();rw(d,'version.json',s=>s.replace(/"version": "[^"]+"/,'"version": "2.0.0-rc.6"'));assert.ok(errs(d).some(e=>/version\.json/.test(e)))});
 test('SyntaxError في ملف JS أو سكربت مضمَّن يُرفض',()=>{let d=clone();rw(d,'day.js',s=>s+'\n)(');assert.ok(errs(d).some(e=>/SyntaxError/.test(e)));d=clone();rw(d,'index.html',s=>s.replace('window.AZ_lazy=function','window.AZ_lazy=function(((('));assert.ok(errs(d).some(e=>/inline/.test(e)))});
 
 test('bump إلى rc جديد: كل المواضع تتغير ولا يُمسّ version.json',()=>{
@@ -31,4 +31,5 @@ test('bump النهائي --publish يكتب version.json ويمرّ فحص --re
  const j=JSON.parse(fs.readFileSync(path.join(d,'version.json'),'utf8'));assert.equal(j.version,'2.0.0');assert.equal(j.date,'2026-12-01');assert.ok(j.notes.length);
  assert.deepEqual(check(d,{release:true}).errs,[])});
 test('bump يرفض rc مع publish وصيغة غير صالحة',()=>{const d=clone();assert.throws(()=>bump(d,'2.0.0-rc.11',{publish:true}));assert.throws(()=>bump(d,'v2'))});
-test('--release على rc يُرفض',()=>{assert.ok(check(ROOT,{release:true}).errs.length>0)});
+test('--release على rc يُرفض',()=>{const d=clone();bump(d,'2.0.0-rc.99');assert.ok(check(d,{release:true}).errs.length>0)});
+test('الشجرة المسلَّمة نهائية: --release يمرّ و version.json بالإصدار النهائي',()=>{assert.deepEqual(check(ROOT,{release:true}).errs,[]);assert.equal(JSON.parse(fs.readFileSync(path.join(ROOT,'version.json'),'utf8')).version,'2.0.0')});

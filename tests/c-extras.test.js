@@ -1,0 +1,32 @@
+const test=require('node:test'),assert=require('node:assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const ROOT=path.join(__dirname,'..'),R=f=>fs.readFileSync(path.join(ROOT,f),'utf8');
+const CITY={lat:21.4858,lng:39.1925,name:'جدة',tz:'Asia/Riyadh',cc:'SA'};
+function env(extra){const m=new Map([['azkar_loc',JSON.stringify(CITY)]].concat(extra||[]));const ls={get length(){return m.size},key:i=>[...m.keys()][i]??null,getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};
+ const w={localStorage:ls,performance:{now:()=>1},Intl,Date,Math,JSON,console,setTimeout:f=>{f();return 0},clearTimeout(){},addEventListener(){},dispatchEvent(){},Event:class{constructor(t){this.type=t}}};w.window=w;vm.createContext(w);
+ for(const f of['data.js','prayer.js','day.js','times.js','extras.js'])vm.runInContext(R(f),w);return w}
+test('Hijri: تواريخ معروفة بأم القرى (١ رمضان ١٤٤٧ = ٢٠٢٦-٠٢-١٨ تقريبًا ±١) والذهاب والإياب متطابقان',()=>{const w=env(),H=w.AZ.hijri;assert.ok(H.ok());
+ const h=H.of('2026-11-07');assert.deepEqual([h.y,h.m,h.d],[1448,5,27]);
+ for(const k of['2026-02-18','2026-03-20','2026-05-26','2027-01-01','2030-12-31']){const x=H.of(k);assert.equal(H.keyOf(x.y,x.m,x.d),k)}
+ const r1=H.keyOf(1447,9,1);assert.ok(Math.abs(H.diff('2026-02-18',r1))<=1,r1);assert.ok([29,30].includes(H.daysIn(1447,9)))});
+test('Hijri: التعديل ±١ يزيح التاريخ يومًا ويبقى keyOf متسقًا',()=>{const w=env([['azkari_hj_adj','1']]),H=w.AZ.hijri;const h=H.of('2026-11-07');assert.equal(h.d,28);assert.equal(H.keyOf(h.y,h.m,h.d),'2026-11-07');
+ const w2=env([['azkari_hj_adj','-1']]);assert.equal(w2.AZ.hijri.of('2026-11-07').d,26);const w3=env([['azkari_hj_adj','7']]);assert.equal(w3.AZ.hijri.adj(),0)});
+test('المناسبات: عرفة ٩ ذي الحجة وعاشوراء ١٠ محرم؛ القادمة مرتبة؛ نهي العيدين',()=>{const w=env(),H=w.AZ.hijri;
+ assert.equal(H.occOn({m:12,d:9})[0].id,'arafa');assert.equal(H.occOn({m:1,d:10})[0].id,'ashura');assert.equal(H.occOn({m:10,d:1})[0].f,'forbid');assert.equal(H.occOn({m:12,d:10})[0].f,'forbid');assert.ok(H.occOn({m:12,d:12}).some(o=>o.id==='tashreeq'));
+ const u=H.upcoming(8,'2026-11-07');assert.ok(u.length>=6);for(let i=1;i<u.length;i++)assert.ok((u[i-1].running?'0':u[i-1].start)<=(u[i].running?'0':u[i].start)||u[i-1].running);assert.equal(u[0].o.id,'ramadan');
+ const ar=H.upcoming(30,'2026-11-07').find(x=>x.o.id==='arafa');assert.deepEqual([H.of(ar.start).m,H.of(ar.start).d],[12,9])});
+test('الأيام البيض: ١٣–١٥ إلا رمضان (فرض) وذو الحجة (١٣ تشريق)',()=>{const H=env().AZ.hijri;assert.deepEqual(H.whiteDays(5),[13,14,15]);assert.deepEqual(H.whiteDays(9),[]);assert.deepEqual(H.whiteDays(12),[14,15])});
+test('كل مناسبة لها دليل أو وصف، وما فيه نصوص مصدره مذكور، ولا مناسبات بلا أصل (مولد/إسراء/نصف شعبان)',()=>{const H=env().AZ.hijri;for(const o of H.OCC){assert.ok(o.t&&o.d);if(o.q)assert.ok(o.s,o.id);if(o.nf)assert.ok(o.nt,o.id)}const all=JSON.stringify(H.OCC);assert.ok(!/مولد|إسراء|المعراج|نصف شعبان/.test(all))});
+test('تذكيرات nfX: عرفة عشيّتها، رمضان سحور/إفطار، قدر الوترية، وتُنسب لمفاتيح go صحيحة',()=>{const w=env(),H=w.AZ.hijri,P=w.__pt;
+ const mk=(key)=>{const [y,m,d]=key.split('-').map(Number),T=P.times(y,m-1,d,CITY.lat,CITY.lng,P.method());return T};
+ const eve=H.addD(H.keyOf(1447,12,8),0),T1=mk(eve);const o1=H.nfX(T1,0,{}, {});assert.ok(o1.some(x=>x.id==='occ-arafa'&&x.go==='cal'));
+ const rm=H.keyOf(1447,9,10),o2=H.nfX(mk(rm),0,{},{});assert.ok(o2.some(x=>x.id==='rm-suh')&&o2.some(x=>x.id==='rm-ift'));
+ const q=H.keyOf(1447,9,20),o3=H.nfX(mk(q),0,{},{});assert.ok(o3.some(x=>x.id==='occ-qadr'));const q2=H.keyOf(1447,9,21),o4=H.nfX(mk(q2),0,{},{});assert.ok(!o4.some(x=>x.id==='occ-qadr'));
+ const ift=o2.find(x=>x.id==='rm-ift'),T=mk(rm);assert.equal(ift.at,+T.maghrib-600000);assert.equal(o2.find(x=>x.id==='rm-suh').at,+T.fajr-2400000);
+ const plain=H.nfX(mk(H.keyOf(1448,2,3)),0,{},{});assert.ok(plain.length<=1)});
+test('رمضان: ١٢٠ د عشاء أم القرى من مصدر واحد (prayer.isRamadan) ويتفق مع Hijri',()=>{const w=env(),P=w.__pt,H=w.AZ.hijri;const k=H.keyOf(1447,9,10),[y,m,d]=k.split('-').map(Number);assert.ok(P.isRamadan(y,m-1,d));const k2=H.keyOf(1447,8,10),[y2,m2,d2]=k2.split('-').map(Number);assert.ok(!P.isRamadan(y2,m2-1,d2));
+ const um=P.METHODS.ummalqura||P.METHODS.umm||Object.values(P.METHODS).find(x=>/qura|umm/i.test(JSON.stringify(x)));
+ if(um){const T=P.times(y,m-1,d,21.4858,39.1925,um),T2=P.times(y2,m2-1,d2,21.4858,39.1925,um);assert.ok(Math.round((T.isha-T.maghrib)/6e4)>=120);assert.ok(Math.round((T2.isha-T2.maghrib)/6e4)<=90)}});
+test('AZ.trk: نموذج التتبّع يحمي الصيغة ويقيّد القيم، والإضافة للفوائت مرة واحدة',()=>{const w=env(),T=w.AZ.trk;const k='2026-11-07';assert.equal(T.pDone(k),0);T.setP(k,0,'o');T.setP(k,2,'x');T.setP(k,4,'o');assert.equal(T.pDone(k),2);assert.equal(T.setP(k,5,'o'),null);assert.equal(T.setP(k,1,'z'),null);
+ T.markAdded(k,2);T.markAdded(k,2);assert.equal(T.get().d[k].a,'2');T.markAdded(k,0);assert.equal(T.get().d[k].a,'2f');T.setS(k,1,'o');assert.equal(T.get().d[k].s,'-o-');
+ const w2=env([['azkari_trk','{bad']]);assert.equal(w2.AZ.trk.pDone(k),0)});
+test('التخزين: مفاتيح 2.0 الجديدة بلا انعكاس قديم، وتدخل النسخ الاحتياطي',()=>{const w=env();for(const k of['azkari_arb','azkari_trk','azkari_sawm','azkari_ramadan','azkari_kids','azkari_loved','azkari_zk','azkari_travel','azkari_cities','azkari_hj_adj']){w.AZ.data.set(k,'{"v":1}');assert.equal(w.localStorage.getItem('azkar_'+k.slice(7)),null,k);assert.ok(w.AZ.data.exportPrefs()[k]!==undefined,k)}});

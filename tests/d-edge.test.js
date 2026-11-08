@@ -1,0 +1,31 @@
+const test=require('node:test'),assert=require('node:assert'),fs=require('fs'),path=require('path'),vm=require('vm');
+const ROOT=path.join(__dirname,'..'),R=f=>fs.readFileSync(path.join(ROOT,f),'utf8');
+const CITY={lat:21.4858,lng:39.1925,name:'جدة',tz:'Asia/Riyadh',cc:'SA'};
+function env(seed,files){const m=new Map(seed||[]);const ls={get length(){return m.size},key:i=>[...m.keys()][i]??null,getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k)};
+ const w={localStorage:ls,document:{},performance:{now:()=>1},Intl,Date,Math,JSON,console,setTimeout:f=>{f();return 0},clearTimeout(){},addEventListener(){},dispatchEvent(){},Event:class{constructor(t){this.type=t}}};w.window=w;vm.createContext(w);
+ for(const f of files||['data.js','prayer.js','day.js','times.js','home.js','extras.js'])vm.runInContext(R(f),w);w._m=m;return w}
+test('اليوم الأذكاري: قبل الفجر ينتمي لأمس، وبعده لليوم، ومنتصف الليل لا يقلبه',()=>{const w=env([['azkar_loc',JSON.stringify(CITY)]]),P=w.__pt,T=P.times(2026,10,7,CITY.lat,CITY.lng,P.method());const k=t=>w.AZ.day.key(t);
+ assert.equal(k(+T.fajr+60e3),'2026-11-07');assert.equal(k(+T.fajr-60e3),'2026-11-06');assert.equal(k(+T.isha+3600e3),'2026-11-07');
+ const mid=Date.UTC(2026,10,7,21,0,0);assert.equal(k(mid),'2026-11-07');   // ٠٠:٠٠ بتوقيت الرياض = قبل الفجر
+ assert.equal(k(+T.fajr-3600e3*5),'2026-11-06')});
+test('اليوم الأذكاري بلا موقع: لا يرمي ويعطي مفتاحًا صالحًا',()=>{const w=env([]);assert.match(w.AZ.day.key(),/^\d{4}-\d{2}-\d{2}$/)});
+test('homeMessage: الأطوار الأربعة والإتمام والجنس والمتبقي',()=>{const w=env([]),H=w.AZ.homeMessage;
+ let r=H({phase:'m',mD:false,eD:false,sD:false,q:false});assert.ok(r.buttons.some(b=>b[1]==='m')&&r.pend);
+ r=H({phase:'m',mD:true,eD:false,sD:false,q:true});assert.match(r.tx,/أتممت أذكار الصباح/);
+ r=H({phase:'n',mD:true,eD:true,sD:true,q:true});assert.ok(!r.pend&&r.remaining===0);
+ r=H({phase:'n',mD:true,eD:true,sD:false,q:true});assert.ok(r.buttons.some(b=>b[1]==='s'));
+ r=H({phase:'e',mD:false,eD:false,sD:false,q:false});assert.ok(r.buttons.some(b=>b[1]==='e')&&r.buttons.some(b=>b[1]==='q'));
+ assert.match(H({phase:'m',mD:false,gender:'f'}).tx,/ابدئي/);assert.match(H({phase:'m',mD:false,gender:'m'}).tx,/ابدأ/);
+ r=H({phase:'n',mD:false,eD:false,sD:false,q:false});assert.ok(!r.buttons.some(b=>b[1]==='q'))});
+test('الترحيل: المفاتيح القديمة تبقى، الجديدة تُنشأ، ولقطة احتياطية مرة واحدة',()=>{const w=env([['azkar_loc',JSON.stringify(CITY)],['azkar_pmethod','ummalqura']]),m=w._m;assert.equal(m.get('azkari_pmethod'),'ummalqura');assert.ok(m.has('azkar_pmethod'));assert.ok(m.has('azkari__premigrate'));
+ const snap=m.get('azkari__premigrate');const w2=env([...m.entries()]);assert.equal(w2._m.get('azkari__premigrate'),snap)});
+test('النسخ الاحتياطي: المفاتيح الجديدة تُصدَّر وتُستورد، وغير المعروف يُتجاهل',()=>{const w=env([]);const D=w.AZ.data;D.set('azkari_loved','{"v":1,"l":[],"sd":[]}');D.set('azkari_zk','{"v":1}');const ex=D.exportPrefs();assert.ok(ex.azkari_loved&&ex.azkari_zk);
+ const w2=env([]);const n=w2.AZ.data.importPrefs(Object.assign({},ex,{evil:'x',azkari_nothere:'x'}));assert.equal(n,2);assert.equal(w2.AZ.data.get('azkari_zk'),'{"v":1}');assert.equal(w2.AZ.data.get('evil'),null);assert.equal(w2.AZ.data.importPrefs(null),0)});
+test('البيانات التالفة في كل مفاتيح 2.0 لا تكسر الوحدات (قيم افتراضية)',()=>{const keys=['azkari_arb','azkari_trk','azkari_sawm','azkari_ramadan','azkari_kids','azkari_loved','azkari_zk','azkari_travel','azkari_cities'];const w=env(keys.map(k=>[k,'{{{bad']).concat([['azkar_loc',JSON.stringify(CITY)]]));
+ for(const f of['learn.js','tracker.js','cal.js','kids.js','loved.js','salah.js','zakat.js'])vm.runInContext(R(f),w);
+ assert.equal(w.AZ.trk.pDone('2026-11-07'),0);assert.deepEqual(JSON.parse(JSON.stringify(w.__x_learn._t.get().s)),{});assert.equal(w.__x_kids._t.get().tot,0);assert.equal(w.__x_loved._t.get().l.length,0);assert.equal(w.__x_salah._t.cget().length,0);assert.equal(w.__x_salah._t.tget().on,false);assert.equal(w.AZ.ramadan.get().v,1);assert.ok(w.__x_cal._t.get().d)});
+test('حدود: التتبّع يقلّم ما فوق ٨٠٠ يوم، والمدن ≤ ٨، والأحباء ≤ ٦٠، والأطفال ≤ ١٢٠ يومًا',()=>{const w=env([['azkar_loc',JSON.stringify(CITY)]]);const o=w.AZ.trk.get();o.d['2000-01-01']={p:'ooooo',s:'---',a:''};w.AZ.trk.set(o);assert.equal(w.AZ.trk.get().d['2000-01-01'],undefined);
+ vm.runInContext(R('loved.js'),w);const L=w.__x_loved._t;for(let i=0;i<70;i++)L.add('اسم'+i);assert.equal(L.get().l.length,60);
+ vm.runInContext(R('kids.js'),w);const o2=w.__x_kids._t.get();for(let i=0;i<150;i++)o2.s['2020-01-'+String(i).padStart(3,'0')]={eat1:1};w.AZ.data.set('azkari_kids',JSON.stringify(o2));w.__x_kids._t.say('sleep');assert.ok(Object.keys(w.__x_kids._t.get().s).length<=121)});
+test('الحجم: بيانات الوحدات الجديدة بعد سنة استخدام كاملة أقل بكثير من BUDGET',()=>{const w=env([['azkar_loc',JSON.stringify(CITY)]]);const o=w.AZ.trk.get();for(let i=0;i<400;i++){const d=new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10);o.d[d]={p:'ooxoo',s:'o-o',a:'2'}}w.AZ.data.set('azkari_trk',JSON.stringify(o));
+ const sz=Object.keys(o.d).length*55;assert.ok(sz<40000);assert.ok(w.AZ.data.get('azkari_trk').length<40000);const arb={v:1,s:{},q:{ok:99,n:200}};for(let i=1;i<=42;i++)arb.s[i]={st:'r',rv:'2026-11-07'};assert.ok(JSON.stringify(arb).length<2500)});
