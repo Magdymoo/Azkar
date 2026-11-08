@@ -65,14 +65,16 @@ self.addEventListener('fetch', e => {
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
   if (isPage) {                                           // الصفحة: من الكاش فورًا (بلا انتظار للشبكة). التحديث يصل عبر تحديث الـSW نفسه (تثبيت ذرّي)، فلا نكتب index.html جديدًا في كاش قديم (كان يخلط الإصدارات)
     e.respondWith((async () => {
-      const cached = await caches.match('index.html');
+      // مهم: من كاش هذا الإصدار تحديدًا. caches.match() العامة تبحث في كل الكاشات من الأقدم فتُرجع صفحة الإصدار السابق (نحتفظ به جيلًا واحدًا) فتدخل حلقة «يوجد تحديث»
+      const mine = await caches.open(CACHE);
+      const cached = (await mine.match('index.html')) || (await mine.match('./'));
       if (cached) return cached;
       try { return await fetch(req); }                    // لا كاش بعد (أول زيارة): الشبكة
-      catch (_) { return (await caches.match('./')) || Response.error(); }
+      catch (_) { return (await caches.match('index.html')) || (await caches.match('./')) || Response.error(); }  // بلا شبكة وكاشنا غير موجود: أي نسخة أفضل من لا شيء
     })());
     return;
   }
-  e.respondWith(caches.match(req).then(hit => {            // الباقي: الكاش أولاً مع تحديث في الخلفية
+  e.respondWith(caches.open(CACHE).then(c => c.match(req)).then(hit => hit || caches.match(req)).then(hit => {   // الباقي: كاش هذا الإصدار أولاً (ثم أي كاش) مع تحديث في الخلفية
     const net = fetch(req).then(r => {
       if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)).catch(() => {}); }
       return r;
