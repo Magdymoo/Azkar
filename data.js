@@ -11,8 +11,9 @@
   var tr = AZ.trace = AZ.trace || function (n) { try { (AZ._tr = AZ._tr || []).push({ n: n, t: Math.round(performance.now()) }); } catch (e) {} };
   tr('data.js:start');
 
-  var NATIVE = { azkari_qada: 1, azkari_mushaf: 1 };            // مفاتيح بالبادئة الجديدة أصلًا (لا مقابل قديم لها)
-  var PREFS = ['azkari_loc', 'azkari_pmethod', 'azkari_pt_sub', 'azkari_vib', 'azkari_umrah', 'azkari_umd_fs', 'azkari_pa_fs', 'azkari_nc'];
+  var NATIVE = { azkari_qada: 1, azkari_mushaf: 1, azkari_arb: 1, azkari_trk: 1, azkari_sawm: 1, azkari_ramadan: 1, azkari_kids: 1, azkari_loved: 1, azkari_zk: 1, azkari_travel: 1, azkari_cities: 1, azkari_hj_adj: 1 };            // مفاتيح بالبادئة الجديدة أصلًا (لا مقابل قديم لها)
+  var PREFS = ['azkari_loc', 'azkari_pmethod', 'azkari_pt_sub', 'azkari_vib', 'azkari_umrah', 'azkari_umd_fs', 'azkari_pa_fs', 'azkari_nc',
+    'azkari_arb', 'azkari_trk', 'azkari_sawm', 'azkari_ramadan', 'azkari_kids', 'azkari_loved', 'azkari_zk', 'azkari_travel', 'azkari_cities', 'azkari_hj_adj'];   // 2.0: بيانات الوحدات الجديدة تدخل النسخ الاحتياطي (نصوص JSON صغيرة، بلا انعكاس قديم)
   var ST = { mode: 'new', mig: 'unknown', reason: '', flag: null, conflicts: [], adopted: [], mirrored: [], copied: [], errors: [] };
   var BUDGET = w.AZ_BUDGET || 2000000;                           // سقف تقديري محافظ (iOS ≈ 2.5 مليون حرف)
   var SYNC = {};                                                  // آخر قيمة (بصمتها) كانت متطابقة بين الجديد والقديم
