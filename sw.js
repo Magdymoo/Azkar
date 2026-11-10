@@ -1,8 +1,8 @@
-/* أذكاري — Service Worker v2.5.0
+/* أذكاري — Service Worker v3.0.1
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '2.5.0';
+const VER = '3.0.1';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
@@ -10,10 +10,10 @@ const Q = '?v=' + VER;   // نفس اللاحقة في index.html (AZ.asset) —
 const CORE = [   // الأساسي: تثبيت ذرّي (إن فشل ملف واحد يفشل التثبيت كله فيبقى الإصدار القديم شغّالًا كاملًا بدل خليط نسخ)
   './', 'index.html',
   'data.js' + Q, 'day.js' + Q, 'loc.js' + Q, 'home.js' + Q, 'times.js' + Q, 'diag.js' + Q,
-  'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q, 'extras.js' + Q
+  'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q, 'extras.js' + Q, 'wirdi.js' + Q
 ];
 const OPTIONAL = [   // غيابها لا يمنع التثبيت (أيقونات/شاشة بدء/manifest)
-  'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'splash.webp',
+  'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'favicon-32.png', 'favicon-16.png', 'splash.webp',
   'webfonts/amiri-arabic-400-normal.woff2', 'webfonts/amiri-arabic-700-normal.woff2', 'webfonts/amiri-latin-400-normal.woff2', 'webfonts/amiri-latin-700-normal.woff2', 'webfonts/cairo-arabic-400-normal.woff2', 'webfonts/cairo-arabic-600-normal.woff2', 'webfonts/cairo-arabic-700-normal.woff2', 'webfonts/cairo-latin-400-normal.woff2', 'webfonts/cairo-latin-600-normal.woff2', 'webfonts/cairo-latin-700-normal.woff2'
 ];
 // الباقي (القبلة/البحث/الأسماء/المصحف، مكتبة الأدعية، النغمة المختارة) يُخزَّن بعد الإقلاع (رسالة warm)
@@ -99,7 +99,7 @@ self.addEventListener('message', e => {
       .then(l => l.forEach(c => c.postMessage(m))).catch(() => {});
     say({ type: 'azkar-ack', stage: 'scheduled', ms });                       // وصلت الجدولة إلى العامل
     e.waitUntil(new Promise(r => setTimeout(r, ms))
-      .then(() => self.registration.showNotification(d.title || 'أذكاري', {
+      .then(() => self.registration.showNotification(d.title || 'وِردي', {
         body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png',
         tag: d.tag || 'test', lang: d.lang || 'ar', dir: d.dir || 'rtl', data: { url: './' }
       }))
@@ -112,7 +112,7 @@ self.addEventListener('message', e => {
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'أذكاري', {
+  e.waitUntil(self.registration.showNotification(d.title || 'وِردي', {
     body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png', tag: d.tag || 'push',
     lang: d.lang || 'ar', dir: d.dir || 'rtl', data: { url: d.url || './' }
   }));
