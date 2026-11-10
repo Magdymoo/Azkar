@@ -182,7 +182,7 @@ function adjust(d,p,n){const o=load();if(!o||!isD(d)||!PR.includes(p))return;let
 /* ---------- share image (local canvas; percent or badge only) ---------- */
 function drawShare(cv){try{const o=load();if(!o||!cv||!cv.getContext)return;const c=cv.getContext('2d'),W=cv.width,H=cv.height,pc=pctOf(o),rtl=typeof document!=='undefined'&&document.documentElement&&document.documentElement.dir==='rtl';
  const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#17394d');g.addColorStop(1,'#10261f');c.fillStyle=g;c.fillRect(0,0,W,H);c.direction=rtl?'rtl':'ltr';c.textAlign='center';
- c.fillStyle='#f1da92';c.font='700 44px Cairo,system-ui,sans-serif';c.fillText('أذكاري',W/2,96);c.fillStyle='#f7f2e4';c.font='400 30px Cairo,system-ui,sans-serif';c.fillText(tr('قضاء الفوائت'),W/2,150);
+ c.fillStyle='#f1da92';c.font='700 44px Cairo,system-ui,sans-serif';c.fillText('وِردي',W/2,96);c.fillStyle='#f7f2e4';c.font='400 30px Cairo,system-ui,sans-serif';c.fillText(tr('قضاء الفوائت'),W/2,150);
  const cx=W/2,cy=H/2+10,r=140;c.lineWidth=22;c.lineCap='round';c.strokeStyle='#2b4a4d';c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();
  if(SH.mode==='pct'){c.strokeStyle='#f1da92';c.beginPath();c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*pc/100);c.stroke();c.fillStyle='#f7f2e4';c.font='700 84px Cairo,system-ui,sans-serif';c.fillText(pc+'%',cx,cy+28)}
  else{c.strokeStyle='#f1da92';c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();c.fillStyle='#f7f2e4';c.font='700 40px Cairo,system-ui,sans-serif';c.fillText(tr(BADGE(pc)),cx,cy+14)}
