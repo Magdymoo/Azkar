@@ -13,7 +13,7 @@
 <script>
 /* ===== حارس الأخطاء v1.6.1: سكربت مستقل ليعمل حتى لو تعطّل السكربت الرئيسي (SyntaxError) ===== */
 (function(){
-var errs=[],ver='3.1.0';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;window.AZ.asset=function(p){p=String(p);return /[?#]/.test(p)?p:p+'?v='+ver};
+var errs=[],ver='3.1.2';window.AZ_V=ver;window.AZ=window.AZ||{};window.AZ.errs=errs;window.AZ.asset=function(p){p=String(p);return /[?#]/.test(p)?p:p+'?v='+ver};
 function env(){var o=[];try{o.push('Wirdi v'+ver);o.push(navigator.userAgent);o.push(location.protocol+'//'+(location.host||'(none)')+location.pathname);
 o.push('iframe='+(window.top!==window));}catch(e){o.push('iframe=?(cross-origin)')}
 function t(n,f){try{o.push(n+'='+(f()?'ok':'no'))}catch(e){o.push(n+'=blocked')}}
@@ -376,12 +376,12 @@ function chk(){var v=document.getElementById('v-home');if(window.__errs&&window.
 <body>
 <div id="splash" aria-hidden="true"><i><span class="sg"></span><u class="rd" style="left:29.2%;top:40.9%;width:2.3%;height:1.8%;animation-delay:0.0s;animation-duration:2.7s"></u><u class="rd" style="left:38.5%;top:40.5%;width:2.1%;height:1.5%;animation-delay:0.9s;animation-duration:2.5s"></u><u class="rd" style="left:50.3%;top:41.0%;width:3.6%;height:2.7%;animation-delay:0.3s;animation-duration:2.9s"></u><u class="rd" style="left:62.6%;top:40.6%;width:2.3%;height:1.8%;animation-delay:1.4s;animation-duration:2.6s"></u><u class="rd" style="left:76.2%;top:40.9%;width:2.6%;height:1.9%;animation-delay:0.6s;animation-duration:2.8s"></u><u class="rd" style="left:68.7%;top:40.8%;width:2.1%;height:1.5%;animation-delay:1.9s;animation-duration:2.4s"></u><u class="rd" style="left:43.6%;top:40.4%;width:1.5%;height:1.2%;animation-delay:1.1s;animation-duration:2.3s"></u><span class="sp"></span></i></div>
 <!-- A7: السكربتات المتزامنة هنا (بعد الـsplash) كي يُرسَم الإقلاع قبل تنفيذها؛ الترتيب النسبي كما كان -->
-<script src="data.js?v=3.1.0"></script>
-<script src="day.js?v=3.1.0"></script>
-<script src="home.js?v=3.1.0"></script>
-<script src="loc.js?v=3.1.0"></script>
+<script src="data.js?v=3.1.2"></script>
+<script src="day.js?v=3.1.2"></script>
+<script src="home.js?v=3.1.2"></script>
+<script src="loc.js?v=3.1.2"></script>
 <script>if(!(window.AZ&&AZ.loc)){window.AZ=window.AZ||{};AZ.loc={get:function(){return null},set:function(){return null},migrate:function(){return false},has:function(){return false}}}</script>
-<script src="times.js?v=3.1.0"></script>
+<script src="times.js?v=3.1.2"></script>
 <script>if(!(window.AZ&&AZ.day)){AZ.day={key:function(t){var d=new Date(t===undefined?Date.now():t);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},phase:function(){var h=new Date().getHours();return h>=4&&h<11?"m":h>=11&&h<15?"d":h>=15&&h<21?"e":"n"},start:function(){return"fajr"},setStart:function(){},invalidate:function(){},info:function(){return{method:"shim"}}}}</script>
 <script>if(!(window.AZ&&AZ.data)){window.AZ=window.AZ||{};AZ.data={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},remove:function(k){try{localStorage.removeItem(k)}catch(e){}},wipeAll:function(){var n=0;try{Object.keys(localStorage).forEach(function(k){if(/^(azkar|athkary)/.test(k)){localStorage.removeItem(k);n++}})}catch(e){}return n},exportPrefs:function(){return{}},importPrefs:function(){return 0},status:function(){return{mode:"shim"}},inventory:function(){return[]}}}</script>
 <div id="eb" hidden role="alert"><span></span><button id="ebR">إعادة تحميل</button><button id="ebS">إرسال تقرير</button><button id="ebC">نسخ التفاصيل</button><button id="ebX">إغلاق</button></div>
@@ -486,7 +486,7 @@ function chk(){var v=document.getElementById('v-home');if(window.__errs&&window.
     </div>
   </div>
 </section>
-<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 3.1.0</footer>
+<footer>تم تصميم هذا التطبيق بواسطة <b>محمد الصغير</b> © 2026 · الإصدار 3.1.2</footer>
 </div>
 
 <nav>
@@ -1289,9 +1289,9 @@ $('#fcus').onchange=e=>{const v=e.target.value.trim();if(v){F.type=v;save();rend
 window.__booted=1;try{AZ.trace&&AZ.trace('booted')}catch(e){}
 try{requestAnimationFrame(function(){requestAnimationFrame(function(){window.__hideSplash&&window.__hideSplash()})})}catch(e){}
 </script>
-<script src="reassurance.js?v=3.1.0"></script><script src="sakina.js?v=3.1.0"></script><script src="prayer.js?v=3.1.0"></script><script src="qada.js?v=3.1.0"></script>
-<script src="tools.js?v=3.1.0"></script><script src="home-ui.js?v=3.1.0"></script>
-<script src="polish.js?v=3.1.0"></script>
-<script src="umrah.js?v=3.1.0"></script><script src="readiness.js?v=3.1.0"></script><script src="notify.js?v=3.1.0"></script><script src="extras.js?v=3.1.0"></script><script src="wirdi.js?v=3.1.0"></script>
+<script src="reassurance.js?v=3.1.2"></script><script src="sakina.js?v=3.1.2"></script><script src="prayer.js?v=3.1.2"></script><script src="qada.js?v=3.1.2"></script>
+<script src="tools.js?v=3.1.2"></script><script src="home-ui.js?v=3.1.2"></script>
+<script src="polish.js?v=3.1.2"></script>
+<script src="umrah.js?v=3.1.2"></script><script src="readiness.js?v=3.1.2"></script><script src="notify.js?v=3.1.2"></script><script src="extras.js?v=3.1.2"></script><script src="wirdi.js?v=3.1.2"></script>
 </body>
 </html>

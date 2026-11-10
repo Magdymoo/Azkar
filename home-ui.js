@@ -49,11 +49,19 @@ function sky(now) {
   if (h < 8) return ['#16375e', '#4a6b86', '#7a6648'];
   return ['#1a4f86', '#4f86b8', '#a9c3d6'];
 }
+function esc(x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function inspo() {
+  var g = $('#wdh .wd-gr'), h = $('#wdh .wd-hd'), sm = h && $('small', h);
+  var src = sm ? sm.textContent.trim() : '', q = h ? h.textContent.replace(src, '').trim() : '';
+  return { g: g ? g.textContent.trim() : '', q: q, s: src };
+}
+function toastM(m) { try { if (typeof toast === 'function') toast(m); } catch (e) { } }
+function inspoText() { var i = inspo(); return i.q ? i.q + '\n' + i.s + '\n(وِردي)' : ''; }
 function css() {
   if ($('#wh-css')) return;
   var s = D.createElement('style'); s.id = 'wh-css';
-  s.textContent = 'html[data-wh] #v-home>:not(#wh){display:none!important}'
-    + '#wh{margin:-12px -14px 0;padding:0 16px 24px;min-height:100vh;color:#fff;font-family:Cairo,sans-serif;direction:rtl;background:linear-gradient(180deg,var(--s1) 0,var(--s2) 340px,#000 560px)}'
+  s.textContent = 'html[data-wh] #v-home>:not(#wh){display:none!important}html[data-wh] #wdh{display:none!important}body:has(#v-home.on) header,body:has(#v-home.on) #tb{display:none!important}'
+    + '#wh{margin:-12px -14px 0;padding:0 16px 24px;border-radius:0 0 34px 34px;color:#fff;font-family:Cairo,sans-serif;direction:rtl;background:linear-gradient(180deg,var(--s1) 0,var(--s2) 340px,#000 560px)}'
     + '#wh .bar{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top,0px)) 0 8px}'
     + '#wh .bar .lg{font:700 2rem Amiri,serif}#wh .rb{width:46px;height:46px;border-radius:50%;border:1px solid #ffffff40;background:#ffffff26;color:#fff;font-size:1.2rem;display:grid;place-items:center;margin:0 4px}'
     + '#wh .row{display:flex;align-items:center}'
@@ -66,20 +74,23 @@ function css() {
     + '#wh .pt{background:#ffffff12;border-radius:18px;padding:12px;line-height:1.7}#wh .pt.on{outline:1.5px solid #e1c779}#wh .pt b{font-size:1.7rem;display:block}#wh .pt i{font-style:normal;opacity:.6;font-size:.9rem}'
     + '#wh .gd{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}#wh .gd button{display:flex;align-items:center;gap:10px;background:#ffffff14;border:1px solid #ffffff22;border-radius:30px;padding:12px 14px;color:#fff;font:700 1.1rem Cairo,sans-serif}'
     + '#wh .gd em{font-style:normal;width:40px;height:40px;border-radius:50%;background:#ffffff20;display:grid;place-items:center}'
+    + '#wh .gc{background:linear-gradient(135deg,#ffffff1f,#ffffff0d);border:1px solid #ffffff26;border-radius:26px;padding:16px 18px;margin:12px 0;backdrop-filter:blur(10px)}#wh .gc .gt{font-size:1.25rem;font-weight:700}#wh .hq{font:400 1.45rem/2.2 Amiri,serif;margin:6px 0 2px}#wh .hs{opacity:.7;font-size:.95rem}#wh .ha{display:flex;gap:8px;margin-top:12px}#wh .ha button{flex:1;background:#ffffff1a;border:1px solid #ffffff2a;border-radius:16px;color:#fff;font:700 1rem Cairo,sans-serif;padding:10px}'
     + '#wd0{position:fixed;inset:0;z-index:8000;display:none}#wd0.on{display:block}#wd0 .sh{position:absolute;inset:0;background:#0009}'
     + '#wd0 .pn{position:absolute;top:0;bottom:0;right:0;width:82%;max-width:360px;background:#000;color:#fff;direction:rtl;padding:calc(30px + env(safe-area-inset-top,0px)) 24px 24px;overflow:auto;animation:wdin .22s ease-out}'
     + '@keyframes wdin{from{transform:translateX(40px);opacity:0}}#wd0 .lg{font:700 2.2rem Amiri,serif;margin-bottom:18px}#wd0 button.it{display:flex;align-items:center;gap:16px;width:100%;background:none;border:0;color:#fff;font:700 1.5rem Cairo,sans-serif;padding:13px 0;text-align:right}#wd0 hr{border:0;border-top:1px solid #ffffff30;margin:14px 0}';
   D.head.appendChild(s);
 }
 function openNav(v) { var b = $('nav button[data-v="' + v + '"]'); if (b) b.click(); }
-function openPage(id) { try { window.__tl.openPage(id); } catch (e) { } }
+function openPage(id) { try { var T = window.__tl; if (!T) return; T.open(); (T.loadMods ? T.loadMods() : Promise.resolve()).then(function () { T.openPage(id); }); } catch (e) { console.warn('[home-ui]', e); } }
 function closeDrawer() { var d = $('#wd0'); if (d) d.classList.remove('on'); }
 var ACT = {
-  prayer: function () { openPage('salah'); }, counter: function () { openNav('free'); }, fav: function () { openPage('loved'); },
-  qibla: function () { window.AZ_lazy('qibla.js', '__qb').then(function () { var b = $('#qb,[data-a=qibla]'); b && b.click(); }).catch(function () { openPage('qibla'); }); },
-  mine: function () { openNav('adh'); }, mushaf: function () { openNav('q'); }, misc: function () { openPage('today'); }, all: function () { try { __tl.open(); } catch (e) { } },
-  set: function () { try { window.openSet(); } catch (e) { } }, search: function () { var b = $('#sr,[data-a=search],#srB'); if (b) b.click(); else try { window.AZ_lazy('search.js', '__sr'); } catch (e) { } },
-  dua: function () { try { window.AZ_lazy('needs.js', '__needs').then(function () { __needs.open(); }); } catch (e) { } },
+  prayer: function () { if ($('nav button[data-v="pt"]')) openNav('pt'); else openPage('salah'); }, counter: function () { openNav('free'); }, fav: function () { openPage('loved'); },
+  qibla: function () { openPage('qibla'); },
+  mine: function () { openNav('adh'); }, mushaf: function () { openNav('q'); }, misc: function () { try { __tl.open(); } catch (e) { } }, all: function () { try { __tl.open(); } catch (e) { } },
+  set: function () { var b = $('#bSet'); if (b) b.click(); else try { window.openSet(); } catch (e) { } }, search: function () { openPage('search'); },
+  dua: function () { var b = $('#bNeed'); if (b) b.click(); else openPage('needs'); },
+  copy: function () { var t = inspoText(); if (!t) return; var fb = function () { try { var a = D.createElement('textarea'); a.value = t; a.style.cssText = 'position:fixed;opacity:0'; D.body.appendChild(a); a.select(); D.execCommand('copy'); a.remove(); toastM('تم النسخ'); } catch (e) { toastM('تعذر النسخ'); } }; try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(function () { toastM('تم النسخ'); }, fb); return; } } catch (e) { } fb(); },
+  share: function () { var t = inspoText(); if (!t) return; if (navigator.share) navigator.share({ text: t }).catch(function () { }); else ACT.copy(); },
   wadq: function () { window.__sk && __sk.wadq().catch(function () { __sk.open(); }); }, track: function () { openPage('tracker'); }, adh: function () { openNav('adh'); }
 };
 var MENU = [['prayer', '🕐', 'الصلاة'], ['counter', '#', 'العداد'], ['fav', '♥', 'المفضلة'], ['qibla', '➤', 'القبلة'], ['mine', '☆', 'أذكاري'], ['mushaf', '📖', 'المصحف'], ['misc', '🔀', 'المنوعة'], ['all', '▦', 'جميع الأقسام'], ['-'], ['set', '⚙', 'الإعدادات'], ['search', '🔍', 'بحث'], ['dua', '🔖', 'دعائي']];
@@ -98,13 +109,16 @@ function render() {
   w.style.setProperty('--s1', sk[0]); w.style.setProperty('--s2', sk[1]);
   var city = (loc && (loc.name || loc.city || loc.n)) || 'مكة المكرمة';
   var ks = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  var I = inspo();
   w.innerHTML = '<div class="bar"><div class="row"><button class="rb" data-a="set" aria-label="الإعدادات">⚙</button><button class="rb" data-a="search" aria-label="بحث">🔍</button></div><div class="lg">وِردي</div><button class="rb" data-a="menu" aria-label="القائمة">☰</button></div>'
     + '<div class="row"><div class="moon" aria-hidden="true"></div><div style="margin-inline-start:auto;text-align:right"><div class="day">' + DAYS[now.getDay()] + '</div><div class="city">' + city + '</div></div></div>'
     + '<div class="dts"><div><b>' + H.d + ' ' + H.m + '</b><small>' + H.y + '</small></div><div style="text-align:left"><b>' + now.getDate() + ' ' + MON[now.getMonth()] + '</b><small>' + now.getFullYear() + '</small></div></div>'
+    + (I.g ? '<div class="gc"><div class="gt">' + esc(I.g) + '</div></div>' : '')
     + (np ? '<div class="cd"><i class="bd"></i><div class="x"><b>أذان ' + PN[np.k] + ' بعد ' + human(mins(np.at - now)) + '</b></div><span class="ti">' + t12(np.at) + '</span></div>' : '')
     + (fb ? '<button class="cd rd" data-a="x"><i class="bd"></i><div class="x"><b>أوقات النهي عن الصلاة</b><span>' + fb.a + ' ' + fb.b + '</span></div></button>' : '')
     + '<button class="cd" data-a="adh"><i class="bd" style="background:#e1c779"></i><div class="x"><b>' + az.t + ' · الآن</b><span>' + az.s + '</span></div><span style="font-size:1.8rem">' + az.ic + '</span></button>'
     + '<button class="cd" data-a="wadq"><i class="bd" style="background:#2f7470"></i><div class="x"><b>الودق</b><span>في كرب شديد أو ضيق؟ اضغط هنا</span></div><span style="font-size:1.8rem">🤍</span></button>'
+    + (I.q ? '<div class="gc"><div class="hs">حديث اليوم</div><p class="hq">' + esc(I.q) + '</p><div class="hs">' + esc(I.s) + '</div><div class="ha"><button data-a="copy">نسخ</button><button data-a="share">مشاركة</button></div></div>' : '')
     + '<div class="pg"><h3>مواقيت الصلاة</h3>' + ks.map(function (k) { return '<div class="pt' + (np && np.k === k ? ' on' : '') + '"><span>' + IC[k] + ' ' + PN[k] + '</span><b>' + t12(T[k]) + ' <small>' + ampm(T[k]) + '</small></b></div>'; }).join('') + '</div>'
     + '<div class="gd">' + [['prayer', '🕐', 'الصلاة'], ['qibla', '➤', 'القبلة'], ['counter', '#', 'العداد'], ['mushaf', '📖', 'المصحف'], ['fav', '♥', 'المفضلة'], ['track', '📊', 'المتابعة'], ['mine', '☆', 'أذكاري'], ['all', '▦', 'جميع الأقسام']].map(function (g) { return '<button data-a="' + g[0] + '"><em>' + g[1] + '</em>' + g[2] + '</button>'; }).join('') + '</div>';
 }
@@ -115,7 +129,7 @@ function init() {
     var b = e.target.closest && e.target.closest('#wh [data-a]'); if (!b) return;
     var a = b.dataset.a; if (a === 'menu') { drawer().classList.add('on'); return; } if (a === 'x') return; var f = ACT[a]; if (f) safe(f)();
   });
-  setInterval(safe(render), 30000);
+  setInterval(safe(render), 30000); var tries = 0, tm = setInterval(function () { if ($('#wdh .wd-hd') || ++tries > 20) { clearInterval(tm); safe(render)(); } }, 500);
   D.addEventListener('visibilitychange', function () { if (!D.hidden) safe(render)(); });
   var nav = $('nav'); if (nav) new MutationObserver(safe(function () { if (!$('#wh') && $('#v-home')) render(); })).observe($('#v-home'), { childList: true });
 }
