@@ -1,8 +1,8 @@
-/* أذكاري — Service Worker v3.0.1
+/* أذكاري — Service Worker v3.1.0
    - يخزّن الأساسي فقط للعمل بدون إنترنت، والباقي بعد الإقلاع (warm)
    - لا يمسّ كاش المصحف 'athkar-quran' (يديره التطبيق نفسه)
    - يدعم: رسالة 'skip' للتحديث، ورسالة {type:'delay'} لاختبار الإشعار بعد مهلة، وأحداث push وnotificationclick */
-const VER = '3.0.1';
+const VER = '3.1.0';
 const CACHE = 'athkar-' + VER;
 const QURAN = 'athkar-quran';
 const VCACHE = 'athkar-videos'; // managed by the app (sakina.js); never deleted on update
@@ -10,7 +10,7 @@ const Q = '?v=' + VER;   // نفس اللاحقة في index.html (AZ.asset) —
 const CORE = [   // الأساسي: تثبيت ذرّي (إن فشل ملف واحد يفشل التثبيت كله فيبقى الإصدار القديم شغّالًا كاملًا بدل خليط نسخ)
   './', 'index.html',
   'data.js' + Q, 'day.js' + Q, 'loc.js' + Q, 'home.js' + Q, 'times.js' + Q, 'diag.js' + Q,
-  'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q, 'extras.js' + Q, 'wirdi.js' + Q
+  'reassurance.js' + Q, 'sakina.js' + Q, 'prayer.js' + Q, 'qada.js' + Q, 'tools.js' + Q, 'polish.js' + Q, 'umrah.js' + Q, 'readiness.js' + Q, 'notify.js' + Q, 'extras.js' + Q, 'wirdi.js' + Q, 'home-ui.js' + Q
 ];
 const OPTIONAL = [   // غيابها لا يمنع التثبيت (أيقونات/شاشة بدء/manifest)
   'manifest.webmanifest', 'icon-192.png', 'apple-touch-icon.png', 'favicon-32.png', 'favicon-16.png', 'splash.webp',
