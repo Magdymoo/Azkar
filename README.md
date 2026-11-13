@@ -1,4 +1,4 @@
-# وِردي | Athkari
+# أذكاري | Athkari
 
 A beautiful, lightweight **Islamic Adhkar companion** in a **single HTML file**. Track your morning, evening and bedtime adhkar, keep a daily Quran wird, count tasbih freely, and build a daily streak, all in a calm "Desert Night & Gold" design with full Arabic (RTL) support.
 
@@ -144,4 +144,4 @@ MIT License. Copyright (c) 2026 Mohamed.
 
 ## بالعربي باختصار
 
-**وِردي** تطبيق أذكار في ملف HTML واحد: أذكار الصباح والمساء وقبل النوم، وورد القرآن اليومي مع التفسير الميسر، وعداد حر، وآية أو حديث اليوم، وسلسلة التزام يومية مع إحصائيات. يعمل بدون تثبيت، وبياناتك تُحفظ على جهازك فقط.
+**أذكاري** تطبيق أذكار في ملف HTML واحد: أذكار الصباح والمساء وقبل النوم، وورد القرآن اليومي مع التفسير الميسر، وعداد حر، وآية أو حديث اليوم، وسلسلة التزام يومية مع إحصائيات. يعمل بدون تثبيت، وبياناتك تُحفظ على جهازك فقط.
