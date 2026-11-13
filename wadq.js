@@ -89,13 +89,13 @@ function toggleSnd(s,b){var on=!sndPref();LS.s('azkar_wadq_snd',on?'1':'0');b.te
 /* ---------- دورة الحياة ---------- */
 function onVis(){var s=st;if(!s)return;if(D.hidden){s.paused=true;if(s.raf){cancelAnimationFrame(s.raf);s.raf=0}stopSnd(s)}else if(s.paused){s.paused=false;if(s.scene==='rain'||s.scene==='fire'){if(!reduced()){s.last=0;s.raf=requestAnimationFrame(loop)}if(s.scene==='rain')playSnd(s)}}}
 function onKey(e){if(e.key==='Escape'&&st)close()}
-function open(o){o=o||{};if(st){if(st.el&&D.body.contains(st.el))return;st=null}css();var el=D.createElement('div');el.id='wd';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','الودق');
+function open(o){o=o||{};if(st)return;css();var el=D.createElement('div');el.id='wd';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','الودق');
  el.innerHTML='<canvas aria-hidden="true"></canvas><button class="wdx" data-a="close" aria-label="إغلاق">✕</button><button class="wds" data-a="snd" aria-label="صوت المطر" aria-pressed="false" hidden></button><div class="wdu"></div>';
  D.body.appendChild(el);D.body.style.overflow='hidden';
  var s=st={el:el,cv:$('canvas',el),x:$('canvas',el).getContext('2d'),scene:'',cat:o.cat||null,onClose:o.onClose,raf:0,paused:false,closed:false,timer:0};
  el.addEventListener('click',onClick);D.addEventListener('visibilitychange',onVis);D.addEventListener('keydown',onKey);
  sndProbe().then(function(u){var b=$('.wds',el);if(u&&b&&st===s){b.hidden=false;var on=sndPref();b.textContent=on?'🔊':'🔇';b.setAttribute('aria-pressed',on?'true':'false')}});
- try{go(s,o.scene||'fire')}catch(err){close();throw err}}
+ go(s,o.scene||'fire')}
 function close(){var s=st;if(!s)return;st=null;s.closed=true;if(s.raf)cancelAnimationFrame(s.raf);if(s.timer)clearTimeout(s.timer);stopSnd(s);s.el.removeEventListener('click',onClick);D.removeEventListener('visibilitychange',onVis);D.removeEventListener('keydown',onKey);s.el.remove();D.body.style.overflow='';try{s.onClose&&s.onClose()}catch(e){}}
 window.__wadq={open:open,close:close,pick:pick,items:items,cite:cite,card:card,_st:function(){return st}};
 })();
